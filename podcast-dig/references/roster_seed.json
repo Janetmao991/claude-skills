@@ -1,0 +1,921 @@
+{
+ "_doc": "名单的人工判断字段。tier: S=每次必扫且创始人长谈为主 / A=高质量但覆盖面窄或 IR / B=补充 / C=新闻或泛谈,只靠标题命中。rigor: 主持人追问力 0.5–2(2=会追数字会反驳)。transcript: official(<url>) | youtube | youtube-auto | none。ir_of: 节目所属投资机构(该机构 portfolio 公司上节目时 ir_flag=true)。lookup: 用于 iTunes 查 ID 的检索词。",
+ "shows": [
+  {
+   "name": "Invest Like the Best",
+   "lookup": "Invest Like the Best with Patrick O'Shaughnessy",
+   "tier": "S",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "official joincolossus.com",
+   "ir_of": null,
+   "note": "创始人/CEO 长谈,官方全文"
+  },
+  {
+   "name": "The Twenty Minute VC (20VC)",
+   "lookup": "The Twenty Minute VC",
+   "aliases": [
+    "20VC"
+   ],
+   "tier": "S",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "youtube",
+   "ir_of": null,
+   "note": "Harry 会追 ARR/估值;官网只有 highlights"
+  },
+  {
+   "name": "Lenny's Podcast",
+   "lookup": "Lenny's Podcast",
+   "aliases": [
+    "Lenny's Podcast: Product | Career | Growth"
+   ],
+   "tier": "S",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "official github LennysNewsletter/lennys-newsletterpodcastdata; youtube",
+   "ir_of": null,
+   "note": "Granola 是赞助商,描述命中多为广告"
+  },
+  {
+   "name": "No Priors",
+   "lookup": "No Priors",
+   "tier": "S",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "youtube",
+   "ir_of": "Conviction / Elad Gil",
+   "note": "Sarah Guo 与 Elad 的 portfolio 常上"
+  },
+  {
+   "name": "Training Data",
+   "lookup": "Training Data Sequoia",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "official sequoiacap.com",
+   "ir_of": "Sequoia",
+   "note": "IR 性质强"
+  },
+  {
+   "name": "The Logan Bartlett Show",
+   "lookup": "The Logan Bartlett Show",
+   "tier": "S",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "youtube",
+   "ir_of": "Redpoint"
+  },
+  {
+   "name": "Unsupervised Learning",
+   "lookup": "Unsupervised Learning Redpoint",
+   "aliases": [
+    "Unsupervised Learning with Jacob Effron"
+   ],
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "youtube",
+   "ir_of": "Redpoint"
+  },
+  {
+   "name": "Latent Space",
+   "lookup": "Latent Space AI Engineer",
+   "aliases": [
+    "Latent Space: The AI Engineer Podcast"
+   ],
+   "tier": "S",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "official latent.space",
+   "ir_of": null,
+   "note": "技术深,AI infra/devtool 公司必查"
+  },
+  {
+   "name": "The MAD Podcast with Matt Turck",
+   "lookup": "The MAD Podcast Matt Turck",
+   "tier": "S",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "official mattturck.com; youtube",
+   "ir_of": "FirstMark"
+  },
+  {
+   "name": "AI & I (Every)",
+   "lookup": "The Every Podcast",
+   "aliases": [
+    "The Every Podcast",
+    "AI & I"
+   ],
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "official every.to; youtube",
+   "ir_of": null,
+   "note": "Dan Shipper 偏产品/使用体验"
+  },
+  {
+   "name": "The Cognitive Revolution",
+   "lookup": "The Cognitive Revolution",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "youtube",
+   "ir_of": null,
+   "note": "超长(90–120 分钟),信息量大"
+  },
+  {
+   "name": "BG2Pod",
+   "lookup": "BG2Pod",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "youtube",
+   "ir_of": "Altimeter / Benchmark",
+   "note": "少请创始人,多谈赛道与公开市场"
+  },
+  {
+   "name": "The a16z Show",
+   "lookup": "a16z Podcast",
+   "aliases": [
+    "a16z Podcast"
+   ],
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": "a16z"
+  },
+  {
+   "name": "AI + a16z",
+   "lookup": "AI + a16z",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": "a16z"
+  },
+  {
+   "name": "Lightcone Podcast",
+   "lookup": "Lightcone Podcast Y Combinator",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": "Y Combinator"
+  },
+  {
+   "name": "Y Combinator Startup Podcast",
+   "lookup": "Y Combinator Startup Podcast",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": "Y Combinator",
+   "note": "含 YC 对创始人的访谈与 Lightcone 混放"
+  },
+  {
+   "name": "Acquired",
+   "lookup": "Acquired",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "official acquired.fm",
+   "ir_of": null,
+   "note": "只做成熟公司;ACQ2 有访谈"
+  },
+  {
+   "name": "ACQ2 by Acquired",
+   "lookup": "ACQ2 Acquired",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "official acquired.fm",
+   "ir_of": null
+  },
+  {
+   "name": "Dwarkesh Podcast",
+   "lookup": "Dwarkesh Podcast",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "official dwarkesh.com; youtube",
+   "ir_of": null,
+   "note": "多为 lab/研究者,偶有创始人"
+  },
+  {
+   "name": "Decoder with Nilay Patel",
+   "lookup": "Decoder with Nilay Patel",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "official theverge.com",
+   "ir_of": null,
+   "note": "记者视角,会逼问商业模式"
+  },
+  {
+   "name": "Hard Fork",
+   "lookup": "Hard Fork",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "official nytimes.com",
+   "ir_of": null,
+   "note": "新闻向,偶有创始人"
+  },
+  {
+   "name": "Big Technology Podcast",
+   "lookup": "Big Technology Podcast",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "youtube",
+   "ir_of": null
+  },
+  {
+   "name": "Sharp Tech with Ben Thompson",
+   "lookup": "Sharp Tech Ben Thompson",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "official stratechery.com (付费)",
+   "ir_of": null,
+   "note": "分析而非访谈,描述命中有价值"
+  },
+  {
+   "name": "Grit",
+   "lookup": "Grit Kleiner Perkins Joubin",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": "Kleiner Perkins"
+  },
+  {
+   "name": "Uncapped with Jack Altman",
+   "lookup": "Uncapped Jack Altman",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "youtube",
+   "ir_of": "Alt Capital"
+  },
+  {
+   "name": "Cheeky Pint",
+   "lookup": "Cheeky Pint Stripe",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "youtube",
+   "ir_of": "Stripe",
+   "note": "John Collison 问得狠"
+  },
+  {
+   "name": "In Depth",
+   "lookup": "In Depth First Round",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "official review.firstround.com",
+   "ir_of": "First Round"
+  },
+  {
+   "name": "Greymatter",
+   "lookup": "Greymatter Greylock",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "official greylock.com",
+   "ir_of": "Greylock"
+  },
+  {
+   "name": "Generative Now",
+   "lookup": "Generative Now Lightspeed",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": "Lightspeed"
+  },
+  {
+   "name": "Hallway Chat",
+   "lookup": "Hallway Chat",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "youtube",
+   "ir_of": "Spark Capital",
+   "note": "Fraser Kelton & Nabeel Hyatt(均为 Spark Capital 合伙人);谈 Spark portfolio 公司时按 IR 处理"
+  },
+  {
+   "name": "Business Breakdowns",
+   "lookup": "Business Breakdowns",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "official joincolossus.com",
+   "ir_of": null,
+   "note": "分析师拆解,非创始人"
+  },
+  {
+   "name": "Founders",
+   "lookup": "Founders David Senra",
+   "tier": "C",
+   "lang": "en",
+   "rigor": 0.5,
+   "transcript": "none",
+   "ir_of": null,
+   "note": "传记,无嘉宾"
+  },
+  {
+   "name": "How I Built This with Guy Raz",
+   "lookup": "How I Built This",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "none",
+   "ir_of": null,
+   "note": "成熟公司叙事"
+  },
+  {
+   "name": "Masters of Scale",
+   "lookup": "Masters of Scale",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 0.5,
+   "transcript": "official mastersofscale.com",
+   "ir_of": "Greylock"
+  },
+  {
+   "name": "Pattern Breakers",
+   "lookup": "Pattern Breakers Mike Maples",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": "Floodgate"
+  },
+  {
+   "name": "The Peel with Turner Novak",
+   "lookup": "The Peel Turner Novak",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "youtube",
+   "ir_of": "Banana Capital"
+  },
+  {
+   "name": "Upstream with Erik Torenberg",
+   "lookup": "Upstream Erik Torenberg",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": "a16z"
+  },
+  {
+   "name": "Moment of Zen",
+   "lookup": "Moment of Zen",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": null
+  },
+  {
+   "name": "All-In with Chamath, Jason, Sacks & Friedberg",
+   "lookup": "All-In with Chamath Jason Sacks Friedberg",
+   "aliases": [
+    "All-In Podcast",
+    "The All In Podcast"
+   ],
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": null,
+   "note": "圆桌,用户已订阅"
+  },
+  {
+   "name": "Pivot",
+   "lookup": "Pivot Kara Swisher",
+   "tier": "C",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "none",
+   "ir_of": null
+  },
+  {
+   "name": "Odd Lots",
+   "lookup": "Odd Lots",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "official bloomberg.com",
+   "ir_of": null,
+   "note": "宏观/市场结构,fintech 赛道有用"
+  },
+  {
+   "name": "Money Stuff: The Podcast",
+   "lookup": "Money Stuff Matt Levine",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "none",
+   "ir_of": null,
+   "note": "fintech/资本市场"
+  },
+  {
+   "name": "Fintech Takes",
+   "lookup": "Fintech Takes Alex Johnson",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "none",
+   "ir_of": null,
+   "note": "AI×金融首选"
+  },
+  {
+   "name": "This Week in Fintech",
+   "lookup": "This Week in Fintech",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "none",
+   "ir_of": null
+  },
+  {
+   "name": "Tearsheet Podcast",
+   "lookup": "Tearsheet Podcast",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "official tearsheet.co",
+   "ir_of": null
+  },
+  {
+   "name": "The Official SaaStr Podcast",
+   "lookup": "SaaStr Podcast",
+   "aliases": [
+    "SaaStr"
+   ],
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "youtube",
+   "ir_of": "SaaStr Fund",
+   "note": "Lemkin 必问 ARR/NRR"
+  },
+  {
+   "name": "The Pragmatic Engineer",
+   "lookup": "The Pragmatic Engineer",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "official newsletter.pragmaticengineer.com",
+   "ir_of": null,
+   "note": "工程/devtool 公司"
+  },
+  {
+   "name": "Gradient Dissent",
+   "lookup": "Gradient Dissent Weights Biases",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "youtube",
+   "ir_of": null
+  },
+  {
+   "name": "The TWIML AI Podcast",
+   "lookup": "TWIML AI Podcast",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "official twimlai.com",
+   "ir_of": null
+  },
+  {
+   "name": "Machine Learning Street Talk",
+   "lookup": "Machine Learning Street Talk",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "youtube",
+   "ir_of": null,
+   "note": "研究向"
+  },
+  {
+   "name": "The AI Daily Brief",
+   "lookup": "The AI Daily Brief",
+   "tier": "C",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube-auto",
+   "ir_of": null,
+   "note": "日更新闻,只用标题命中"
+  },
+  {
+   "name": "Last Week in AI",
+   "lookup": "Last Week in AI",
+   "tier": "C",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "official lastweekin.ai",
+   "ir_of": null
+  },
+  {
+   "name": "Core Memory",
+   "lookup": "Core Memory Ashlee Vance",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "youtube-auto 常无",
+   "ir_of": null,
+   "note": "常拿不到全文,拿不到就只 listed"
+  },
+  {
+   "name": "Sources",
+   "lookup": "Sources with Alex Heath",
+   "tier": "A",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "youtube",
+   "ir_of": null,
+   "note": "记者访谈,敢问"
+  },
+  {
+   "name": "How I AI",
+   "lookup": "How I AI with Claire Vo",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": null,
+   "note": "产品演示向"
+  },
+  {
+   "name": "Behind the Craft",
+   "lookup": "Behind the Craft Peter Yang",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": null
+  },
+  {
+   "name": "Agents of Scale",
+   "lookup": "Agents of Scale Zapier",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": null
+  },
+  {
+   "name": "My First Million",
+   "lookup": "My First Million",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": null
+  },
+  {
+   "name": "Open Source Startup Podcast",
+   "lookup": "Open Source Startup Podcast",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "none",
+   "ir_of": null
+  },
+  {
+   "name": "Startup Field Guide",
+   "lookup": "Startup Field Guide Unusual Ventures",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "official unusual.vc",
+   "ir_of": "Unusual Ventures"
+  },
+  {
+   "name": "Startup Europe — The Sifted Podcast",
+   "lookup": "Sifted Startup Europe",
+   "aliases": [
+    "Sifted"
+   ],
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "none",
+   "ir_of": null,
+   "note": "欧洲公司"
+  },
+  {
+   "name": "Newcomer Podcast",
+   "lookup": "Newcomer Podcast Eric Newcomer",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "youtube",
+   "ir_of": null
+  },
+  {
+   "name": "TITV (The Information)",
+   "lookup": "TITV The Information",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "youtube",
+   "ir_of": null
+  },
+  {
+   "name": "This Week in Startups",
+   "lookup": "This Week in Startups",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": "Launch"
+  },
+  {
+   "name": "Equity",
+   "lookup": "Equity TechCrunch",
+   "tier": "C",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "none",
+   "ir_of": null,
+   "note": "新闻,标题命中可当融资时间线"
+  },
+  {
+   "name": "Index Audio",
+   "lookup": "Index Ventures Podcast",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "none",
+   "ir_of": "Index Ventures"
+  },
+  {
+   "name": "Lex Fridman Podcast",
+   "lookup": "Lex Fridman Podcast",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "official lexfridman.com",
+   "ir_of": null,
+   "note": "超长低追问,偶有大创始人"
+  },
+  {
+   "name": "Conversations with Tyler",
+   "lookup": "Conversations with Tyler",
+   "tier": "C",
+   "lang": "en",
+   "rigor": 2,
+   "transcript": "official conversationswithtyler.com",
+   "ir_of": null
+  },
+  {
+   "name": "The Diary Of A CEO",
+   "lookup": "The Diary Of A CEO",
+   "tier": "C",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": null,
+   "note": "用户已订阅"
+  },
+  {
+   "name": "The Knowledge Project",
+   "lookup": "The Knowledge Project",
+   "tier": "C",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "official fs.blog",
+   "ir_of": null,
+   "note": "用户已订阅"
+  },
+  {
+   "name": "Plain English with Derek Thompson",
+   "lookup": "Plain English Derek Thompson",
+   "tier": "C",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "none",
+   "ir_of": null,
+   "note": "用户已订阅"
+  },
+  {
+   "name": "20Growth",
+   "lookup": "20Growth",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1.5,
+   "transcript": "youtube",
+   "ir_of": null,
+   "note": "20VC 子节目,增长负责人"
+  },
+  {
+   "name": "Entrepreneurial Thought Leaders (Stanford)",
+   "lookup": "Entrepreneurial Thought Leaders",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "official ecorner.stanford.edu",
+   "ir_of": null
+  },
+  {
+   "name": "View From The Top (Stanford GSB)",
+   "lookup": "View From The Top Stanford GSB",
+   "tier": "C",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "youtube",
+   "ir_of": null
+  },
+  {
+   "name": "Software Engineering Daily",
+   "lookup": "Software Engineering Daily",
+   "tier": "B",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "official softwareengineeringdaily.com",
+   "ir_of": null
+  },
+  {
+   "name": "Practical AI",
+   "lookup": "Practical AI",
+   "tier": "C",
+   "lang": "en",
+   "rigor": 1,
+   "transcript": "official practicalai.fm",
+   "ir_of": null
+  },
+  {
+   "name": "AI For Humans",
+   "lookup": "AI For Humans",
+   "tier": "C",
+   "lang": "en",
+   "rigor": 0.5,
+   "transcript": "youtube-auto",
+   "ir_of": null,
+   "note": "泛谈/产品评测"
+  },
+  {
+   "name": "张小珺商业访谈录",
+   "lookup": "张小珺Jùn 商业访谈录",
+   "aliases": [
+    "张小珺Jùn|商业访谈录"
+   ],
+   "tier": "S",
+   "lang": "zh",
+   "rigor": 2,
+   "transcript": "none(小宇宙 shownotes 有要点)",
+   "ir_of": null,
+   "note": "中文最深的 AI 创始人/研究员访谈,常有美国公司华人高管"
+  },
+  {
+   "name": "硅谷101",
+   "lookup": "硅谷101",
+   "tier": "S",
+   "lang": "zh",
+   "rigor": 1.5,
+   "transcript": "none",
+   "ir_of": null,
+   "note": "美国科技公司中文分析,常请从业者"
+  },
+  {
+   "name": "OnBoard!",
+   "lookup": "OnBoard",
+   "tier": "S",
+   "lang": "zh",
+   "rigor": 2,
+   "transcript": "none",
+   "ir_of": null,
+   "note": "Monica 主持,AI/软件创业者与投资人"
+  },
+  {
+   "name": "42章经",
+   "lookup": "42章经",
+   "tier": "A",
+   "lang": "zh",
+   "rigor": 1.5,
+   "transcript": "none",
+   "ir_of": "42章经 (曲凯)",
+   "note": "AI 创业与投资"
+  },
+  {
+   "name": "晚点聊 LateTalk",
+   "lookup": "晚点聊",
+   "tier": "A",
+   "lang": "zh",
+   "rigor": 2,
+   "transcript": "none",
+   "ir_of": null,
+   "note": "晚点记者访谈,常有 AI 公司核心人物"
+  },
+  {
+   "name": "乱翻书",
+   "lookup": "乱翻书",
+   "tier": "A",
+   "lang": "zh",
+   "rigor": 1.5,
+   "transcript": "none",
+   "ir_of": null
+  },
+  {
+   "name": "十字路口 Crossing",
+   "lookup": "十字路口 Crossing",
+   "tier": "A",
+   "lang": "zh",
+   "rigor": 1.5,
+   "transcript": "none",
+   "ir_of": null,
+   "note": "AI 产品/创业"
+  },
+  {
+   "name": "投资实习所",
+   "lookup": "投资实习所",
+   "tier": "B",
+   "lang": "zh",
+   "rigor": 1,
+   "transcript": "none",
+   "ir_of": null
+  },
+  {
+   "name": "创业内幕",
+   "lookup": "创业内幕",
+   "tier": "B",
+   "lang": "zh",
+   "rigor": 1,
+   "transcript": "none",
+   "ir_of": "经纬创投"
+  },
+  {
+   "name": "海外独角兽",
+   "lookup": "海外独角兽",
+   "tier": "B",
+   "lang": "zh",
+   "rigor": 1.5,
+   "transcript": "none",
+   "ir_of": "拾象",
+   "note": "主要是文章,播客为辅;文章端见 brain 记忆(WeChat 不可搜,走镜像)"
+  },
+  {
+   "name": "What's Next 科技早知道",
+   "lookup": "科技早知道",
+   "tier": "B",
+   "lang": "zh",
+   "rigor": 1,
+   "transcript": "none",
+   "ir_of": null
+  },
+  {
+   "name": "AI局内人",
+   "lookup": "AI局内人",
+   "tier": "B",
+   "lang": "zh",
+   "rigor": 1,
+   "transcript": "none",
+   "ir_of": null
+  },
+  {
+   "name": "温和的激进",
+   "lookup": "温和的激进",
+   "tier": "B",
+   "lang": "zh",
+   "rigor": 1,
+   "transcript": "none",
+   "ir_of": null
+  },
+  {
+   "name": "疯投圈",
+   "lookup": "疯投圈",
+   "tier": "B",
+   "lang": "zh",
+   "rigor": 1.5,
+   "transcript": "none",
+   "ir_of": null,
+   "note": "VC 视角"
+  },
+  {
+   "name": "知行小酒馆",
+   "lookup": "知行小酒馆",
+   "tier": "C",
+   "lang": "zh",
+   "rigor": 1,
+   "transcript": "none",
+   "ir_of": null
+  },
+  {
+   "name": "商业就是这样",
+   "lookup": "商业就是这样",
+   "tier": "C",
+   "lang": "zh",
+   "rigor": 1,
+   "transcript": "none",
+   "ir_of": null
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+# Track only Janet's own skills (the ones listed in ~/claude-hq/REGISTRY.md).
+# Everything else here is installed from elsewhere: symlinks into ~/.agents (remotion-*,
+# find-skills), skills with their own git repo (follow-builders, avoid-ai-writing),
+# downloaded single-file skills, and app sync data (synced/).
+/*
+!/.gitignore
+!/README.md
+!/brain/
+!/equity-research/
+!/hq/
+!/kami/
+!/marp-slides/
+!/podcast-dig/
+!/sf-ai-events/
+!/startup-deepdive/
+!/startup-radar/
+!/tailor-resume/
+
+# Never commit
+__pycache__/
+*.pyc
+.DS_Store
+.env*
+*.bak*
+.venv/
+node_modules/

@@ -15,6 +15,9 @@
 !/startup-deepdive/
 !/startup-radar/
 !/tailor-resume/
+# third-party, vendored copies (source + commit in REGISTRY.md)
+!/impeccable/
+!/design-taste-frontend/
 
 # Never commit
 __pycache__/

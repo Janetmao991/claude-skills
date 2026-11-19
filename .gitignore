@@ -7,17 +7,12 @@
 !/README.md
 !/brain/
 !/company-strategy-video/
-!/kami/
-!/marp-slides/
 !/podcast-dig/
 !/startup-deepdive/
 !/startup-intro-video/
 !/startup-radar/
 !/ai-term-explainer/
 !/tech-deepdive/
-# third-party, vendored copies (source + commit in REGISTRY.md)
-!/impeccable/
-!/design-taste-frontend/
 
 # Never commit
 __pycache__/

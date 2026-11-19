@@ -1,0 +1,499 @@
+<title>Embedding, Plainly</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a whiteboard lesson — nine numbered stations on one ink line, in the order the video explains them, with a live "meaning map" at station 3. */
+:root{
+  --bg:#FAF4E8;          /* whiteboard paper */
+  --dot:#E4E4E8;         /* the dotted grid */
+  --surface:#FFFFFF;
+  --ink:#1E1E24;
+  --muted:#5A5A63;
+  --line:#D9D9DF;
+  --pink:#F2557A;        /* the video's marker pink */
+  --pink-soft:#FDE6EC;
+  --blue:#2E7CF6;        /* the video's arrow blue */
+  --blue-soft:#E3EEFE;
+  --hl:rgba(255,212,59,.75);  /* the yellow highlighter */
+  --f-hand:"ZCOOL KuaiLe","Noto Sans SC","PingFang SC",system-ui,sans-serif;
+  --f-body:"Noto Sans SC","PingFang SC","Hiragino Sans GB",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#17171B;--dot:#2A2A31;--surface:#1F1F25;--ink:#ECECF0;--muted:#A3A3AE;--line:#34343D;
+  --pink:#FF7896;--pink-soft:#3A1E27;--blue:#6EA4FF;--blue-soft:#1C2A44;--hl:rgba(224,178,30,.45);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17171B;--dot:#2A2A31;--surface:#1F1F25;--ink:#ECECF0;--muted:#A3A3AE;--line:#34343D;
+  --pink:#FF7896;--pink-soft:#3A1E27;--blue:#6EA4FF;--blue-soft:#1C2A44;--hl:rgba(224,178,30,.45);color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);background-image:radial-gradient(var(--dot) 1.2px,transparent 1.2px);background-size:26px 26px;
+  color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.8;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 72px}
+.wrap{max-width:820px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-hand);font-weight:400;line-height:1.3;margin:0;text-wrap:balance}
+h1{font-size:clamp(40px,8vw,68px)}
+h2{font-size:clamp(26px,4.4vw,34px)}
+h3{font-size:20px}
+p{margin:0}
+a{color:var(--blue)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-size:.88em}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+.hl{background:linear-gradient(transparent 52%,var(--hl) 52%,var(--hl) 92%,transparent 92%);padding-inline:2px}
+.pk{color:var(--pink)} .bl{color:var(--blue)}
+
+/* hero */
+header.hero{padding-block:56px 28px;display:grid;gap:18px}
+.hero .en{font-family:var(--f-mono);font-size:15px;color:var(--muted)}
+.hero .lede{font-size:19px;max-width:36em}
+.oneliner{border:2.5px solid var(--ink);border-radius:4px 10px 6px 12px;background:var(--surface);padding:14px 18px;font-size:18px;max-width:36em}
+.oneliner b{color:var(--pink)}
+
+/* the framework map */
+.frame{display:grid;gap:10px;margin-top:6px}
+.steps{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.steps a{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--ink);background:var(--surface);
+  border:1.5px solid var(--line);border-radius:999px;padding:3px 12px 3px 4px;font-size:14px;white-space:nowrap}
+.steps a:hover{border-color:var(--pink)}
+.steps a i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-family:var(--f-mono);font-size:12px}
+.steps .grp{font-size:12px;color:var(--muted);font-family:var(--f-mono);letter-spacing:.08em;width:100%;margin-top:4px}
+
+/* stations */
+section{padding-block:38px 6px;scroll-margin-top:16px}
+.st{position:relative;padding-left:46px}
+.st::before{content:"";position:absolute;left:15px;top:44px;bottom:-40px;width:2.5px;background:var(--ink);opacity:.18}
+.st.last::before{display:none}
+.num{position:absolute;left:0;top:4px;width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--bg);
+  font-family:var(--f-mono);font-weight:700;font-size:15px;display:grid;place-items:center}
+.st.key .num{background:var(--pink);color:#fff}
+.st-head{display:grid;gap:4px;margin-bottom:14px}
+.body{display:grid;gap:14px;min-width:0}
+.pic{border:2px dashed var(--line);border-radius:10px;padding:12px 16px;background:var(--surface)}
+.pic::before{content:"PICTURE IT";display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--pink);margin-bottom:2px}
+.box{background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+ul.clean{margin:0;padding-left:20px;display:grid;gap:4px}
+
+/* chat bubble + docs in station 1 */
+.scene{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bubble{border:2px solid var(--ink);border-radius:12px 12px 12px 2px;padding:10px 14px;background:var(--surface);align-self:start}
+.docs{display:grid;gap:6px}
+.doc{border:1.5px solid var(--ink);border-radius:4px;padding:4px 10px;background:var(--surface);font-size:15px}
+.doc small{color:var(--muted)}
+
+/* meaning map demo */
+.demo{background:var(--surface);border:2.5px solid var(--ink);border-radius:6px 12px 8px 14px;padding:16px;display:grid;gap:12px}
+.demo-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.qs{display:flex;flex-wrap:wrap;gap:6px}
+.qs button,.toggle button{font:inherit;font-size:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:3px 12px;cursor:pointer}
+.qs button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.toggle{display:inline-flex;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden}
+.toggle button{border:0;border-radius:0;background:transparent;color:var(--muted)}
+.toggle button[aria-pressed="true"]{background:var(--pink);color:#fff}
+.map{overflow-x:auto}
+.map svg{display:block;width:100%;min-width:300px;height:auto}
+.map text{font-family:var(--f-body);font-size:13px;fill:var(--ink)}
+.map .ax{stroke:var(--muted);stroke-width:1.5;fill:none}
+.map .pt{fill:var(--ink)}
+.map .q{fill:var(--pink)}
+.map .hit{stroke:var(--pink);stroke-width:2.5;fill:none;stroke-dasharray:5 4}
+.map .ring{stroke:var(--pink);stroke-width:2;fill:none}
+.result{font-size:15px;min-height:3.4em}
+.result b{color:var(--pink)}
+.kw mark{background:var(--hl);color:inherit;padding-inline:1px}
+.miss{color:var(--muted)}
+
+/* three steps */
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.flow .box h3{font-size:18px}
+.flow .box p{font-size:15px}
+.flow.two{grid-template-columns:1fr 1fr;margin-top:8px}
+.tbl{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+.tbl th,.tbl td{border-bottom:1px dashed var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.tbl th{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-weight:500}
+.tblwrap{overflow-x:auto}
+@media (max-width:620px){.flow.two{grid-template-columns:1fr}}
+
+/* calculator */
+.calc{display:grid;gap:10px}
+.calc label{display:flex;justify-content:space-between;gap:10px;font-size:15px}
+.calc input[type=range]{width:100%;accent-color:var(--pink)}
+.calc .out{font-family:var(--f-mono);font-size:22px}
+.calc .out b{color:var(--pink)}
+
+/* value chain */
+.chain{display:grid;gap:8px}
+.row{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:start}
+.role{border:2px solid var(--ink);border-radius:4px;text-align:center;padding:4px 6px;font-weight:700;background:var(--surface);line-height:1.3}
+.role small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.row.you .role{border-color:var(--pink);color:var(--pink)}
+.names{font-size:15px;min-width:0}
+
+/* tiers */
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:110px 1fr 70px;gap:10px;align-items:center;font-size:15px}
+.meter{display:flex;gap:4px}
+.meter span{width:16px;height:16px;border:2px solid var(--muted);border-radius:2px}
+.meter span.on{background:var(--ink);border-color:var(--ink)}
+.bar.top .meter span.on{background:var(--pink);border-color:var(--pink)}
+.gates{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.gate{border:2px solid var(--ink);border-radius:4px;text-align:center;padding:6px;background:var(--surface);font-weight:700}
+.gate.circ{border-color:var(--pink)}
+.gate small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+
+/* building */
+.bldg{display:grid;gap:0}
+.floor{display:grid;grid-template-columns:150px 1fr;gap:14px;border:2px solid var(--ink);border-top-width:0;padding:10px 14px;background:var(--surface)}
+.floor:first-child{border-top-width:2px;border-color:var(--pink)}
+.floor:first-child{box-shadow:inset 0 0 0 1px var(--pink)}
+.floor h3{font-size:19px}
+.floor h3 small{display:block;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.floor ul{margin:0;padding-left:18px;font-size:15px}
+.ground{height:4px;background:var(--ink);border-radius:2px;margin-top:2px}
+.up{font-size:14px;color:var(--pink);margin-bottom:6px}
+
+/* recap */
+.recap{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.recap div{border:2px solid var(--ink);border-radius:4px;text-align:center;padding:8px 4px;background:var(--surface);font-weight:700}
+.recap div small{display:block;color:var(--pink);font-weight:500}
+.recap div:last-child{border-color:var(--pink)}
+
+/* glossary */
+.gloss{display:grid;gap:10px}
+.gloss input{font:inherit;width:100%;padding:8px 12px;border:1.5px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+dl{margin:0;display:grid;gap:0}
+dl div{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line)}
+dt{font-weight:700}
+dt small{display:block;font-family:var(--f-mono);font-size:12px;color:var(--muted);font-weight:500}
+dd{margin:0;font-size:15px;min-width:0}
+.sources{font-size:14px;display:grid;gap:4px}
+footer{margin-top:40px;font-size:13px;color:var(--muted)}
+
+@media (max-width:620px){
+  .scene,.flow{grid-template-columns:1fr}
+  .row{grid-template-columns:96px 1fr}
+  .gates,.recap{grid-template-columns:repeat(2,1fr)}
+  .floor{grid-template-columns:1fr;gap:4px}
+  dl div{grid-template-columns:1fr;gap:2px}
+  .bar{grid-template-columns:90px 1fr 60px}
+}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+<header class="hero">
+  <div class="eyebrow">AI terms, plainly · No. 1</div>
+  <h1><span class="hl">Embedding</span></h1>
+  <p class="lede">A customer asks "can I get my money back?" The document says "refund." Not one word matches. So how does a computer know those two mean the same thing? That's what this page is about.</p>
+  <p class="oneliner">In one line: an embedding is <b>the step that turns things into "meaning coordinates"</b>. Once you have coordinates, you can find things by meaning, recommend and spot anomalies. Model makers sell it, databases store it, and software companies build it into their products.</p>
+  <nav class="frame" aria-label="Framework">
+    <div class="eyebrow">A 9-step way to explain any AI term · tap a step to jump</div>
+    <div class="steps">
+      <span class="grp">The tech: what it is, how it's used</span>
+      <a href="#s1"><i>1</i>Scene</a><a href="#s2"><i>2</i>Problem</a><a href="#s3"><i>3</i>How it works</a><a href="#s4"><i>4</i>Usage</a><a href="#s5"><i>5</i>Off the shelf</a>
+      <span class="grp">The business: who makes money from it</span>
+      <a href="#s6"><i>6</i>Value chain</a><a href="#s7"><i>7</i>The hard part</a><a href="#s8"><i>8</i>Landscape</a><a href="#s9"><i>9</i>Case: Voyage</a>
+      <a href="#recap" style="padding-left:12px">Recap ✓</a>
+    </div>
+  </nav>
+</header>
+
+<section id="s1" class="st">
+  <div class="num">1</div>
+  <div class="st-head"><div class="eyebrow">Start with a scene · where it's used, before what it is</div><h2>A support bot</h2></div>
+  <div class="body">
+    <p>Say you built a support bot for your company. The company has 500 documents: refund policy, shipping rules, membership info, and so on.</p>
+    <div class="scene">
+      <div class="bubble"><span class="muted" style="font-size:13px">A customer asks</span><br>I don't want what I bought. Can I get my money back?</div>
+      <div class="docs">
+        <div class="doc">Refund policy <small>· one of 500</small></div>
+        <div class="doc">Shipping rules</div>
+        <div class="doc">Membership info</div>
+        <div class="doc muted">… 497 more</div>
+      </div>
+    </div>
+    <p>Before it can answer, the bot has to <span class="hl">find the one document that has the answer</span>.</p>
+  </div>
+</section>
+
+<section id="s2" class="st">
+  <div class="num">2</div>
+  <div class="st-head"><div class="eyebrow">Then the problem · where things get stuck without it</div><h2>Matching words finds nothing</h2></div>
+  <div class="body">
+    <p>The simplest approach is keyword search. But the customer said "<b>money back</b>" and the document says "<b>refund</b>". Not a single word matches, so nothing comes up.</p>
+    <p>So the computer needs a new skill: <span class="hl">telling whether two sentences mean the same thing</span>.</p>
+  </div>
+</section>
+
+<section id="s3" class="st key">
+  <div class="num">3</div>
+  <div class="st-head"><div class="eyebrow">How it works · one picture that explains it</div><h2>A map of meaning</h2></div>
+  <div class="body">
+    <p>Computers don't understand meaning, but they're great with numbers. An embedding turns each sentence into a list of numbers, like coordinates on a map:</p>
+    <p class="box mono" style="overflow-x:auto;white-space:nowrap">"money back" → <span class="bl">[0.12, -0.83, 0.41, …]</span></p>
+    <div class="pic">Sentences that mean similar things land close together: "refund", "money back" and "I want to return this" sit in one corner, while "how long is shipping?" lands far away in another. "Do these mean the same?" becomes <b>"how close are these two points?"</b></div>
+    <div class="box">
+      <h3>Three separate things: the embedding is the middle one</h3>
+      <div class="flow" style="margin-top:8px">
+        <div class="box"><h3>⓪ Training: build the translator</h3><p>Done once, before anyone uses it, with the matching game. Each round, the half-trained model also makes coordinates and gets corrected when they're wrong.<br><span class="muted">Who: model makers like OpenAI and Voyage</span></p></div>
+        <div class="box"><h3>① Embedding: make coordinates</h3><p>The trained translator turns a sentence (or an image, or a sound) into a list of numbers.<br><span class="muted">Who: the trained embedding model</span></p></div>
+        <div class="box"><h3>② Use them: measure distance</h3><p>Find the closest (search), recommend, de-duplicate, spot anomalies.<br><span class="muted">Who: vector databases and apps</span></p></div>
+      </div>
+      <p style="margin-top:10px">Think of GPS: ⓪ is training a surveyor to draw accurate maps, ① is the surveyor giving every shop its coordinates, and ② is someone else using the map to find the nearest restaurant. Coordinates don't find you a restaurant by themselves, but once you have them, "what's nearby?" becomes simple arithmetic. When the support bot finds the right document, that's ① and ② together; ⓪ was finished long before.</p>
+    </div>
+
+    <div class="demo" aria-label="Meaning map demo">
+      <div class="demo-top">
+        <span class="eyebrow">Try it</span>
+        <div class="toggle" role="group" aria-label="Search method">
+          <button id="mode-kw" aria-pressed="false">Match words</button><button id="mode-mean" aria-pressed="true">Match meaning</button>
+        </div>
+      </div>
+      <div class="qs" id="qs" role="group" aria-label="Pick something a customer might say"></div>
+      <div class="map"><svg id="map" viewBox="0 0 520 300" role="img" aria-label="Meaning map: three documents and the customer's question"></svg></div>
+      <p class="result" id="result" aria-live="polite"></p>
+    </div>
+
+    <div class="box">
+      <h3>Where the name comes from</h3>
+      <ul class="clean">
+        <li><b>Vector</b>: the list of numbers itself.</li>
+        <li><b>Embed</b>: placing a sentence onto the map of meaning.</li>
+      </ul>
+    </div>
+    <p>The idea isn't new: in 2013, Google's <b>word2vec</b> put single words on a map of meaning. Today's models place whole sentences and documents.</p>
+    <div class="box">
+      <h3>It's not just text</h3>
+      <ul class="clean">
+        <li><b>Images</b>: search by image, find similar products (a common model is CLIP)</li>
+        <li><b>Audio</b>: turn the sound into a spectrogram, then into numbers; that's how "find similar songs" works</li>
+        <li><b>Products and users</b>: recommendations, "people who bought this also bought…"</li>
+      </ul>
+    </div>
+    <p class="muted" style="font-size:14px">Footnote: the real list has over a thousand numbers (a thousand-plus dimensions). We draw it flat just to make it easy to see. And a single number on its own (say, 0.12) means nothing; the meaning comes only from which points sit near which.</p>
+  </div>
+</section>
+
+<section id="s4" class="st">
+  <div class="num">4</div>
+  <div class="st-head"><div class="eyebrow">Usage · how it's actually used</div><h2>Three steps</h2></div>
+  <div class="body">
+    <div class="flow">
+      <div class="box"><h3>① Prep</h3><p>Turn every document, chunk by chunk, into a point, and store them.</p></div>
+      <div class="box"><h3>② A question comes in</h3><p>Turn the question into a point too.</p></div>
+      <div class="box"><h3>③ Find the nearest</h3><p>Hand the few closest chunks to the AI to answer.</p></div>
+    </div>
+    <p>Now the computer can search by meaning, however the customer phrases it. Recommending similar articles and spotting duplicates work the same way. So does spotting the odd one out: a point far from all the others might be a fraudulent transaction or a faulty machine. "Look up the material first, then answer" has a name in the industry: <b>RAG</b> (see the glossary below).</p>
+  </div>
+</section>
+
+<section id="s5" class="st">
+  <div class="num">5</div>
+  <div class="st-head"><div class="eyebrow">Do you build it yourself? · no, it's off the shelf</div><h2>A ready-made "translator"</h2></div>
+  <div class="body">
+    <p>You don't have to build the text-to-numbers part yourself. Ready-made embedding models work like a translator: your app sends text through an <b>API</b>, and it sends the numbers back. OpenAI and Google both sell this, priced by the token (roughly, by the word). It's cheap.</p>
+    <div class="box calc">
+      <span class="eyebrow">What would it cost to turn all your docs into points?</span>
+      <label for="c-docs"><span>Number of documents</span><span class="mono" id="c-docs-v"></span></label>
+      <input type="range" id="c-docs" min="100" max="100000" step="100" value="500">
+      <label for="c-len"><span>Tokens per document (about)</span><span class="mono" id="c-len-v"></span></label>
+      <input type="range" id="c-len" min="200" max="5000" step="100" value="1000">
+      <div class="out" id="c-out"></div>
+      <p class="muted" style="font-size:13px">Estimated at OpenAI text-embedding-3-small's price of $0.02 per million tokens; one-time cost to embed the docs.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s6" class="st">
+  <div class="num">6</div>
+  <div class="st-head"><div class="eyebrow">The business · where it sits</div><h2>A production line</h2></div>
+  <div class="body">
+    <div class="chain">
+      <div class="row"><div class="role">Sell models<small>upstream</small></div><div class="names">OpenAI · Google · Cohere; in China, Alibaba, Zhipu, Baidu, ByteDance.<br><span class="muted">Plus free open-source models like BGE and Qwen Embedding you can run yourself.</span><br><span class="pk">About 2 cents per million tokens. It's a volume business.</span></div></div>
+      <div class="row"><div class="role">Storage<small>midstream</small></div><div class="names">Vector databases like Pinecone and Milvus; veterans like MongoDB and Postgres added it too.<br><span class="pk">Database companies are buying model makers: MongoDB bought Voyage AI, Elastic bought Jina AI.</span></div></div>
+      <div class="row"><div class="role">Products<small>downstream</small></div><div class="names">Shopify's search bar, Notion AI, Intercom's support bot, GitHub Copilot.<br>Because when search fails, users leave and orders disappear.</div></div>
+      <div class="row you"><div class="role">You<small>finally</small></div><div class="names">Plain words find the product, and the support bot finally gets what you mean.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="s7" class="st">
+  <div class="num">7</div>
+  <div class="st-head"><div class="eyebrow">The hard part · what makes it hard to build</div><h2>Easy to grasp, hard to make top-tier</h2></div>
+  <div class="body">
+    <div class="pic">⓪ Training (building the translator, done once): it learns by playing a matching game: related pairs ("How do I get a refund?" ↔ "Refund policy") get pulled closer; pairs that look alike but aren't ("How do I get a refund?" ↔ "Return address") get pushed apart. Repeat that hundreds of millions of times.</div>
+    <p>So what is the translator itself? A trained neural network with <b>its last layer removed</b> (the layer that used to output an answer). Without it, the network outputs the list of numbers instead.</p>
+    <div class="pic">A neural network works like an assembly line: the first layers take in the raw input, the middle layers gradually "understand" it and turn it into a list of numbers describing its features, and <b>the last layer</b> turns that understanding into a specific answer, like "this is a cat" or "the next word is…".<br>Take an image model that tells cats from dogs. Used normally, it outputs "cat, 95%". With the last layer removed, it outputs [0.12, -0.83, …]: its impression of the photo (pointy ears, fur, whiskers…). Two different cat photos leave similar impressions, so they land close together on the map.<br>Why do it this way? "Cat or dog" only answers one question, but the impression from the layer before is general-purpose: good for comparing, searching and recommending. Today's text embedding models (like Qwen Embedding) work the same way: an LLM's last step is normally "predict the next word". Skip that step, take the numbers just before it, and that's the sentence's embedding.</div>
+    <div class="box">
+      <h3>FAQ: don't LLMs have an embedding too?</h3>
+      <p>They do. An LLM's first step is to look each word piece up in a dictionary and get an ID (IDs carry no meaning), then its first layer, the <b>embedding layer</b>, turns IDs into meaningful numbers. That layer starts out random too and is trained along with the LLM. But it isn't the embedding model this page is about:</p>
+      <div class="tblwrap"><table class="tbl">
+        <tr><th></th><th>The embedding layer inside an LLM</th><th>An embedding model (this page)</th></tr>
+        <tr><td>Where</td><td>The LLM's first layer</td><td>A separate model, often adapted from an LLM, taking the numbers just before the last layer</td></tr>
+        <tr><td>Coordinates for</td><td>Each word piece</td><td>A whole sentence or document</td></tr>
+        <tr><td>Context-aware?</td><td>No: a word gets the same numbers in any sentence</td><td>Yes: it reads the whole sentence first</td></tr>
+        <tr><td>Used for</td><td>Letting the LLM read, internally</td><td>Comparing: search, recommendations, de-dupe</td></tr>
+        <tr><td>Can you buy it?</td><td>Not separately</td><td>Yes, via APIs from OpenAI, Voyage and others</td></tr>
+      </table></div>
+    </div>
+    <p>The pairs are mostly collected by machines or generated by AI, not labeled by hand:</p>
+    <ul class="clean">
+      <li>Microsoft's E5: about <b class="pk">270 million pairs</b> (filtered from Q&amp;A, title–body and similar pairs on the web)</li>
+      <li>Alibaba's Qwen Embedding: about <b class="pk">150 million pairs</b> generated by an LLM</li>
+    </ul>
+  </div>
+</section>
+
+<section id="s8" class="st">
+  <div class="num">8</div>
+  <div class="st-head"><div class="eyebrow">The landscape · who does what</div><h2>Four barriers, three kinds of players</h2></div>
+  <div class="body">
+    <div class="gates">
+      <div class="gate">Data</div><div class="gate">Compute</div>
+      <div class="gate circ">Base model<small>good embedders are adapted from an existing LLM</small></div>
+      <div class="gate circ">Benchmarks<small>MTEB / C-MTEB public "exams"</small></div>
+    </div>
+    <p><b>Base model</b>: for example, Qwen Embedding is built from the Qwen LLM, so companies that already have an LLM start ahead. <b>Benchmarks</b>: the MTEB leaderboard (and C-MTEB for Chinese) is the first thing buyers check.</p>
+    <div class="box bars" aria-label="Three kinds of players; more squares means a higher barrier">
+      <div class="bar top"><b>Big labs</b><span>general models from massive data</span><span class="meter"><span class="on"></span><span class="on"></span><span class="on"></span></span></div>
+      <div class="bar"><b>Specialists</b><span>industry models: law · finance · code</span><span class="meter"><span class="on"></span><span class="on"></span><span></span></span></div>
+      <div class="bar"><b>Everyone else</b><span>buy one, or fine-tune an open model on their own data</span><span class="meter"><span class="on"></span><span></span><span></span></span></div>
+    </div>
+  </div>
+</section>
+
+<section id="s9" class="st key">
+  <div class="num">9</div>
+  <div class="st-head"><div class="eyebrow">Take one real company apart</div><h2>Voyage AI: training like a three-story building</h2></div>
+  <div class="body">
+    <p class="muted">Founded in 2023 by Stanford professor Tengyu Ma; acquired by MongoDB in 2025 (reported at about $220M).</p>
+    <p><b>First, what it sells</b>: Voyage sells the translator, the part that makes coordinates (① embedding). The searching (②) happens in customers' own systems; Harvey, for example, puts Voyage's coordinates into its own database and searches case law there. The matching game in the three floors below is all ⓪ training.</p>
+    <div>
+      <p class="up">↑ The higher the floor, the more specialized the model and the more specific the data</p>
+      <div class="bldg">
+        <div class="floor"><h3>Floor 3 · Custom for Harvey<small>one customer</small></h3><ul><li>Harvey is a legal AI company</li><li>First it read 20B+ tokens of US case law</li><li>Then it was refined on questions and cases annotated by Harvey's lawyers</li><li class="pk">Nearly 25% less irrelevant material at the top of results, with vectors 1/3 the size</li></ul></div>
+        <div class="floor"><h3>Floor 2 · Law model<small>voyage-law-2</small></h3><ul><li>About 1 trillion more legal tokens on top of the general model</li><li>Played the matching game with purpose-built pairs</li><li>Finance and tech data mixed in so it doesn't get lopsided</li><li class="pk">Beat OpenAI's large model by 6% on average across 8 legal retrieval tests</li><li class="muted">These tests grade its coordinates: search with them, and see how often the right case comes out on top</li></ul></div>
+        <div class="floor"><h3>Floor 1 · General<small>knows a bit of everything</small></h3><ul><li>First, a general translator that knows a little about everything</li></ul></div>
+      </div>
+      <div class="ground"></div>
+    </div>
+    <p class="muted" style="font-size:14px">These results come from Voyage's and Harvey's own blogs and haven't been independently verified; the detailed training recipe isn't public.</p>
+  </div>
+</section>
+
+<section id="recap" class="st last">
+  <div class="num">✓</div>
+  <div class="st-head"><div class="eyebrow">Recap</div><h2>Remember it in one line</h2></div>
+  <div class="body">
+    <p style="font-size:19px">An embedding is <span class="hl">the step that turns things into meaning coordinates</span>; once you have them, you can find things by meaning.</p>
+    <div class="recap">
+      <div>Model makers<small>sell it</small></div><div>Databases<small>store it</small></div><div>Apps<small>build it in</small></div><div>You<small>use it daily</small></div>
+    </div>
+  </div>
+</section>
+
+<section id="gloss">
+  <div class="st-head"><div class="eyebrow">For looking things up later</div><h2>Glossary</h2></div>
+  <div class="gloss">
+    <input id="g-q" type="search" placeholder="Search a term, e.g. token, RAG, fine-tuning" aria-label="Search the glossary">
+    <dl id="g-list"></dl>
+    <p id="g-none" class="muted" hidden>No matching term.</p>
+  </div>
+</section>
+
+<section>
+  <div class="st-head"><div class="eyebrow">Sources</div><h2>Where the numbers come from</h2></div>
+  <div class="sources">
+    <a href="https://blog.voyageai.com/2024/04/15/domain-specific-embeddings-and-retrieval-legal-edition-voyage-law-2/" target="_blank" rel="noopener">Voyage AI blog: voyage-law-2 (2024-04-15)</a>
+    <a href="https://www.harvey.ai/en-US/blog/harvey-partners-with-voyage-to-build-custom-legal-embeddings" target="_blank" rel="noopener">Harvey blog: custom legal embeddings with Voyage (2024-07-22)</a>
+    <a href="https://seekingalpha.com/news/4412466-mongodb-acquires-voyage-ai-for-220m-to-boost-ai-search" target="_blank" rel="noopener">Report: MongoDB acquires Voyage AI (2025-02)</a>
+    <a href="https://arxiv.org/abs/2212.03533" target="_blank" rel="noopener">E5 paper: Text Embeddings by Weakly-Supervised Contrastive Pre-training</a>
+    <a href="https://arxiv.org/abs/2506.05176" target="_blank" rel="noopener">Qwen3 Embedding technical report</a>
+    <a href="https://www.pinecone.io/learn/vector-embeddings-for-developers/" target="_blank" rel="noopener">Pinecone: Vector Embeddings for Developers</a>
+    <a href="https://huggingface.co/spaces/mteb/leaderboard" target="_blank" rel="noopener">MTEB leaderboard</a>
+    <a href="https://openai.com/api/pricing/" target="_blank" rel="noopener">OpenAI API pricing</a>
+  </div>
+</section>
+
+<footer>Companion video: ai-embedding-ep1 (English cut 5:49 · Chinese 4:59).</footer>
+</div>
+
+<script>
+(function(){
+  /* ---- meaning map demo ---- */
+  var DOCS=[
+    {id:"refund",name:"Refund policy",text:"Refund policy: submit a refund request; approved refunds are credited to the original card",x:120,y:190},
+    {id:"ship",name:"Shipping rules",text:"Shipping rules: orders ship within 48 hours; delivery takes 2 to 4 days",x:380,y:70},
+    {id:"vip",name:"Membership info",text:"Membership info: annual fee, points and member-only discounts",x:370,y:225}
+  ];
+  var QS=[
+    {t:"Can I get my money back?",x:150,y:165},
+    {t:"It broke. Undo my order?",x:95,y:160},
+    {t:"How many days until delivery?",x:350,y:95},
+    {t:"What perks does membership give?",x:400,y:200}
+  ];
+  var qi=0, mode="mean", svg=document.getElementById("map"), res=document.getElementById("result"), NS="http://www.w3.org/2000/svg";
+  function el(n,a,txt){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(txt)e.textContent=txt;svg.appendChild(e);return e}
+  var STOP=" the a an to my i can get do does what how is it this until many and of on ";
+  function words(s){return s.toLowerCase().split(/[^a-z]+/).filter(function(w){return w.length>2&&STOP.indexOf(" "+w+" ")<0})}
+  function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+  function draw(){
+    while(svg.firstChild)svg.removeChild(svg.firstChild);
+    var q=QS[qi];
+    el("path",{class:"ax",d:"M30 20 L30 280 L505 280"});
+    el("text",{x:36,y:296,"font-size":"11",fill:"currentColor",style:"fill:var(--muted)"},"Meaning map (drawn flat; really 1,000+ dimensions)");
+    if(mode==="mean"){
+      var best=DOCS.slice().sort(function(a,b){return dist(q,a)-dist(q,b)});
+      el("line",{class:"hit",x1:q.x,y1:q.y,x2:best[0].x,y2:best[0].y});
+      el("circle",{class:"ring",cx:best[0].x,cy:best[0].y,r:16});
+    }
+    DOCS.forEach(function(d){el("circle",{class:"pt",cx:d.x,cy:d.y,r:7});el("text",{x:d.x+12,y:d.y+22},d.name)});
+    el("circle",{class:"q",cx:q.x,cy:q.y,r:8});
+    var lx=Math.min(q.x+12,300);
+    el("text",{x:lx,y:q.y-12,style:"fill:var(--pink);font-weight:700"},q.t);
+    if(mode==="mean"){
+      var b=DOCS.slice().sort(function(a,c){return dist(q,a)-dist(q,c)});
+      var s=function(d){return (dist(q,d)/500).toFixed(2)};
+      res.innerHTML="Closest: <b>"+b[0].name+"</b> (distance "+s(b[0])+"). Others: "+b[1].name+" "+s(b[1])+" · "+b[2].name+" "+s(b[2])+".<br>However the customer says it, close meaning means it gets found.";
+    }else{
+      var qb=words(q.t), hits=[];
+      DOCS.forEach(function(d){var dw=words(d.text);var m=qb.filter(function(g){return dw.indexOf(g)>=0});if(m.length)hits.push({d:d,m:m})});
+      if(!hits.length){res.innerHTML='<span class="miss">Match words: none of the question\'s words appear in any document → <b>nothing found</b>.</span>'}
+      else{res.innerHTML='<span class="kw">Match words: both contain <mark>'+hits[0].m.join("</mark> <mark>")+'</mark> → found <b>'+hits[0].d.name+'</b>.</span><br><span class="muted">This worked only because the customer happened to use the document\'s words. Phrase it differently and it fails.</span>'}
+    }
+  }
+  var qs=document.getElementById("qs");
+  QS.forEach(function(q,i){var b=document.createElement("button");b.type="button";b.id="q-"+i;b.textContent=q.t;b.setAttribute("aria-pressed",i===qi);
+    b.onclick=function(){qi=i;[].forEach.call(qs.children,function(c,j){c.setAttribute("aria-pressed",j===qi)});draw()};qs.appendChild(b)});
+  function setMode(m){mode=m;document.getElementById("mode-kw").setAttribute("aria-pressed",m==="kw");document.getElementById("mode-mean").setAttribute("aria-pressed",m==="mean");draw()}
+  document.getElementById("mode-kw").onclick=function(){setMode("kw")};
+  document.getElementById("mode-mean").onclick=function(){setMode("mean")};
+  draw();
+
+  /* ---- cost calculator ---- */
+  var cd=document.getElementById("c-docs"), cl=document.getElementById("c-len"), out=document.getElementById("c-out");
+  function calc(){
+    var n=+cd.value, len=+cl.value, tok=n*len, usd=tok/1e6*0.02;
+    document.getElementById("c-docs-v").textContent=n.toLocaleString("en-US")+" docs";
+    document.getElementById("c-len-v").textContent=len.toLocaleString("en-US");
+    var price=usd<0.01?"under 1 cent":usd<1?"about "+(usd*100).toFixed(1)+" cents":"about $"+usd.toFixed(2);
+    out.innerHTML=tok.toLocaleString("en-US")+" tokens → <b>"+price+"</b>";
+  }
+  cd.oninput=cl.oninput=calc; calc();
+
+  /* ---- glossary ---- */
+  var G=[["Embedding", "Embedding", "Turning a sentence (or an image) into a list of numbers so that similar meanings get similar numbers."], ["Vector", "Vector", "That list of numbers; think of it as coordinates on the map of meaning."], ["Dimension", "Dimension", "How many numbers are in the list. Usually hundreds to thousands; more captures finer detail but takes more space."], ["Token", "Token", "The unit models count text in, roughly a word or part of one. APIs charge per token."], ["API", "API", "A service window between programs: you send text in, the result comes back."], ["Vector database", "Vector database", "A database built to store these points and quickly find the ones nearest to a given point, e.g. Pinecone, Milvus."], ["RAG", "Retrieval-augmented generation", "Use embeddings to find the relevant material first, then hand it to an LLM to answer. Support bots work this way."], ["Contrastive learning", "Contrastive learning", "The matching game: pull related pairs together, push look-alike-but-wrong pairs apart."], ["Hard negative", "Hard negative", "A pair that looks alike but isn't, like \"how do I get a refund\" vs \"return address\". The best kind for teaching fine distinctions."], ["Fine-tuning", "Fine-tuning", "Training an existing model a bit more on your own data so it knows your field better."], ["Base model / LLM", "Base model", "Good embedding models are usually adapted from an existing large language model."], ["MTEB", "MTEB", "Massive Text Embedding Benchmark: the main public leaderboard for embedding models."], ["C-MTEB", "C-MTEB", "The Chinese version of MTEB, for Chinese-language tasks."], ["Retrieval", "Retrieval", "Finding the few passages in a pile of documents that are relevant to a question."], ["word2vec", "word2vec", "A 2013 Google model that first put single words on a map of meaning; an ancestor of today's embeddings."], ["CLIP", "CLIP", "An OpenAI model that puts images and text on the same map of meaning, so you can search images with words."], ["Neural network", "Neural network", "Layers of connected computing nodes. An embedding model is a trained network with its last layer removed."], ["Anomaly detection", "Anomaly detection", "Finding the point far from all the others; used to catch fraud or equipment faults."]];
+  var list=document.getElementById("g-list"), gq=document.getElementById("g-q"), none=document.getElementById("g-none");
+  function renderG(){
+    var f=gq.value.trim().toLowerCase(), n=0; list.innerHTML="";
+    G.forEach(function(g){ if(f && (g[0]+g[1]+g[2]).toLowerCase().indexOf(f)<0) return; n++;
+      var d=document.createElement("div"); d.innerHTML="<dt>"+g[1]+(g[0]!==g[1]?"<small>"+g[0]+"</small>":"")+"</dt><dd>"+g[2]+"</dd>"; list.appendChild(d)});
+    none.hidden=n>0;
+  }
+  gq.oninput=renderG; renderG();
+})();
+</script>

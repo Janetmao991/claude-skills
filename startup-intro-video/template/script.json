@@ -1,0 +1,13 @@
+{
+  "lang": "en",
+  "voice": "male",
+  "scenes": [
+    { "id": "hook", "title": "Cold open", "segments": [
+      { "vo": "A company that owns no data is valued at seven billion dollars. So what are they paying for?" }
+    ] },
+    { "id": "problem", "title": "The problem", "segments": [
+      { "vo": "First, the problem." },
+      { "clip": "founder_example" }
+    ] }
+  ]
+}

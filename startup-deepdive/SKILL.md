@@ -1,6 +1,6 @@
 ---
 name: startup-deepdive
-description: 对一家 startup 做深度评估(multi-agent 尽调,非估值)。触发:用户说 "/startup-deepdive <公司>"、"深入研究/好好研究一下 XX"、"给 XX 做个深评/尽调/deep dive"、"这家公司到底怎么样(要详细分析)"。与 startup-radar 分工:radar 是 event 场景的快评建档(三 persona 辩论),本 skill 是对重点公司的完整研究——团队、产品详解(解决什么问题/目标客户)、uniqueness、市场 TAM、竞品分析、ARR 等全部公开数据、VC 与行业大咖的真实观点(文章+视频转录)、大模型进化下的 sustainability 压力测试、一句话总结。每个维度一个专职 agent 并行研究,成果落地为本地文件夹里的分维度文件 + 综合报告。用户要"深入/详细/完整"研究某家公司时用本 skill,不要用 radar 也不要裸答。
+description: 对一家 startup 做深度评估(multi-agent 尽调,非估值)。触发:用户说 "/startup-deepdive <公司>"、"深入研究/好好研究一下 XX"、"给 XX 做个深评/尽调/deep dive"、"这家公司到底怎么样(要详细分析)"。与 startup-radar 分工:radar 是 event 场景的快评建档(三 persona 辩论),本 skill 是对重点公司的完整研究——团队、产品详解(解决什么问题/目标客户)、uniqueness、市场 TAM、竞品分析、ARR 等全部公开数据、VC 与行业大咖的真实观点(文章+视频转录)、大模型进化下的 sustainability 压力测试、一句话总结。每个维度一个专职 agent 并行研究,成果落地为本地文件夹里的分维度文件 + 综合报告(英文 + 中文版,范例 Clay);Kami deck 只在用户开口要时做;用户开口要时再做小红书图文版「拆解周刊」。用户要"深入/详细/完整"研究某家公司时用本 skill,不要用 radar 也不要裸答。用户说"做一期拆解周刊 / 把 XX 做成周刊 / 小红书图文"时也用本 skill(公司已有深评则直接从 Step 3.6 开始)。
 ---
 
 # Startup Deep Dive:多 agent 深度评估
@@ -77,14 +77,26 @@ startup-deepdive/<公司名>/
 - bull / bear 写成等行数的双栏表,bear 栏要像一个想 pass 这个 deal 的人写的,不是 bull 的补充说明;列出 information gaps(含哪些 source tier 没打通)、下次见创始人要问的问题;
 - 用户 brain 里有相关观点时引用("Janet's brain: ...")并指出一致或冲突。
 
-## Step 3.5 — Kami 展示 deck(标配产出,用户 2026-09-14 裁定)
-综合报告写完后,调用 **kami skill**(slides-weasy-en 路径)把报告排版成 ~12 页展示 deck,落地为同文件夹的 `<公司名> — Deck.pdf` + `.html`。首个范例见 Temporal 文件夹的 `temporal-deep-dive-kami.*`,照它的结构做:封面 → 评分表(GREEN/AMBER 等宽标签,不用 emoji)→ 团队时间线 → 指标网格 → 2–4 张数据图 → 风险矩阵表 → Bull/Bear 双栏 → information gaps → 结论页。要点:
+## Step 3.4 — 中文版商业分析(标配产出,用户 2026-11-12 裁定)
+综合报告写完后,译写一份 `<公司名> — Deep Dive（中文）.md`,范例是 Clay 文件夹的同名文件:同样的章节(0 核心判断 → 11 给创始人的问题)、同样的 SVG 图、同样的引语链接;术语首次出现给中文注释;英文原话保留原文并附中文翻译;用 humanizer-zh 扫一遍去 AI 味。这是用户现在最想要的产出——"像 Clay 那样的商业分析"。
+
+## Step 3.5 — Kami 展示 deck(**默认不做**,只在用户开口要时做;用户 2026-11-12 取消标配)
+用户要 deck 时,调用 **kami skill**(slides-weasy-en 路径)把报告排版成 ~12 页展示 deck,落地为同文件夹的 `<公司名> — Deck.pdf` + `.html`。首个范例见 Temporal 文件夹的 `temporal-deep-dive-kami.*`,照它的结构做:封面 → 评分表(GREEN/AMBER 等宽标签,不用 emoji)→ 团队时间线 → 指标网格 → 2–4 张数据图 → 风险矩阵表 → Bull/Bear 双栏 → information gaps → 结论页。要点:
 - 标题全部走 assertion(ghost deck test);数字类内容(融资节奏、TAM、竞品评分、估值分解)重绘为 Kami 风格 SVG——宣纸底、墨蓝 #1B365D 单强调色、暖灰配角、无渐变、衬线标注;传闻/未确认数据用灰色虚线区分。
 - 跑完 kami 的检查链(placeholders / density / check-visual)并逐页目检;`.co` 结论行注意别压页脚(必要时 bottom 提到 17mm,Temporal 版已踩过这个坑)。
 - 环境:WeasyPrint 走 Homebrew python3(pango 已装,2026-09-14 配好);PDF 渲染命令 `python3 -m weasyprint in.html out.pdf`。
 
+## Step 3.6 — 拆解周刊：小红书图文（**只在用户开口要时做**，用户 2026-11-07 裁定）
+深评流程默认不做这一步，跑完 Step 3.5 直接到 Step 4。用户说"做成周刊 / 小红书图文"时，把深评做成一期中文图文轮播（1080×1440，12–14 页），落地到 `~/Startup Business Analysis/<NN>-<company>/`。**这是全流程里唯一的中文落地文件**，语言规则对它豁免。
+- 先读 `references/weekly-guide.md`（格式、页序、事实纪律、组件、检查清单、发布文案，全部是用户逐条定下的），再复制范例母版 `assets/weekly/example-clay/issue.html` 改内容；`~/Startup Business Analysis/render.sh` 不存在就从 `assets/weekly/render.sh` 复制。
+- 封面用被拆公司的品牌风格，内页用 Atlantic 风格；第 2 页先讲公司做什么；必须有客户增长曲线和对手对比表。
+- 事实只从本文件夹的维度文件和 podcast highlights 取，引语用原文；定稿前用 **humanizer-zh** 全篇扫一遍，再跑一遍逐条事实核对。
+- 导出后拼联系表目检全部页，最后写 `post.md`。只保留最终版本。
+- 定稿后复制一份进 Obsidian：`Startup Deepdive/<公司>/拆解周刊/`（PNG + post.md + 一篇按顺序嵌入全部图片的 `<公司> — 拆解周刊.md`），手机上能看。
+- 用户只要周刊、不要重跑研究时（公司文件夹已存在），直接从这一步开始。
+
 ## Step 4 — 回复用户
-中文摘要:一句话业务 → 各维度最重要的 1 个发现(不是全部复述)→ 战略定位这几年怎么变的(一两句:从什么到什么、被什么逼的)→ sustainability 压力测试结论 → bull/bear → 最值得追问创始人的 2–3 个问题 → 文件夹路径,并用 SendUserFile 直接把 Deck PDF 发给用户。公司是 to-B 时,摘要本身也用小白讲法(参照当年 David AI 的对话式解析:逐层讲清"卖什么、谁掏钱、为什么"),并提醒:"完整小白解析在 00-explainer.md,建议先读它再读报告"。
+中文摘要:一句话业务 → 各维度最重要的 1 个发现(不是全部复述)→ 战略定位这几年怎么变的(一两句:从什么到什么、被什么逼的)→ sustainability 压力测试结论 → bull/bear → 最值得追问创始人的 2–3 个问题 → 文件夹路径,并告诉用户中文版报告的路径(做了 deck 才发 PDF)。最后一句提一下:需要的话可以把这期做成小红书图文版「拆解周刊」。公司是 to-B 时,摘要本身也用小白讲法(参照当年 David AI 的对话式解析:逐层讲清"卖什么、谁掏钱、为什么"),并提醒:"完整小白解析在 00-explainer.md,建议先读它再读报告"。
 
 ## 维护与扩展
 - 框架即配置:要加新的评估框架/大咖清单/攻击维度,改 `references/` 下对应文件即可,编排不用动。`references/expert-frameworks.md` 是持续生长的库——用户读到好的评估方法论时会让你补进去(也可经 brain skill 摄入后引用)。

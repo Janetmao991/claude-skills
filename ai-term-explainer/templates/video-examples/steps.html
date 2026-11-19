@@ -1,0 +1,74 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    #root { position: absolute; inset: 0; font-family: "Hannotate SC", sans-serif; color: #1e1e24; }
+    #root > svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+    .t-en { position: absolute; left: 90px; top: 290px; font-size: 150px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+    .t-zh { position: absolute; left: 90px; top: 452px; font-size: 64px; font-weight: 700; line-height: 1; z-index: 1; isolation: isolate; white-space: nowrap; }
+    .t-zh .hl { position: absolute; left: -10px; right: -10px; top: 30px; height: 40px; background: rgba(255, 212, 59, 0.75); border-radius: 6px; z-index: -1; }
+    .t-sub { position: absolute; left: 92px; top: 534px; font-family: "Inter", sans-serif; font-size: 32px; color: #5a5a63; white-space: nowrap; }
+    .lb { position: absolute; font-weight: 700; white-space: nowrap; opacity: 0; }
+    .g { color: #5a5a63; }
+    .pk { color: #f2557a; }
+    .bl { color: #2e7cf6; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+    .stamp { position: absolute; }
+    .stamp .in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #f2557a; opacity: 0; white-space: nowrap; }
+    .stamp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  </style>
+  <div id="root" data-composition-id="steps" data-width="1080" data-height="1920">
+    <svg id="st-svg" viewBox="0 0 1080 1920"></svg>
+    <div class="t-en">3 steps</div>
+    <div class="t-zh"><div class="hl" id="st-hl"></div>实际怎么用？</div>
+    <div class="t-sub">prep · ask · find the nearest</div>
+
+    <div class="lb" id="st-l1" style="left:96px; top:660px; font-size:42px">提前准备</div>
+    <div class="lb mono bl" id="st-v1" style="left:572px; top:668px; font-size:32px">(x, y)</div>
+    <div class="lb g" id="st-db" style="left:860px; top:760px; font-size:28px">存起来</div>
+    <div class="lb" id="st-l2" style="left:96px; top:840px; font-size:42px">提问时</div>
+    <div class="lb" id="st-ask" style="left:318px; top:842px; font-size:32px">钱能要回来吗？</div>
+    <div class="lb mono bl" id="st-v2" style="left:700px; top:842px; font-size:32px">(x, y)</div>
+    <div class="lb" id="st-l3" style="left:96px; top:1010px; font-size:42px">找最近的</div>
+    <div class="lb" id="st-ai" style="left:790px; top:1012px; font-size:40px">AI 回答</div>
+  </div>
+  <script>
+    (function () {
+      var N = "steps", tl = gsap.timeline({ paused: true });
+      var svg = document.getElementById("st-svg");
+      var q = function (id, o) { return SK.cue(N, id, o); }, qc = function (id, ch) { return SK.cueChar(N, id, ch); };
+      SK.seed(450);
+      var C = SK.C;
+      gsap.set("#st-hl", { scaleX: 0 });
+      SK.highlight(tl, "#st-hl", 0.2, 0.4);
+      // k2: docs → coordinates → store
+      SK.write(tl, "#st-l1", q("k2"));
+      [0, 1, 2].forEach(function (i) {
+        SK.draw(tl, SK.page(svg, 300 + i * 62, 650, 54, 74, { strokeWidth: 3 }), qc("k2", "文") + i * 0.12, 0.3);
+      });
+      SK.draw(tl, SK.arrow(svg, 494, 688, 556, 688, { stroke: C.blue, strokeWidth: 5, head: 16 }), qc("k2", "换"), 0.25);
+      SK.write(tl, "#st-v1", qc("k2", "坐"), 0.4);
+      SK.draw(tl, SK.arrow(svg, 700, 688, 790, 688, { stroke: C.blue, strokeWidth: 5, head: 16 }), qc("k2", "存") - 0.2, 0.25);
+      SK.draw(tl, SK.cylinder(svg, 810, 630, 150, 120, { strokeWidth: 4 }), qc("k2", "存"), 0.5);
+      SK.write(tl, "#st-db", qc("k2", "存") + 0.3);
+      // k3: the question becomes a point
+      SK.write(tl, "#st-l2", q("k3"));
+      SK.draw(tl, SK.rect(svg, 300, 822, 300, 84, { strokeWidth: 4 }), qc("k3", "这") - 0.2, 0.35);
+      SK.write(tl, "#st-ask", qc("k3", "这"));
+      SK.draw(tl, SK.arrow(svg, 610, 864, 684, 864, { stroke: C.blue, strokeWidth: 5, head: 16 }), qc("k3", "换"), 0.25);
+      SK.write(tl, "#st-v2", qc("k3", "坐"), 0.4);
+      // k4: nearest chunks → AI
+      SK.write(tl, "#st-l3", q("k4"));
+      SK.draw(tl, SK.rect(svg, 300, 950, 360, 180, { strokeWidth: 3.5, stroke: C.grey }), q("k4", 0.1), 0.4);
+      [[360, 990], [600, 1100], [620, 980], [330, 1100]].forEach(function (p, i) { SK.dot(tl, svg, p[0], p[1], 16, C.grey, q("k4", 0.3 + i * 0.06)); });
+      var tq = qc("k4", "离");
+      SK.dot(tl, svg, 470, 1040, 24, C.pink, tq);
+      SK.dot(tl, svg, 430, 1010, 18, C.ink, tq + 0.25);
+      SK.dot(tl, svg, 510, 1072, 18, C.ink, tq + 0.35);
+      SK.draw(tl, SK.circle(svg, 470, 1040, 150, { stroke: C.pink, strokeWidth: 4 }), qc("k4", "最"), 0.4);
+      SK.draw(tl, SK.arrow(svg, 670, 1040, 760, 1040, { stroke: C.blue, strokeWidth: 5, head: 16 }), qc("k4", "交"), 0.25);
+      SK.draw(tl, SK.rect(svg, 770, 990, 210, 100, { strokeWidth: 4.5 }), qc("k4", "交") + 0.15, 0.4);
+      SK.write(tl, "#st-ai", qc("k4", "A"));
+      window.__timelines[N] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,359 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    @font-face { font-family: "UI SC"; src: local("PingFang SC"), local("PingFangSC-Regular"); font-weight: 400; }
+    @font-face { font-family: "UI SC"; src: local("PingFang SC Semibold"), local("PingFangSC-Semibold"); font-weight: 600; }
+    #root { position: absolute; inset: 0; pointer-events: none; }
+    #sc-svg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    /* the right column: a screen redesigned in the paper's palette, taped onto the page */
+    .shot { position: absolute; inset: 0; }
+    .note { position: absolute; left: 1000px; top: 300px; font: 700 40px/1.2 "Hannotate SC", sans-serif; color: #1e1e24; white-space: nowrap; opacity: 0; }
+    .note b { color: #E5466E; }
+    .scr { position: absolute; left: 1000px; top: 392px; width: 800px; height: 470px; border-radius: 14px; background: #fffdf7; overflow: hidden; opacity: 0;
+      box-shadow: 0 2px 0 rgba(30,30,36,.06), 0 16px 34px rgba(90,70,40,.16); font-family: "UI SC", sans-serif; font-size: 28px; color: #1e1e24; }
+    .top { height: 46px; display: flex; align-items: center; gap: 8px; padding: 0 18px; border-bottom: 2px solid #ece4d3; font-size: 22px; color: #5f594d; white-space: nowrap; }
+    .top i { width: 11px; height: 11px; border-radius: 50%; border: 2px solid #b9b1a2; }
+    .top span { margin-left: 8px; }
+    .body { position: absolute; left: 0; right: 0; top: 46px; bottom: 0; overflow: hidden; }
+    .cam { position: absolute; inset: 0; }
+    .tape { position: absolute; width: 130px; height: 40px; background: rgba(255,212,59,.55); opacity: 0; }
+    .mono { font-family: "JetBrains Mono", monospace; }
+    .k { color: #2E7CF6; } .s { color: #a15c00; } .p { color: #E5466E; } .g { color: #8a8478; }
+    .c { display: inline-block; border: 2px solid #1e1e24; border-radius: 9px; padding: 0 12px; }
+    .c.hot { border-color: #E5466E; color: #E5466E; background: rgba(255,212,59,.45); }
+    .pill { display: inline-block; padding: 2px 16px; border-radius: 10px; background: rgba(255,212,59,.6); color: #E5466E; font: 700 30px "JetBrains Mono", monospace; }
+    .cur { position: absolute; left: 0; top: 0; width: 34px; height: 44px; opacity: 0; z-index: 3; }
+    .ring { position: absolute; left: 0; top: 0; width: 54px; height: 54px; margin: -27px 0 0 -27px; border-radius: 50%; border: 3px solid #2E7CF6; opacity: 0; z-index: 3; }
+
+    /* search */
+    #q-in { position: absolute; left: 30px; top: 30px; width: 590px; height: 72px; border: 2.5px solid #1e1e24; border-radius: 12px; padding-left: 20px; font-size: 30px; line-height: 66px; white-space: nowrap; overflow: hidden; }
+    #q-ph { position: absolute; left: 20px; color: #a49c8d; }
+    #q-typed span { opacity: 0; }
+    #q-caret { display: inline-block; width: 3px; height: 34px; margin-left: 2px; background: #2E7CF6; vertical-align: -6px; opacity: 0; }
+    #q-btn { position: absolute; left: 638px; top: 30px; width: 132px; height: 72px; border-radius: 12px; background: #1e1e24; color: #fffdf7; font-size: 30px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+    #q-kw { position: absolute; left: 30px; top: 126px; display: flex; gap: 10px; align-items: center; }
+    #q-kw > * { opacity: 0; }
+    #q-res { position: absolute; left: 30px; right: 30px; top: 206px; height: 196px; border-radius: 12px; background: #f6f0e4; text-align: center; }
+    #q-scan { position: absolute; left: 0; right: 0; top: 74px; color: #6b6558; opacity: 0; }
+    #q-scan span { position: absolute; left: 0; right: 0; opacity: 0; }
+    #q-zero { opacity: 0; }
+    #q-zero .n { display: flex; justify-content: center; align-items: baseline; gap: 14px; margin-top: 34px; font: 700 86px/1 "JetBrains Mono", monospace; color: #E5466E; }
+    #q-zero .n small { font: 600 44px "UI SC", sans-serif; }
+    #q-zero .t { margin-top: 16px; color: #6b6558; }
+
+    /* terminals (curl, api) */
+    .term { padding: 22px 30px; font: 28px/40px "JetBrains Mono", "UI SC", monospace; }
+    .term > div { white-space: pre; }
+    #cu-l1 span { opacity: 0; }
+    #cu-l2, #cu-l3, #cu-head, #cu-tail { opacity: 0; }
+    #cu-nums { height: 120px; overflow: hidden; margin-left: 28px; }
+    #cu-nums-in .r { height: 40px; opacity: 0; }
+    #cu-badge, #gd-badge { position: absolute; right: 26px; bottom: 22px; padding: 6px 20px; border-radius: 12px; background: #1e1e24; color: #fffdf7; font: 700 40px "JetBrains Mono", monospace; opacity: 0; }
+    #cu-badge small, #gd-badge small { font: 600 26px "UI SC", sans-serif; }
+    #ap .ln { height: 48px; line-height: 48px; opacity: 0; }
+    #ap-dots span { display: inline-block; opacity: .25; }
+
+    /* projection + grid */
+    #pj-svg { position: absolute; left: 0; top: 0; width: 800px; height: 424px; overflow: visible; }
+    #pj-svg text { font-family: "UI SC", sans-serif; font-size: 28px; fill: #1e1e24; }
+    #pj-svg .sc { font-family: "JetBrains Mono", monospace; font-size: 32px; font-weight: 700; fill: #E5466E; }
+    #gd-in { position: absolute; left: 30px; right: 30px; top: 0; display: grid; grid-template-columns: repeat(5, 1fr); font: 28px/40px "JetBrains Mono", monospace; color: #3f3a32; }
+    #gd-in .neg { color: #E5466E; }
+    #gd-badge { opacity: 1; }
+
+    /* rank */
+    #rk-q { position: absolute; left: 30px; right: 30px; top: 22px; height: 62px; border: 2.5px solid #2E7CF6; border-radius: 12px; padding-left: 18px; line-height: 56px; white-space: nowrap; }
+    #rk-q span { opacity: 0; }
+    #rk-v { position: absolute; left: 30px; top: 92px; font: 700 28px/40px "JetBrains Mono", monospace; color: #2E7CF6; opacity: 0; }
+    .rk { position: absolute; left: 30px; right: 30px; height: 50px; display: grid; grid-template-columns: 170px 1fr 104px; gap: 16px; align-items: center; opacity: 0; }
+    .rk .tr { height: 14px; border-radius: 7px; background: #efe8da; overflow: hidden; }
+    .rk .fl { height: 100%; background: #a9c6f5; transform-origin: 0 50%; }
+    .rk.top .fl { background: #2E7CF6; } .rk.top { font-weight: 600; }
+    .rk .v { font: 28px "JetBrains Mono", monospace; text-align: right; }
+    #rk-hl { position: absolute; left: 20px; right: 20px; top: 138px; height: 106px; border: 3px solid #E5466E; border-radius: 12px; background: rgba(255,212,59,.18); opacity: 0; }
+    #rk-ai { position: absolute; right: 30px; bottom: 18px; padding: 2px 18px; border-radius: 10px; background: #1e1e24; color: #fffdf7; opacity: 0; }
+
+    /* screenshots */
+    .page { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+    .page img { position: absolute; left: 0; top: 0; display: block; }
+    .hl { position: absolute; border: 4px solid #E5466E; border-radius: 10px; opacity: 0; box-shadow: 0 0 0 4000px rgba(40,32,20,.28); }
+
+    /* chat */
+    #ch-u { position: absolute; right: 30px; top: 22px; padding: 0 22px; height: 62px; line-height: 62px; border-radius: 22px 22px 6px 22px; background: #2E7CF6; color: #fff; white-space: nowrap; opacity: 0; }
+    #ch-ty { position: absolute; left: 30px; top: 104px; padding: 0 22px; height: 58px; line-height: 58px; border-radius: 22px 22px 22px 6px; background: #f1ebde; opacity: 0; }
+    #ch-ty span { display: inline-block; width: 13px; height: 13px; margin: 0 4px; border-radius: 50%; background: #a49c8d; }
+    #ch-b { position: absolute; left: 30px; top: 104px; width: 700px; padding: 14px 22px; border-radius: 22px 22px 22px 6px; background: #f1ebde; line-height: 1.5; opacity: 0; }
+    #ch-b span { opacity: 0; }
+    #ch-src { position: absolute; left: 30px; bottom: 18px; display: flex; gap: 10px; align-items: center; color: #6b6558; opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="screens" data-width="1920" data-height="1080" data-layout-allow-overlap>
+    <svg id="sc-svg" viewBox="0 0 1920 1080"></svg>
+
+    <div class="shot" id="sh-search">
+      <div class="note">真的跑了一次：按字搜 <b>0</b> 条结果</div>
+      <div class="scr"><div class="top"><i></i><i></i><i></i><span>support_docs · 按字搜</span></div><div class="body"><div class="cam" id="q-cam">
+        <div id="q-in"><span id="q-ph">输入问题…</span><span id="q-typed"></span><b id="q-caret"></b></div>
+        <div id="q-btn">搜索</div>
+        <div id="q-kw"><span class="g">关键词</span></div>
+        <div id="q-res"><div id="q-scan"></div><div id="q-zero"><div class="n">0 <small>条结果</small></div><div class="t">8 份客服文档，没有一份含有这些关键词</div></div></div>
+        <div class="ring" id="q-ring"></div>
+        <svg class="cur" id="q-cur" viewBox="0 0 34 44"><path d="M3 2 L3 34 L11 26 L17 40 L23 37 L17 24 L29 24 Z" fill="#1E1E24" stroke="#fff" stroke-width="2.5" stroke-linejoin="round" /></svg>
+      </div></div></div>
+    </div>
+
+    <div class="shot" id="sh-curl">
+      <div class="note">一句话 → <b>1024</b> 个数字</div>
+      <div class="scr"><div class="top"><i></i><i></i><i></i><span>terminal · Voyage AI · voyage-3.5</span></div><div class="body"><div class="cam term" id="cu-cam">
+        <div id="cu-l1"></div>
+        <div id="cu-l2">  -d <span class="s">'{"model": "voyage-3.5",</span></div>
+        <div id="cu-l3"><span class="s">      "input": "我买的东西不想要了，
+                钱能要回来吗？"}'</span></div>
+        <div id="cu-head" class="g">{"embedding": [</div>
+        <div id="cu-nums"><div id="cu-nums-in"></div></div>
+        <div id="cu-tail" class="g">  … 共 1024 个数字 ]}</div>
+      </div><div id="cu-badge">1024 <small>个数字</small></div></div></div>
+    </div>
+
+    <div class="shot" id="sh-proj">
+      <div class="note">意思越近，点越近：<b id="pj-n1"></b> 对 <span id="pj-n2"></span></div>
+      <div class="scr"><div class="top"><i></i><i></i><i></i><span>Voyage AI · 12 句话的坐标 · 1024 维压成 2 维</span></div><div class="body"><div class="cam" id="pj-cam"><svg id="pj-svg" viewBox="0 0 800 424"></svg></div></div></div>
+    </div>
+
+    <div class="shot" id="sh-grid">
+      <div class="note">平面只是影子：其实有 <b>1024</b> 个数字</div>
+      <div class="scr"><div class="top"><i></i><i></i><i></i><span>response.embedding · 「我买的东西不想要了，钱能要回来吗？」</span></div><div class="body"><div id="gd-in"></div><div id="gd-badge"><span id="gd-n">0</span> <small>个数字</small></div></div></div>
+    </div>
+
+    <div class="shot" id="sh-rank">
+      <div class="note">离问题最近的：<b id="rk-top"></b></div>
+      <div class="scr"><div class="top"><i></i><i></i><i></i><span>support_docs · 按意思搜</span></div><div class="body"><div class="cam" id="rk-cam">
+        <div id="rk-q"></div><div id="rk-v"></div><div id="rk-hl"></div><div id="rk-rows"></div><div id="rk-ai">→ 交给 AI 回答</div>
+      </div></div></div>
+    </div>
+
+    <div class="shot" id="sh-api">
+      <div class="note">发一句话过去，回来 <b>1024</b> 个数字</div>
+      <div class="scr"><div class="top"><i></i><i></i><i></i><span>your app ⇄ ai.mongodb.com/v1/embeddings</span></div><div class="body"><div class="cam term" id="ap">
+        <div class="ln"><span class="k">→ POST</span> /v1/embeddings</div>
+        <div class="ln">  <span class="s">"input"</span>: <span class="s">"我买的东西不想要了…"</span></div>
+        <div class="ln" id="ap-dots"><span>·</span> <span>·</span> <span>·</span></div>
+        <div class="ln"><span class="p">← 200 OK</span>  <span class="g" id="ap-model"></span></div>
+        <div class="ln">  <span class="s">"embedding"</span>: <span id="ap-vec"></span></div>
+        <div class="ln">  <span class="s">"usage"</span>: {<span class="s">"total_tokens"</span>: <span class="pill" id="ap-tok"></span>}</div>
+      </div></div></div>
+    </div>
+
+    <div class="shot" id="sh-openai">
+      <div class="note">1 美元，大约能处理 <b>62,500 页</b>文字</div>
+      <div class="scr"><div class="top"><i></i><i></i><i></i><span>OpenAI 官方文档 · text-embedding-3-small</span></div><div class="body">
+        <div class="page" id="p-openai" style="width:1000px;height:1250px"><img src="assets/real/openai-docs-response.png" width="1000" height="1250" alt="" />
+          <div class="hl" id="h-openai" style="left:316px;top:734px;width:206px;height:78px"></div></div>
+      </div></div>
+    </div>
+
+    <div class="shot" id="sh-chat">
+      <div class="note">换个说法问，照样找到 <b>退款流程</b></div>
+      <div class="scr"><div class="top"><i></i><i></i><i></i><span>support bot · 检索 voyage-3.5 · 回答 claude-opus-5-5</span></div><div class="body"><div class="cam" id="ch-cam">
+        <div id="ch-u"></div><div id="ch-ty"><span></span><span></span><span></span></div><div id="ch-b"></div><div id="ch-src"><span>检索到</span></div>
+      </div></div></div>
+    </div>
+
+    <div class="shot" id="sh-airbnb">
+      <div class="note">Airbnb 用 embedding 推荐 <b>「相似房源」</b></div>
+      <div class="scr"><div class="top"><i></i><i></i><i></i><span>The Airbnb Tech Blog · Listing Embeddings in Search Ranking</span></div><div class="body">
+        <div class="page" id="p-airbnb" style="width:1000px;height:1250px"><img src="assets/real/airbnb-blog.png" width="1000" height="1250" alt="" />
+          <div class="hl" id="h-airbnb" style="left:152px;top:190px;width:580px;height:176px"></div></div>
+      </div></div>
+    </div>
+
+    <div class="tape" id="tape-l" style="left:1040px; top:372px; transform:rotate(-7deg)"></div>
+    <div class="tape" id="tape-r" style="left:1640px; top:370px; transform:rotate(6deg)"></div>
+  </div>
+  <script>
+    (function () {
+      // The real runs, as screens taped onto the right half of the page. Block/shot times come
+      // from assets/real-blocks.js (voice holds give each one time); every number is real output.
+      var N = "screens", tl = gsap.timeline({ paused: true });
+      var R = window.REAL, $ = function (id) { return document.getElementById(id); }, NS = "http://www.w3.org/2000/svg";
+      var svg = $("sc-svg"), C = SK.C;
+      SK.seed(880);
+      var chars = function (el, text) { el.innerHTML = text.split("").map(function (c) { return "<span>" + (c === " " ? "&nbsp;" : c) + "</span>"; }).join(""); return el.querySelectorAll("span"); };
+      var type = function (spans, t, step) { spans.forEach(function (s, i) { tl.set(s, { opacity: 1 }, t + i * step); }); return t + spans.length * step; };
+      var fmt = function (x) { return (x < 0 ? "" : " ") + x.toFixed(4); };
+      var push = function (sel, t, end, s, origin) { tl.fromTo(sel, { scale: 1 }, { scale: s || 1.04, transformOrigin: origin || "50% 50%", duration: Math.max(0.5, end - t), ease: "sine.inOut" }, t); };
+      var click = function (cur, ring, x, y, t) {
+        tl.to(cur, { scale: 0.82, transformOrigin: "10% 10%", duration: 0.07, yoyo: true, repeat: 1 }, t);
+        tl.fromTo(ring, { x: x, y: y, scale: 0.3, opacity: 0.9 }, { scale: 1.3, opacity: 0, duration: 0.4, ease: "power2.out" }, t);
+      };
+      var cam = function (r) { var s = 800 / r.w; return { scale: s, x: -r.x * s, y: -r.y * s }; };
+
+      var SHOT = {
+        search: function (t, end) {
+          var sp = chars($("q-typed"), R.query);
+          ["买", "东西", "不想要", "钱", "要回来"].forEach(function (k, i) { var c = document.createElement("span"); c.className = "c" + (i > 2 ? " hot" : ""); c.textContent = k; $("q-kw").appendChild(c); });
+          $("q-scan").innerHTML = R.docs.map(function (d) { return "<span>比对「" + d.title + "」… 无匹配</span>"; }).join("");
+          tl.fromTo("#q-cur", { opacity: 0, x: 700, y: 330 }, { opacity: 1, duration: 0.12 }, t + 0.45);
+          tl.to("#q-cur", { x: 250, y: 66, duration: 0.4, ease: "power2.inOut" }, t + 0.47);
+          click("#q-cur", "#q-ring", 250, 66, t + 0.9);
+          tl.to("#q-in", { borderColor: "#2E7CF6", boxShadow: "0 0 0 5px rgba(46,124,246,.15)", duration: 0.12 }, t + 0.9);
+          tl.set("#q-ph", { opacity: 0 }, t + 0.95); tl.set("#q-caret", { opacity: 1 }, t + 0.95);
+          var td = type(sp, t + 1.0, 0.04);
+          tl.to("#q-cur", { x: 704, y: 66, duration: 0.28, ease: "power2.inOut" }, td + 0.02);
+          click("#q-cur", "#q-ring", 704, 66, td + 0.32);
+          tl.set("#q-caret", { opacity: 0 }, td + 0.32);
+          tl.to("#q-btn", { scale: 0.93, duration: 0.08, yoyo: true, repeat: 1 }, td + 0.32);
+          tl.to("#q-cur", { opacity: 0, duration: 0.2 }, td + 0.6);
+          tl.fromTo("#q-kw > *", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.2, ease: "back.out(2)", stagger: 0.07 }, td + 0.45);
+          var ts = td + 0.9;
+          tl.set("#q-scan", { opacity: 1 }, ts);
+          var rows = $("q-scan").querySelectorAll("span");
+          rows.forEach(function (r, i) { tl.set(r, { opacity: 1 }, ts + i * 0.09); if (i < rows.length - 1) tl.set(r, { opacity: 0 }, ts + (i + 1) * 0.09); });
+          var tz = ts + rows.length * 0.09;
+          tl.set("#q-scan", { opacity: 0 }, tz);
+          tl.fromTo("#q-zero", { opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1, duration: 0.2, ease: "power4.out" }, tz);
+          tl.to("#sh-search .scr", { x: 10, duration: 0.05, yoyo: true, repeat: 5, ease: "none" }, tz + 0.08);
+          tl.to("#q-in", { borderColor: "#E5466E", boxShadow: "0 0 0 5px rgba(229,70,110,.15)", duration: 0.15 }, tz + 0.08);
+        },
+        curl: function (t, end) {
+          $("cu-l1").innerHTML = '<span class="p">$</span>';
+          chars(document.createElement("div"), " curl ai.mongodb.com/v1/embeddings \\").forEach(function (s) { $("cu-l1").appendChild(s); });
+          var td = type($("cu-l1").querySelectorAll("span"), t + 0.45, 0.02);
+          tl.set("#cu-l2", { opacity: 1 }, td + 0.08); tl.set("#cu-l3", { opacity: 1 }, td + 0.2);
+          var tr = td + 0.55, ROWS = 24, html = "";
+          tl.set("#cu-head", { opacity: 1 }, tr);
+          for (var r = 0; r < ROWS; r++) html += '<div class="r">' + R.vec.slice(r * 3, r * 3 + 3).map(fmt).join("    ") + ",</div>";
+          $("cu-nums-in").innerHTML = html;
+          $("cu-nums-in").querySelectorAll(".r").forEach(function (row, i) {
+            tl.set(row, { opacity: 1 }, tr + 0.12 + i * 0.07);
+            if (i >= 3) tl.to("#cu-nums-in", { y: -(i - 2) * 40, duration: 0.06, ease: "none" }, tr + 0.12 + i * 0.07);
+          });
+          var tt = tr + 0.12 + ROWS * 0.07 + 0.1;
+          tl.set("#cu-tail", { opacity: 1 }, tt);
+          tl.fromTo("#cu-badge", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2.5)" }, tt + 0.3);
+        },
+        proj: function (t, end) {
+          var p = $("pj-svg"), W = 800, H = 424;
+          var el = function (tag, a) { var n = document.createElementNS(NS, tag); for (var k in a) n.setAttribute(k, a[k]); p.appendChild(n); return n; };
+          var xs = R.map.map(function (m) { return m.xy[0]; }), ys = R.map.map(function (m) { return m.xy[1]; });
+          var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs), y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
+          var px = function (m) { return [190 + (m.xy[0] - x0) / (x1 - x0) * (W - 390), 44 + (m.xy[1] - y0) / (y1 - y0) * (H - 100)]; };
+          var COL = { refund: "#2E7CF6", shipping: "#E5466E" }, LAB = { "钱能要回来吗": 1, "退款": 1, "我要退货": 1, "发货要几天": 1, "怎么升级会员": 1, "忘记密码了": 1 };
+          for (var gx = 1; gx < 8; gx++) el("line", { x1: gx * 100, y1: 0, x2: gx * 100, y2: H, stroke: "#f1ebde", "stroke-width": 2 });
+          for (var gy = 1; gy < 5; gy++) el("line", { x1: 0, y1: gy * 85, x2: W, y2: gy * 85, stroke: "#f1ebde", "stroke-width": 2 });
+          var by = {}; R.map.forEach(function (m) { by[m.text] = m; });
+          var link = function (a, b) { var A = px(by[a]), B = px(by[b]); return { el: el("line", { x1: A[0], y1: A[1], x2: A[0], y2: A[1], stroke: "#1e1e24", "stroke-width": 3.5, "stroke-dasharray": "9 7", opacity: 0 }), A: A, B: B }; };
+          var near = link(R.pair.near[0], R.pair.near[1]), far = link(R.pair.far[0], R.pair.far[1]);
+          var boxes = [], hit = function (b) { return b.x < 6 || b.x + b.w > W - 6 || b.y < 6 || b.y + b.h > H - 6 || boxes.some(function (o) { return b.x < o.x + o.w && o.x < b.x + b.w && b.y < o.y + o.h && o.y < b.y + b.h; }); };
+          var order = ["refund", "shipping", "membership", "account", "invoice"];
+          R.map.forEach(function (m) { var c = px(m); boxes.push({ x: c[0] - 11, y: c[1] - 11, w: 22, h: 22 }); });
+          R.map.forEach(function (m) {
+            var c = px(m), d = el("circle", { cx: c[0], cy: c[1], r: 11, fill: COL[m.group] || "#b9b1a2", opacity: 0 });
+            var ta = t + 0.45 + order.indexOf(m.group) * 0.2;
+            tl.fromTo(d, { attr: { opacity: 0, r: 2 } }, { attr: { opacity: 1, r: 11 }, duration: 0.25, ease: "back.out(3)", immediateRender: false }, ta);
+            if (!LAB[m.text]) return;
+            var w = m.text.length * 29, h = 32, spots = [[c[0] + 18, c[1] - 16], [c[0] - 18 - w, c[1] - 16], [c[0] - w / 2, c[1] - 50], [c[0] - w / 2, c[1] + 18]];
+            var at = spots.filter(function (s) { return !hit({ x: s[0], y: s[1], w: w, h: h }); })[0] || spots[0];
+            boxes.push({ x: at[0], y: at[1], w: w, h: h });
+            var lb = el("text", { x: at[0], y: at[1] + 26, opacity: 0 }); lb.textContent = m.text;
+            tl.to(lb, { attr: { opacity: 1 }, duration: 0.2 }, ta + 0.1);
+          });
+          var score = function (lk, val, tt) {
+            tl.set(lk.el, { attr: { opacity: 1 } }, tt);
+            tl.to(lk.el, { attr: { x2: lk.B[0], y2: lk.B[1] }, duration: 0.5, ease: "power2.out" }, tt);
+            var mx = (lk.A[0] + lk.B[0]) / 2, my = (lk.A[1] + lk.B[1]) / 2, bx = { x: mx + 14, y: my - 36, w: 92, h: 40 };
+            if (hit(bx)) bx.x = mx - 106;
+            boxes.push(bx);
+            var s = el("text", { x: bx.x, y: bx.y + 32, class: "sc", opacity: 0 }); s.textContent = val.toFixed(2);
+            tl.to(s, { attr: { opacity: 1 }, duration: 0.2 }, tt + 0.45);
+          };
+          score(near, R.pair.near[2], t + 1.7);
+          score(far, R.pair.far[2], t + 2.6);
+          $("pj-n1").textContent = R.pair.near[2].toFixed(2); $("pj-n2").textContent = R.pair.far[2].toFixed(2);
+          push("#pj-cam", t + 0.3, end, 1.04);
+        },
+        grid: function (t, end) {
+          var g = ""; R.vec.forEach(function (x) { g += "<span" + (x < 0 ? ' class="neg"' : "") + ">" + fmt(x) + "</span>"; });
+          $("gd-in").innerHTML = g;
+          var rows = Math.ceil(R.vec.length / 5), cnt = { v: 0 }, d = Math.max(1.5, end - t - 1.2);
+          tl.fromTo("#gd-in", { y: 16 }, { y: -(rows - 10) * 40, duration: d, ease: "power2.in" }, t + 0.4);
+          tl.fromTo(cnt, { v: 0 }, { v: R.vec.length, duration: d, ease: "power2.in", onUpdate: function () { $("gd-n").textContent = Math.round(cnt.v); } }, t + 0.4);
+          tl.fromTo("#gd-badge", { scale: 1 }, { scale: 1.12, duration: 0.18, yoyo: true, repeat: 1, ease: "power2.out" }, t + 0.4 + d);
+        },
+        rank: function (t, end) {
+          var td = type(chars($("rk-q"), R.query), t + 0.4, 0.025);
+          $("rk-v").textContent = "↓ [" + R.vec.slice(0, 3).map(function (x) { return x.toFixed(3); }).join(", ") + ", …]";
+          tl.fromTo("#rk-v", { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.25 }, td + 0.1);
+          var top = R.ranked.slice(0, 5), max = top[0].score;
+          $("rk-rows").innerHTML = top.map(function (d, i) {
+            return '<div class="rk' + (i < 2 ? " top" : "") + '" style="top:' + (142 + i * 50) + 'px"><span>' + d.title + '</span><span class="tr"><div class="fl" style="width:' + (d.score / max * 100) + '%"></div></span><span class="v">' + d.score.toFixed(3) + "</span></div>";
+          }).join("");
+          $("rk-top").textContent = R.ranked[0].title + " " + R.ranked[0].score.toFixed(3);
+          var tr = td + 0.45;
+          document.querySelectorAll("#rk-rows .rk").forEach(function (row, i) {
+            tl.to(row, { opacity: 1, duration: 0.15 }, tr + i * 0.1);
+            tl.fromTo(row.querySelector(".fl"), { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power2.out" }, tr + i * 0.1);
+          });
+          var th = tr + 5 * 0.1 + 0.5;
+          tl.fromTo("#rk-hl", { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.out" }, th);
+          tl.fromTo("#rk-ai", { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.3, ease: "back.out(2)" }, th + 0.5);
+        },
+        api: function (t, end) {
+          $("ap-model").textContent = R.model;
+          $("ap-vec").textContent = "[" + R.vec.slice(0, 2).map(function (x) { return x.toFixed(4); }).join(", ") + ", …]";
+          $("ap-tok").textContent = R.tokens;
+          var ln = document.querySelectorAll("#ap .ln");
+          [0.45, 0.65].forEach(function (d, i) { tl.fromTo(ln[i], { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.2 }, t + d); });
+          tl.set(ln[2], { opacity: 1 }, t + 0.95);
+          document.querySelectorAll("#ap-dots span").forEach(function (d, i) { tl.to(d, { opacity: 1, duration: 0.14, yoyo: true, repeat: 3 }, t + 1.0 + i * 0.13); });
+          var tb = t + 1.9;
+          tl.to(ln[2], { opacity: 0.3, duration: 0.15 }, tb);
+          [0, 0.2, 0.4].forEach(function (d, i) { tl.fromTo(ln[3 + i], { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.2 }, tb + d); });
+          tl.fromTo("#ap-tok", { scale: 1 }, { scale: 1.2, duration: 0.2, yoyo: true, repeat: 1, ease: "power2.out" }, tb + 0.9);
+        },
+        openai: function (t, end) {
+          var A = cam({ x: 30, y: 420, w: 940 }), B = cam({ x: 150, y: 560, w: 700 });
+          tl.fromTo("#p-openai", A, { scale: B.scale, x: B.x, y: B.y, duration: 1.6, ease: "power2.inOut", immediateRender: true }, t + 0.5);
+          tl.fromTo("#h-openai", { opacity: 0, scale: 1.1 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.out" }, t + 2.2);
+        },
+        chat: function (t, end) {
+          $("ch-u").textContent = R.query;
+          var sp = chars($("ch-b"), R.answer.text);
+          R.answer.sources.forEach(function (s) { var c = document.createElement("span"); c.className = "c"; c.textContent = s.title + " " + s.score.toFixed(3); $("ch-src").appendChild(c); });
+          tl.fromTo("#ch-u", { opacity: 0, y: 14, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(2)" }, t + 0.45);
+          tl.set("#ch-ty", { opacity: 1 }, t + 0.85);
+          document.querySelectorAll("#ch-ty span").forEach(function (d, i) { tl.to(d, { y: -8, duration: 0.15, yoyo: true, repeat: 3, ease: "sine.inOut" }, t + 0.9 + i * 0.1); });
+          var tb = t + 1.6;
+          tl.set("#ch-ty", { opacity: 0 }, tb); tl.set("#ch-b", { opacity: 1 }, tb);
+          var te = type(sp, tb, Math.min(0.03, 2.4 / sp.length));
+          tl.fromTo("#ch-src", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3 }, te + 0.15);
+        },
+        airbnb: function (t, end) {
+          var A = cam({ x: 120, y: 150, w: 760 }), B = cam({ x: 130, y: 560, w: 740 });
+          tl.set("#p-airbnb", A, t);
+          tl.fromTo("#h-airbnb", { opacity: 0, scale: 1.1 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power3.out" }, t + 0.6);
+          tl.to("#h-airbnb", { opacity: 0, duration: 0.25 }, t + 2.3);
+          tl.to("#p-airbnb", { scale: B.scale, x: B.x, y: B.y, duration: 1.6, ease: "power2.inOut" }, t + 2.4);
+        },
+      };
+
+      // each block: a hand-drawn frame is drawn on the page, the screen is taped in, shots swap inside
+      window.REAL_BLOCKS.forEach(function (b) {
+        var frame = SK.rect(svg, 984, 378, 832, 500, { strokeWidth: 4, roughness: 1.2 });
+        SK.draw(tl, frame, b.in, 0.45);
+        tl.to(frame, { attr: { opacity: 0 }, duration: 0.3 }, b.out - 0.3);
+        tl.fromTo(["#tape-l", "#tape-r"], { opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1, duration: 0.18, ease: "power4.out", stagger: 0.08, immediateRender: false }, b.in + 0.45);
+        tl.to(["#tape-l", "#tape-r"], { opacity: 0, duration: 0.25 }, b.out - 0.3);
+        b.shots.forEach(function (sh, i) {
+          var last = i === b.shots.length - 1, end = last ? b.out : b.shots[i + 1].at, g = "#sh-" + sh.id;
+          if (i === 0) tl.fromTo(g + " .scr", { opacity: 0, y: 24, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "power3.out" }, sh.at + 0.2);
+          else tl.fromTo(g + " .scr", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, sh.at);
+          tl.to(g + " .scr", { opacity: 0, duration: last ? 0.3 : 0.2 }, end - (last ? 0.3 : 0.05));
+          tl.fromTo(g + " .note", { opacity: 1, clipPath: "inset(-20% 100% -20% -2%)" }, { clipPath: "inset(-20% -2% -20% -2%)", duration: 0.6, ease: "none", immediateRender: false }, sh.at + 0.55);
+          tl.set(g + " .note", { opacity: 0 }, end - 0.05);
+          SHOT[sh.id](sh.at, end);
+        });
+      });
+      window.__timelines[N] = tl;
+    })();
+  </script>
+</template>

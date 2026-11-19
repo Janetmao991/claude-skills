@@ -1,0 +1,17 @@
+{
+  "founder_example": {
+    "yt": "YouTube 视频 id",
+    "win": "00:05:20",
+    "in": 40.3,
+    "out": 50.3,
+    "speaker": "Founder Name",
+    "role": "Co-founder",
+    "show": "Podcast · Host",
+    "date": "Jan 2025",
+    "sticker": "three to five words",
+    "stickerAt": 4.0,
+    "icon": "",
+    "fix": {},
+    "zh": []
+  }
+}

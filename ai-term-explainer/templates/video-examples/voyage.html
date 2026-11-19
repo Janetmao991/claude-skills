@@ -1,0 +1,76 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    #root { position: absolute; inset: 0; font-family: "Hannotate SC", sans-serif; color: #1e1e24; }
+    #root > svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+    .t-en { position: absolute; left: 90px; top: 290px; font-size: 150px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+    .t-zh { position: absolute; left: 90px; top: 452px; font-size: 64px; font-weight: 700; line-height: 1; z-index: 1; isolation: isolate; white-space: nowrap; }
+    .t-zh .hl { position: absolute; left: -10px; right: -10px; top: 30px; height: 40px; background: rgba(255, 212, 59, 0.75); border-radius: 6px; z-index: -1; }
+    .t-sub { position: absolute; left: 92px; top: 534px; font-family: "Inter", sans-serif; font-size: 32px; color: #5a5a63; white-space: nowrap; }
+    .lb { position: absolute; font-weight: 700; white-space: nowrap; opacity: 0; }
+    .g { color: #5a5a63; }
+    .pk { color: #f2557a; }
+    .bl { color: #2e7cf6; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+    .stamp { position: absolute; }
+    .stamp .in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #f2557a; opacity: 0; white-space: nowrap; }
+    .stamp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .fl { width: 480px; text-align: center; line-height: 1.15; font-size: 40px; }
+    .fl span { display: block; font-size: 26px; color: #5a5a63; }
+    .nt { font-size: 28px; }
+  </style>
+  <div id="root" data-composition-id="voyage" data-width="1080" data-height="1920">
+    <svg id="vy-svg" viewBox="0 0 1080 1920"></svg>
+    <div class="t-en">Voyage AI</div>
+    <div class="t-zh"><div class="hl" id="vy-hl"></div>拆一家：它怎么训练的？</div>
+    <div class="t-sub">a three-floor training stack</div>
+
+    <div class="lb g" id="vy-who" style="left:96px; top:604px; font-size:30px">2023 · 斯坦福教授马腾宇创办 · 2025 被 MongoDB 收购</div>
+    <div class="lb pk" id="vy-up" style="left:96px; top:690px; font-size:32px">越往上越专，数据越贴身 ↑</div>
+
+    <div class="lb fl" id="vy-f3" style="left:96px; top:790px">Harvey 定制<span>客户专属</span></div>
+    <div class="lb nt" id="vy-n3a" style="left:620px; top:774px">200 亿+ token 美国判例</div>
+    <div class="lb nt" id="vy-n3b" style="left:620px; top:810px">律师标注的问题 + 判例</div>
+    <div class="lb nt pk" id="vy-n3c" style="left:620px; top:846px">无关结果 −25% · 1/3 长度</div>
+
+    <div class="lb fl" id="vy-f2" style="left:96px; top:922px">法律版<span>voyage-law-2</span></div>
+    <div class="lb nt" id="vy-n2a" style="left:620px; top:906px">+ 约 1 万亿法律 token</div>
+    <div class="lb nt" id="vy-n2b" style="left:620px; top:942px">混入金融、科技资料</div>
+    <div class="lb nt pk" id="vy-n2c" style="left:620px; top:978px">8 个法律测试 平均 +6%</div>
+
+    <div class="lb fl" id="vy-f1" style="left:96px; top:1054px">通用款<span>什么都懂一点</span></div>
+  </div>
+  <script>
+    (function () {
+      var N = "voyage", tl = gsap.timeline({ paused: true });
+      var svg = document.getElementById("vy-svg");
+      var q = function (id, o) { return SK.cue(N, id, o); }, qc = function (id, ch) { return SK.cueChar(N, id, ch); };
+      SK.seed(1150);
+      var C = SK.C;
+      gsap.set("#vy-hl", { scaleX: 0 });
+      SK.highlight(tl, "#vy-hl", 0.2, 0.5);
+      // v1: who they are
+      SK.write(tl, "#vy-who", qc("v1", "2"), 1.0);
+      // v2: the ground line of the building
+      SK.draw(tl, SK.line(svg, 80, 1140, 600, 1140, { strokeWidth: 5 }), qc("v2", "盖"), 0.4);
+      // floors are built bottom-up: [y, h, label, cue]
+      var F = [[1030, 110, "#vy-f1", qc("v3", "通")], [900, 120, "#vy-f2", qc("v4", "第")], [770, 120, "#vy-f3", qc("v7", "第")]];
+      F.forEach(function (f, i) {
+        SK.draw(tl, SK.rect(svg, 96, f[0], 480, f[1], { strokeWidth: 4.5, stroke: i === 2 ? C.pink : C.ink }), f[3], 0.5);
+        SK.write(tl, f[2], f[3] + 0.3, 0.5);
+      });
+      // floor 2 notes
+      SK.write(tl, "#vy-n2a", qc("v4", "一"), 0.6);
+      SK.write(tl, "#vy-n2b", qc("v5", "金"), 0.6);
+      SK.write(tl, "#vy-n2c", qc("v6", "八"), 0.6);
+      // floor 3 notes
+      SK.write(tl, "#vy-n3a", qc("v7", "两"), 0.6);
+      SK.write(tl, "#vy-n3b", qc("v8", "律"), 0.6);
+      SK.write(tl, "#vy-n3c", qc("v9", "无"), 0.7);
+      // v10: specialization grows upward
+      SK.draw(tl, SK.arrow(svg, 66, 1130, 66, 780, { stroke: C.pink, strokeWidth: 5, head: 16 }), q("v10"), 0.6);
+      SK.write(tl, "#vy-up", qc("v10", "越"), 0.6);
+      window.__timelines[N] = tl;
+    })();
+  </script>
+</template>

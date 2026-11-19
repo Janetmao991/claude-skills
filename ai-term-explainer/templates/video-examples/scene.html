@@ -1,0 +1,71 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    #root { position: absolute; inset: 0; font-family: "Hannotate SC", sans-serif; color: #1e1e24; }
+    #root > svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+    .t-en { position: absolute; left: 90px; top: 290px; font-size: 150px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+    .t-zh { position: absolute; left: 90px; top: 452px; font-size: 64px; font-weight: 700; line-height: 1; z-index: 1; isolation: isolate; white-space: nowrap; }
+    .t-zh .hl { position: absolute; left: -10px; right: -10px; top: 30px; height: 40px; background: rgba(255, 212, 59, 0.75); border-radius: 6px; z-index: -1; }
+    .t-sub { position: absolute; left: 92px; top: 534px; font-family: "Inter", sans-serif; font-size: 32px; color: #5a5a63; white-space: nowrap; }
+    .lb { position: absolute; font-weight: 700; white-space: nowrap; opacity: 0; }
+    .g { color: #5a5a63; }
+    .pk { color: #f2557a; }
+    .bl { color: #2e7cf6; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+    .stamp { position: absolute; }
+    .stamp .in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #f2557a; opacity: 0; white-space: nowrap; }
+    .stamp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    #sc-q { position: absolute; left: 500px; top: 830px; font-size: 140px; font-weight: 700; color: #f2557a; opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="scene" data-width="1080" data-height="1920">
+    <svg id="sc-svg" viewBox="0 0 1080 1920"></svg>
+    <div class="t-en">Support bot</div>
+    <div class="t-zh"><div class="hl" id="sc-hl"></div>它用在哪里？</div>
+    <div class="t-sub">a real scene first</div>
+
+    <div class="lb" id="sc-bot" style="left:236px; top:640px; font-size:40px">你做的客服机器人</div>
+    <div class="lb" id="sc-n" style="left:640px; top:740px; font-size:40px">500 份文档</div>
+    <div class="lb" id="sc-d1" style="left:668px; top:818px; font-size:38px">退款流程</div>
+    <div class="lb" id="sc-d2" style="left:668px; top:922px; font-size:38px">发货规则</div>
+    <div class="lb" id="sc-d3" style="left:668px; top:1026px; font-size:38px">会员说明</div>
+    <div class="lb g" id="sc-who" style="left:100px; top:778px; font-size:30px">顾客问</div>
+    <div class="lb" id="sc-ask" style="left:118px; top:842px; font-size:38px">东西不想要了，</div>
+    <div class="lb" id="sc-ask2" style="left:118px; top:896px; font-size:38px">钱能要回来吗？</div>
+    <div id="sc-q">?</div>
+    <div class="lb pk" id="sc-which" style="left:110px; top:1040px; font-size:44px">该看哪一份？</div>
+  </div>
+  <script>
+    (function () {
+      var N = "scene", tl = gsap.timeline({ paused: true });
+      var svg = document.getElementById("sc-svg");
+      var q = function (id, o) { return SK.cue(N, id, o); }, qc = function (id, ch) { return SK.cueChar(N, id, ch); };
+      SK.seed(150);
+      var C = SK.C;
+      gsap.set("#sc-hl", { scaleX: 0 });
+      SK.highlight(tl, "#sc-hl", 0.2, 0.4);
+      // s1: the bot
+      var at = q("s1");
+      SK.draw(tl, SK.rect(svg, 100, 622, 110, 90, { strokeWidth: 4 }), at, 0.35);
+      SK.dot(tl, svg, 135, 660, 16, C.ink, at + 0.3);
+      SK.dot(tl, svg, 175, 660, 16, C.ink, at + 0.35);
+      SK.write(tl, "#sc-bot", qc("s1", "客"));
+      // s2: the pile of docs
+      SK.write(tl, "#sc-n", qc("s2", "5"));
+      [["#sc-d1", "退"], ["#sc-d2", "发"], ["#sc-d3", "会"]].forEach(function (d, i) {
+        var t = qc("s2", d[1]);
+        SK.draw(tl, SK.page(svg, 630, 806 + i * 104, 300, 84, { strokeWidth: 3.5, lines: "#e4e4e8" }), t - 0.2, 0.35);
+        SK.write(tl, d[0], t);
+      });
+      // s3: the customer's question
+      SK.write(tl, "#sc-who", q("s3"));
+      SK.draw(tl, SK.path(svg, "M 96 826 L 430 826 L 430 950 L 190 950 L 150 990 L 158 950 L 96 950 Z", { strokeWidth: 4 }), q("s3", 0.1), 0.5);
+      SK.write(tl, "#sc-ask", qc("s3", "东"));
+      SK.write(tl, "#sc-ask2", qc("s3", "钱"));
+      // s4: which one? → the refund doc
+      SK.stamp(tl, "#sc-q", q("s4"));
+      SK.write(tl, "#sc-which", qc("s4", "找"));
+      SK.draw(tl, SK.ellipse(svg, 780, 848, 380, 130, { stroke: C.pink, strokeWidth: 5, roughness: 1.6 }), qc("s4", "那"), 0.5);
+      window.__timelines[N] = tl;
+    })();
+  </script>
+</template>

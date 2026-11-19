@@ -1,0 +1,42 @@
+@font-face { font-family: "Clay Sans"; src: url("../assets/fonts/sans-500.woff2") format("woff2"); font-weight: 500; }
+@font-face { font-family: "Clay Sans"; src: url("../assets/fonts/sans-700.woff2") format("woff2"); font-weight: 700; }
+@font-face { font-family: "Clay Sans"; src: url("../assets/fonts/sans-900.woff2") format("woff2"); font-weight: 900; }
+:root {
+  --paper: #E7EDE4; --paper-deep: #D3DDD0; --ink: #17221C;
+  --me: #2F7A3C; --them: #5E6963; --signal: #C2410C; --warn: #A16207;
+}
+html, body { margin: 0; background: var(--paper); }
+#root { position: relative; width: 100%; height: 100%; overflow: hidden; font-family: "Clay Sans", sans-serif; color: var(--ink);
+  background: radial-gradient(ellipse 70% 60% at 55% 48%, #F4F7F2 0%, var(--paper) 55%, var(--paper-deep) 100%); }
+#three-layer { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.stage { position: absolute; inset: 0; }
+.scene-ov { position: absolute; inset: 0; }
+
+/* scene title (top-left) */
+.title { position: absolute; left: 96px; top: 76px; display: flex; flex-direction: column; gap: 10px; opacity: 0; }
+.eyebrow { font-weight: 700; font-size: 24px; letter-spacing: .14em; color: var(--signal); }
+.headline { font-weight: 900; font-size: 52px; line-height: 1.15; letter-spacing: -.01em; }
+
+/* tags anchored to 3D points (kit.tag) */
+.tag { position: absolute; left: 0; top: 0; padding: 10px 18px; border-radius: 14px; font-weight: 700; font-size: 30px; white-space: nowrap;
+  background: #FFFFFF; color: var(--ink); box-shadow: 0 6px 18px rgba(23,34,28,.14); will-change: transform, opacity; transform-origin: 0 0; }
+.tag small { font-weight: 500; font-size: 22px; margin-left: 10px; opacity: .78; }
+.tag.them { color: var(--them); }
+.tag.me { color: #FFFFFF; background: var(--me); }
+.tag.me small, .tag.signal small, .tag.dark small { opacity: .9; }
+.tag.signal { color: #FFFFFF; background: var(--signal); }
+.tag.dark { color: #F4F7F2; background: var(--ink); }
+.tag.brand { color: var(--me); font-weight: 900; }
+.tag.big { font-size: 36px; padding: 12px 22px; }
+
+/* fixed screen panels (kit.panel) */
+.panel { position: absolute; font-weight: 700; color: var(--ink); will-change: transform, opacity; }
+.panel .num { font-weight: 900; font-size: 96px; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.panel .lab { font-weight: 500; font-size: 28px; color: var(--them); margin-top: 8px; }
+.panel.card { background: #FFFFFF; border-radius: 18px; padding: 22px 28px; box-shadow: 0 8px 24px rgba(23,34,28,.12); }
+
+/* captions */
+.cap-wrap { position: absolute; left: 0; right: 0; bottom: 70px; display: flex; justify-content: center; }
+.cap { font-weight: 700; font-size: 46px; line-height: 1.3; padding: 12px 30px; border-radius: 16px; background: rgba(23,34,28,.86); color: #F4F7F2; max-width: 1500px; text-align: center; }
+
+#fade { position: absolute; inset: 0; background: var(--paper); opacity: 0; pointer-events: none; }

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=ZCOOL+QingKe+HuangYou&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&family=Noto+Sans+SC:wght@500;700;900&family=JetBrains+Mono:wght@700&display=block">
+<style>
+  @font-face { font-family: "Hannotate SC"; src: local("Hannotate SC Bold"), local("Hannotate SC"), url("../../../../Adal/ai-embedding-ep1/assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; }
+  html, body { margin: 0; }
+  body { width: 1080px; height: 1920px; overflow: hidden; position: relative; font-weight: 700; }
+  svg { position: absolute; inset: 0; width: 1080px; height: 1920px; overflow: visible; }
+  .a { position: absolute; white-space: nowrap; }
+  #eyebrow { left: 90px; top: 120px; font-size: 36px; opacity: .75; }
+  #en { left: 86px; top: 190px; font-size: 150px; line-height: 1; z-index: 1; }
+  #hl { position: absolute; left: -10px; right: -10px; top: 92px; height: 52px; z-index: -1; border-radius: 6px; }
+  #zh { left: 90px; top: 360px; font-size: 76px; line-height: 1; }
+  .lb { font-size: 44px; }
+  #cap { left: 90px; width: 900px; top: 1330px; text-align: center; font-size: 52px; }
+  #name { left: 90px; top: 1700px; font-size: 34px; opacity: .6; }
+  .note { position: absolute; padding: 14px 22px; font-size: 40px; box-shadow: 2px 4px 0 rgba(0,0,0,.12); }
+  .tape { position: absolute; width: 90px; height: 28px; left: 50%; top: -14px; margin-left: -45px; background: rgba(255,255,255,.55); transform: rotate(-4deg); }
+</style>
+</head>
+<body>
+  <svg id="s" viewBox="0 0 1080 1920"></svg>
+  <div class="a" id="eyebrow">AI 术语白话 · 第 1 期</div>
+  <div class="a" id="en"><div id="hl"></div>Embedding</div>
+  <div class="a" id="zh">向量嵌入：意义地图</div>
+  <div id="labels"></div>
+  <div class="a" id="cap">意思相近的话，落在一起</div>
+  <div class="a" id="name"></div>
+  <script src="rough.js"></script>
+  <script>
+    // one board = background + ink + accents + type + how rough the marker is
+    var B = {
+      whiteboard: { name: "A · 白板 Whiteboard（当前）", bg: "#fbfbf8", texture: "radial-gradient(#e4e4e8 2px, transparent 2px) 0 0 / 36px 36px",
+        ink: "#1e1e24", a1: "#f2557a", a2: "#2e7cf6", hl: "rgba(255,212,59,.8)", grey: "#8a8a93",
+        font: '"Hannotate SC", sans-serif', title: '"Hannotate SC", sans-serif', rough: 1.4, fill: "hachure" },
+      chalk: { name: "B · 黑板 Chalkboard", bg: "#24372d",
+        texture: "radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.07), transparent 60%), radial-gradient(ellipse at 80% 90%, rgba(255,255,255,.05), transparent 55%)",
+        ink: "#f2efe4", a1: "#ff9db5", a2: "#8fd3f5", hl: "rgba(246,213,92,.45)", grey: "#a9b8ae",
+        font: '"ZCOOL KuaiLe", sans-serif', title: '"ZCOOL KuaiLe", sans-serif', rough: 2.2, fill: "zigzag", chalky: true },
+      notebook: { name: "C · 方格本 Notebook", bg: "#fdfdfb",
+        texture: "linear-gradient(90deg, transparent 69px, #f08a8a 69px, #f08a8a 72px, transparent 72px), linear-gradient(#dfe8f5 2px, transparent 2px) 0 0 / 40px 40px, linear-gradient(90deg, #dfe8f5 2px, transparent 2px) 0 0 / 40px 40px",
+        ink: "#1f3c88", a1: "#e03b3b", a2: "#1f3c88", hl: "rgba(130,226,120,.6)", grey: "#7f8db3",
+        font: '"HanziPen SC", serif', title: '"HanziPen SC", serif', rough: 0.9, fill: "cross-hatch" },
+      kraft: { name: "D · 牛皮纸便利贴 Kraft & sticky notes", bg: "#d6b98c",
+        texture: "repeating-linear-gradient(12deg, rgba(120,80,30,.05) 0 2px, transparent 2px 9px), repeating-linear-gradient(-8deg, rgba(255,255,255,.06) 0 1px, transparent 1px 13px)",
+        ink: "#16130f", a1: "#d6336c", a2: "#1c6dd0", hl: "#ffe873", grey: "#6b5a43",
+        font: '"Baoli SC", sans-serif', title: '"Baoli SC", sans-serif', rough: 1.6, fill: "solid", notes: ["#ffe873", "#ffb3c7", "#a8d8ff"] },
+      blueprint: { name: "E · 蓝图 Blueprint", bg: "#1b4c86",
+        texture: "linear-gradient(rgba(255,255,255,.08) 2px, transparent 2px) 0 0 / 48px 48px, linear-gradient(90deg, rgba(255,255,255,.08) 2px, transparent 2px) 0 0 / 48px 48px",
+        ink: "#f2f7ff", a1: "#ffc857", a2: "#7fe3ff", hl: "rgba(255,200,87,.35)", grey: "#9fbbe0",
+        font: '"Noto Sans SC", sans-serif', title: '"JetBrains Mono", monospace', rough: 0.35, fill: "hachure", dash: true }
+    };
+    var b = B[new URLSearchParams(location.search).get("b") || "whiteboard"];
+    document.body.style.background = b.texture + ", " + b.bg;
+    document.body.style.backgroundColor = b.bg;
+    document.body.style.color = b.ink;
+    document.body.style.fontFamily = b.font;
+    ["en", "zh"].forEach(function (id) { document.getElementById(id).style.fontFamily = b.title; });
+    document.getElementById("hl").style.background = b.hl;
+    document.getElementById("name").textContent = b.name;
+
+    var svg = document.getElementById("s"), rc = rough.svg(svg), seed = 1;
+    function o(x) { var r = { stroke: b.ink, strokeWidth: 5, roughness: b.rough, seed: seed++ }; for (var k in x) r[k] = x[k];
+      if (b.dash && !x.solidLine) r.strokeLineDash = [14, 8]; if (b.chalky) r.strokeWidth = (r.strokeWidth || 5) + 1; return r; }
+    function add(n) { if (b.chalky) n.setAttribute("opacity", ".88"); svg.appendChild(n); }
+
+    // the map
+    add(rc.line(110, 1220, 110, 560, o({ stroke: b.grey, strokeWidth: 4 })));
+    add(rc.line(110, 1220, 990, 1220, o({ stroke: b.grey, strokeWidth: 4 })));
+    var L = document.getElementById("labels");
+    function label(t, x, y, cls, i) {
+      if (b.notes) {
+        var n = document.createElement("div"); n.className = "note"; n.textContent = t;
+        n.style.left = x + "px"; n.style.top = (y - 16) + "px"; n.style.background = b.notes[i % 3];
+        n.style.transform = "rotate(" + [-3, 2, -1.5, 3][i % 4] + "deg)";
+        n.innerHTML = '<div class="tape"></div>' + t; L.appendChild(n);
+      } else {
+        var d = document.createElement("div"); d.className = "a lb"; d.textContent = t;
+        d.style.left = x + "px"; d.style.top = y + "px"; if (cls) d.style.color = cls; L.appendChild(d);
+      }
+    }
+    [[150, 700, "退款"], [210, 820, "钱要回来"], [140, 940, "我要退货"]].forEach(function (p, i) {
+      add(rc.circle(p[0] - 30, p[1] + 26, 22, o({ fill: b.ink, fillStyle: "solid", solidLine: true })));
+      label(p[2], p[0], p[1], null, i);
+    });
+    add(rc.ellipse(300, 840, 500, 400, o({ stroke: b.a1, strokeWidth: 6, roughness: b.rough + 0.4 })));
+    add(rc.circle(700, 640, 22, o({ fill: b.ink, fillStyle: "solid", solidLine: true })));
+    label("发货要几天", 730, 616, b.grey, 3);
+    add(rc.line(560, 860, 690, 660, o({ stroke: b.a2, strokeWidth: 5 })));
+    add(rc.line(690, 660, 664, 672, o({ stroke: b.a2, strokeWidth: 5, solidLine: true })));
+    add(rc.line(690, 660, 688, 690, o({ stroke: b.a2, strokeWidth: 5, solidLine: true })));
+    var near = document.createElement("div"); near.className = "a"; near.textContent = "离得近 = 意思近";
+    near.style.cssText = "left:150px; top:1080px; font-size:42px; color:" + b.a1; L.appendChild(near);
+    // a vector card
+    add(rc.rectangle(540, 960, 460, 150, o({ fill: b.notes ? "#fffdf4" : "none", fillStyle: "solid", strokeWidth: 4 })));
+    var v = document.createElement("div"); v.className = "a";
+    v.style.cssText = "left:562px; top:990px; font-size:34px; font-family:'JetBrains Mono',monospace; color:" + b.a2;
+    v.textContent = "[0.12, -0.83, 0.41 …]"; L.appendChild(v);
+    var v2 = document.createElement("div"); v2.className = "a";
+    v2.style.cssText = "left:564px; top:1046px; font-size:30px; opacity:.75"; v2.textContent = "这串数字 = 向量"; L.appendChild(v2);
+    // caption underline
+    add(rc.line(250, 1410, 830, 1410, o({ stroke: b.a1, strokeWidth: 6, solidLine: true })));
+  </script>
+</body>
+</html>

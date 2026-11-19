@@ -1,0 +1,221 @@
+{
+  "voice": "qwen-clone:A-male",
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "Cold open",
+      "segments": [
+        {
+          "vo": "So here's a strange one. Clay doesn't own any data. Not one contact. Not one email address. And yet, this September, investors valued it at seven point one billion dollars. That's about five times what the market pays for ZoomInfo, a company whose entire business is selling data. So... what are they actually paying for? To answer that, let's start from zero."
+        }
+      ]
+    },
+    {
+      "id": "problem",
+      "title": "The problem",
+      "segments": [
+        {
+          "vo": "First, the problem. Imagine you sell software to other companies. You have a list of companies that might buy. But a list of names isn't enough. You need to know who to talk to, how to reach them, and whether now is a good time. For years, sales teams bought that information from big data companies. ZoomInfo is the biggest. It keeps a giant database of business contacts, and charges per seat, for every salesperson who logs in. The catch? No single database has everyone. And the information goes stale fast, because people change jobs all the time. Two to four percent of it goes out of date every month."
+        }
+      ]
+    },
+    {
+      "id": "what",
+      "title": "What Clay is",
+      "segments": [
+        {
+          "vo": "So here's what Clay does. Picture a spreadsheet that fills itself in. You drop in a list of companies. Then, for every row, Clay goes and asks more than two hundred and fifty different data vendors, plus an AI that browses the web, for things like the right person, their email, and buying signals, say, a company that just raised money or is hiring. Then it writes all of that back into the CRM, the system where a sales team tracks its customers and deals. So Clay isn't the warehouse. It's more like a smart shopper. It decides which vendor gets asked first... and who gets paid. Today, that adds up to about two hundred million dollars a year in revenue, from more than seventeen thousand customers. And customers keep spending more. Here's Clay's head of sales. N D R means: on average, existing customers roughly doubled their spending."
+        },
+        {
+          "clip": "becca_ndr"
+        },
+        {
+          "vo": "So who are these customers? More than seventeen thousand companies. On Clay's website you'll find OpenAI, Anthropic, Figma, Canva and Rippling. And by Clay's own count, eighty percent of the Forbes AI fifty, a list of the top private AI companies. They come in three kinds. First, big companies. Their first project is almost always a CRM refresh: re-checking all the old, stale data in their CRM. Those accounts tend to stay, and keep spending more. Second, small teams on self-serve plans. They mostly pull prospect lists, and many leave for a month or two, then come back. And third, agencies: firms that other companies pay to build their Clay tables. One more data point. Among companies on the spending platform Ramp that buy sales data, about one in four now uses Clay. That's third, behind LinkedIn and Apollo, and ahead of ZoomInfo."
+        }
+      ]
+    },
+    {
+      "id": "origins",
+      "title": "Origins",
+      "segments": [
+        {
+          "vo": "But Clay didn't start out like this. It's actually older than it looks. Kareem Amin and Nicolae Rusan founded it back in 2017. The mission was pretty broad: give the power of programming to a lot more people. And for four years, it earned almost nothing. The turn came from a user. A guy named Varun Anand started bringing in the first paying customers, and in 2021, he became a co-founder. Now, you'd guess the first fans were startups. They weren't."
+        },
+        {
+          "clip": "varun_agencies"
+        },
+        {
+          "vo": "Cold-email agencies. These are small firms that companies hire to send sales emails for them. They had both the skills and the pain, because they built prospect lists by hand, all day long. So Varun went looking for the best of them. These agencies talk to each other in WhatsApp groups. He read through years of those group chats, picked the thirty people who wrote most thoughtfully about finding contact data, and emailed each of them personally. And early on, Clay barely charged. There wasn't even a pay button in the product. Until Clay reached a million dollars a year in revenue, Varun sent every bill by hand."
+        },
+        {
+          "clip": "varun_stripe"
+        },
+        {
+          "vo": "From there, things moved fast. This chart is annual revenue. About one million dollars in early 2023. A hundred million by the end of 2025. And today, roughly two hundred million."
+        }
+      ]
+    },
+    {
+      "id": "product",
+      "title": "Product",
+      "segments": [
+        {
+          "vo": "So how does the table actually work? Here's the key idea. Every column is an action. Say you want the email of a company's head of security. Clay asks one vendor. No answer? It asks the next one... and the next. And you only spend a credit, Clay's prepaid unit, a bit like an arcade token, when somebody actually answers. That chain has a name: the waterfall. It works because no single vendor covers more than about half the market. And when no vendor sells the answer at all, Clay has an AI agent, called Claygent, that goes and reads the company's website for you."
+        },
+        {
+          "vo": "Now, here's the defining choice. Who is Clay built for? Not the sales rep. One or two technical operators build the tables, and the reps just see the output. Clay even gave that person a job title. G T M stands for go-to-market, meaning sales and marketing."
+        },
+        {
+          "clip": "varun_gtme"
+        },
+        {
+          "vo": "And Clay picked that narrow audience on purpose."
+        },
+        {
+          "clip": "varun_notsales"
+        },
+        {
+          "vo": "That's why Clay charges by usage, with unlimited seats. A seat is one person's login, which is how most sales software is priced. Think about what that means. Even when a sales team shrinks, Clay keeps getting paid, because the work still runs. The trade-off is a narrow, highly skilled user base."
+        }
+      ]
+    },
+    {
+      "id": "gtme",
+      "title": "GTM engineer",
+      "segments": [
+        {
+          "vo": "So what does a GTM engineer actually do all day? Before Clay, reaching new customers took three different people. An S D R, a sales development rep, finds prospects and sends the first emails. An A E, an account executive, runs the deal and closes it. And a sales engineer answers the technical questions. Clay's co-founder Varun puts it like this."
+        },
+        {
+          "clip": "varun_threeroles"
+        },
+        {
+          "vo": "So how can one person do all three jobs? Not by working three times harder. By building a system that does the repetitive work for them. Here's what that system looks like, step by step, inside one Clay table."
+        },
+        {
+          "vo": "Step one: define the target. Who is the ideal customer? Say, fintech companies with fifty to five hundred employees. Step two: pull the list. Clay finds every company that fits, and the key people inside each one. Step three: fill in the gaps. The waterfall finds each person's work email, phone number and job title. Step four: look for signals. Claygent reads the web. Did they just raise money? Are they hiring? What tools do they already use? Step five: score and write. An AI column ranks who to contact first, and drafts a personal opening line for each person. Step six: push it out. The results go into the CRM, so the sales team has a record. Into the email tool, which sends the messages. And into ad platforms like LinkedIn, so the same people also see your ads while you email them."
+        },
+        {
+          "vo": "And then comes the engineer part. They watch what works. Which emails get replies? Which signals actually lead to a deal? Then they change the rules in the table, and run it again. Version one, version two, version three, just like shipping software. And once the table is built, every new company that enters the list runs through all six steps on its own."
+        },
+        {
+          "vo": "But can you trust the data? Clay's CEO is surprisingly blunt about this."
+        },
+        {
+          "clip": "kareem_tools"
+        },
+        {
+          "vo": "So accuracy doesn't come from a promise. It comes from the setup. First, asking many vendors raises coverage. In Clay's own case study, OpenAI went from finding contact data for about four in ten of its targets, to nearly nine in ten. Second, a common setup adds a check column, which tests every email address before anything is sent. That matters, because sending to dead addresses gets your emails flagged as spam. Third, refresh. Two to four percent of the data goes stale every month, so good tables re-run on a schedule. And Clay retests the vendors themselves, and keeps sending each question to whoever answers it best."
+        },
+        {
+          "vo": "And the score? There's no magic number. The GTM engineer writes the rules. For example: a fintech company, plus twenty points. Fifty to five hundred employees, plus fifteen. Raised money in the last three months, plus twenty-five. Hiring security engineers, plus twenty. A new security leader in the last ninety days, plus twelve. That's ninety-two. But if the email fails the check, the score drops to zero, and the row stops there. Some teams let an AI column read everything instead, and give a score from one to a hundred, with a one-line reason. Either way, the highest scores get contacted first. As one outbound practitioner puts it: we don't need more personalization. We need prioritization."
+        },
+        {
+          "vo": "Clay runs its own sales this way, too. According to its head of GTM engineering, Everett Berry, the team has two groups. About four engineers work with customers, helping them design and build their tables. About six more run Clay's own internal operations. They take requests from across the company as tickets, and ship new releases twice a month, like a software team."
+        },
+        {
+          "vo": "Now zoom out, and you can see what the CEO means by a system of action. Your CRM, or your data warehouse, is the system of record. Think of it as a filing cabinet. It stores who your customers are, but it doesn't do anything on its own. The AI models are the brains. They can think, but they don't have your data, or your tools. Clay sits in the middle. It pulls data out of the record, asks the models to decide, takes the action, like sending the email or updating the list, and then writes the result back into the record. The record stores. Clay acts. That's why Clay doesn't need to replace your CRM. It wants to be the layer that does the work on top of it."
+        }
+      ]
+    },
+    {
+      "id": "moat",
+      "title": "Moat",
+      "segments": [
+        {
+          "vo": "So, is any of this defensible? Can rivals just copy it? Against ZoomInfo, the biggest seller of contact data, the answer is yes, it's defensible. ZoomInfo sells its own database, by the seat. Clay charges by usage, and resells every rival's data. To copy Clay, ZoomInfo would have to cut its own revenue. And you can see it in the numbers. ZoomInfo grew just one point two percent last quarter. Meanwhile, Enterprise adoption of Clay, among big companies, went from seven to twenty percent in two years."
+        },
+        {
+          "vo": "Against Apollo, though, there's no real edge. Apollo is another contact-data company, and it's cheaper and simpler, starting at forty-nine dollars a month. And this year, both Salesforce and HubSpot, the two biggest CRMs, bundled it into their new AI agents."
+        },
+        {
+          "vo": "So what's actually hard to copy? Not the searching itself. A good engineer with Claude Code can wire up a few data vendors in an afternoon. What's hard is everything around it. One: two hundred and fifty vendor contracts, turned into one account and one bill. Two: routing know-how. Clay sees what works across seventeen thousand customers, so it knows which vendor answers best for, say, finance emails in Germany. That's Clay's real data asset. Not the contacts, but knowing who to ask first. Three: running it safely, every day, inside a company's CRM, without breaking anything. And four: people."
+        },
+        {
+          "vo": "Clay built a whole community. The GTM engineer job title. A hundred and fifty partner agencies, firms that other companies pay to build their Clay tables. Ninety Clay Clubs, which are local user meetups. And a Slack community of about thirty thousand members."
+        },
+        {
+          "vo": "Now line Clay up against the classic list of moats. One clearly works today: counter-positioning against ZoomInfo. Five are still being built: scale, network effects, switching costs, brand, and process. And two are missing: Clay has no exclusive resource, and no regulatory barrier. Against Apollo, cheaper and simpler, Clay has no clear moat at all."
+        },
+        {
+          "vo": "The weak spot? It's the meter itself. Because you pay per use, mistakes cost real money. One user re-ran a table by mistake, burned a thousand dollars of credits, and cancelled."
+        }
+      ]
+    },
+    {
+      "id": "position",
+      "title": "Positioning",
+      "segments": [
+        {
+          "vo": "Now, if you look at how Clay has described itself over the years, you'll see two very different phases. Until 2024, every move narrowed. First: build cloud microservices. Then: the spreadsheet that fills itself. Then: Not another data provider. All of the data providers. And then, from mid 2024, every move widened. And each one came right after a wave from outside. Here's the CEO in late 2024. A system of record is where data is stored. A system of action is what acts on it."
+        },
+        {
+          "clip": "kareem_action"
+        },
+        {
+          "vo": "Then came a GTM development environment, a workshop for building sales systems. Then MCP and a command line tool. Those are plugs that let AI assistants like Codex and Claude Code use Clay directly. And this September: agents that grow your company for you. In other words, Clay is moving from a table that people work in, to a layer that other AIs call."
+        }
+      ]
+    },
+    {
+      "id": "model",
+      "title": "Business model",
+      "segments": [
+        {
+          "vo": "And here's where it gets interesting. Everyone else in sales data believed that owning the data was the moat. Clay's two founders flipped that around. And they make the same point, from two different angles."
+        },
+        {
+          "clip": "kareem_commodity"
+        },
+        {
+          "clip": "varun_distribution"
+        },
+        {
+          "vo": "Notice what they're not saying. Data isn't useless. It's the raw material. Kareem's point is that owning it isn't the edge. Anyone can buy it, it goes stale, and nobody has all of it. Clay even assumes the data starts out wrong, and gives you tools to check it. The edge is standing in the middle. Vendors need Clay's demand, so the best ones come to Clay to prove their data, and Clay sends them customers. Think of a great restaurant. It doesn't own a farm. It knows exactly which market sells the best tomatoes."
+        },
+        {
+          "vo": "Investors, meanwhile, buy the workflow story. Sequoia calls Clay an orchestration layer, the conductor, not the orchestra. But until March 2026, Clay's own pricing memo said it charged primarily per data point, and sold some credits at or below breakeven. In plain words, most of its money came from reselling data, at thin margins. So in March, Clay split the meter in two. Data got fifty to ninety percent cheaper. And a new unit, the Action, now charges for running the workflow itself. Today, a self-serve plan starts at a hundred and eighty-five dollars a month, with unlimited seats. A data credit costs from about five cents. An action, under one cent. Think of a store that used to earn only the markup on the goods. Now, it also charges for the checkout."
+        },
+        {
+          "vo": "That's the bet behind the price. Here's one way to compare. Divide each company's value by its yearly revenue. Seven point one billion is about thirty-five times Clay's revenue. Apollo is near eleven times. ZoomInfo, about one. So investors are paying a huge premium for the layer in the middle. And to be clear, Money isn't the problem. Clay has raised only three hundred and seventeen million dollars, and for a while, it earned more in interest than it burned. The risk is to the valuation, not to survival."
+        }
+      ]
+    },
+    {
+      "id": "risk",
+      "title": "Biggest risk",
+      "segments": [
+        {
+          "vo": "So what's the biggest risk? It isn't being beaten. It's being bypassed, being skipped over. From above, by the CRMs and the AI assistants. Salesforce's Hunter agent and HubSpot's Prospecting Agent both ship with Apollo inside. ZoomInfo now sells straight into Claude and Codex. If the AI inside your CRM can fetch data directly, why go through Clay? Even Varun admits where the most advanced teams keep their data."
+        },
+        {
+          "clip": "varun_snowflake"
+        },
+        {
+          "vo": "From below, the threat is Claude Code, an AI that writes software. Solo operators and agencies now use it to connect straight to the data vendors, and skip Clay. As one user who cancelled put it: for small teams, Claude Code simply wins. Clay's answer is scale."
+        },
+        {
+          "clip": "becca_reps"
+        },
+        {
+          "vo": "Honestly? Both sides are right. Each about its own segment."
+        },
+        {
+          "vo": "And there's one more risk, from upstream: supply. What if a vendor stops selling to Clay? One vendor leaving barely matters. The waterfall just asks the next one. And many smaller vendors depend on Clay's volume to survive. The real danger is further upstream. Varun himself admits that a lot of these data vendors are built on LinkedIn data. And LinkedIn has been suing scrapers. One of them, Proxycurl, shut down in 2025 after a LinkedIn lawsuit. If LinkedIn-sourced data dries up, many vendors in the waterfall lose it at the same time, and switching to the next one won't help."
+        }
+      ]
+    },
+    {
+      "id": "verdict",
+      "title": "Verdict",
+      "segments": [
+        {
+          "vo": "So, where does that leave us? Clay is racing model progress. At building workflows, coding agents get better with every release, so the low end is leaving. At running them at scale, Clay is stronger. Two hundred and fifty vendor contracts, one invoice, and controlled writes into the CRM... none of that comes from a smarter model. The seven point one billion buys the chance to be the layer behind every agent."
+        },
+        {
+          "vo": "So, if you're watching Clay, Watch three things. First: About two hundred and forty million in run-rate by December, meaning revenue running at that yearly pace. Second: The share of revenue that comes from Actions, because that decides how profitable Clay can be. And third: whether enterprises keep refreshing their CRM data in Clay, once the CRM agents arrive."
+        }
+      ]
+    }
+  ]
+}

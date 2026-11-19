@@ -1,0 +1,105 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    #root { position: absolute; inset: 0; font-family: "Hannotate SC", sans-serif; color: #1e1e24; }
+    #root > svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+    .t-en { position: absolute; left: 90px; top: 290px; font-size: 150px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+    .t-zh { position: absolute; left: 90px; top: 452px; font-size: 64px; font-weight: 700; line-height: 1; z-index: 1; isolation: isolate; white-space: nowrap; }
+    .t-zh .hl { position: absolute; left: -10px; right: -10px; top: 30px; height: 40px; background: rgba(255, 212, 59, 0.75); border-radius: 6px; z-index: -1; }
+    .t-sub { position: absolute; left: 92px; top: 534px; font-family: "Inter", sans-serif; font-size: 32px; color: #5a5a63; white-space: nowrap; }
+    .lb { position: absolute; font-weight: 700; white-space: nowrap; opacity: 0; }
+    .g { color: #5a5a63; }
+    .pk { color: #f2557a; }
+    .bl { color: #2e7cf6; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+    .stamp { position: absolute; }
+    .stamp .in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #f2557a; opacity: 0; white-space: nowrap; }
+    .stamp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .tg { width: 207px; text-align: center; font-size: 36px; }
+    .who { font-size: 42px; }
+    .ds { font-size: 32px; }
+  </style>
+  <div id="root" data-composition-id="tiers" data-width="1080" data-height="1920">
+    <svg id="tr-svg" viewBox="0 0 1080 1920"></svg>
+    <div class="t-en">Who builds it</div>
+    <div class="t-zh"><div class="hl" id="tr-hl"></div>这门生意的格局</div>
+    <div class="t-sub">data · compute · base model · scores</div>
+
+    <div class="lb tg" id="tr-g1" style="left:96px; top:632px">数据</div>
+    <div class="lb tg" id="tr-g2" style="left:323px; top:632px">算力</div>
+    <div class="lb tg" id="tr-g3" style="left:550px; top:632px">大模型底子</div>
+    <div class="lb tg" id="tr-g4" style="left:777px; top:632px">榜单成绩</div>
+
+    <div id="tr-gl" style="position:absolute; inset:0">
+      <svg id="tr-gl-svg" viewBox="0 0 1080 1920" style="position:absolute; left:0; top:0; width:1080px; height:1920px; overflow:visible"></svg>
+      <div class="lb" id="tr-llm" style="left:116px; top:804px; font-size:34px">大模型（如千问）</div>
+      <div class="lb bl" id="tr-mod" style="left:450px; top:770px; font-size:30px">改造</div>
+      <div class="lb" id="tr-emb" style="left:616px; top:808px; font-size:28px">翻译机（千问 Embedding）</div>
+      <div class="lb g" id="tr-adv" style="left:96px; top:888px; font-size:30px">手里有大模型的公司，天然占优势</div>
+      <div class="lb" id="tr-lbt" style="left:96px; top:944px; font-size:34px">MTEB / C-MTEB 排行榜</div>
+      <div class="lb" id="tr-r1" style="left:100px; top:1000px; font-size:30px">1　模型 A</div>
+      <div class="lb" id="tr-r2" style="left:100px; top:1046px; font-size:30px">2　模型 B</div>
+      <div class="lb" id="tr-r3" style="left:100px; top:1092px; font-size:30px">3　模型 C</div>
+      <div class="lb pk" id="tr-pick" style="left:770px; top:944px; font-size:30px">客户先看这张榜</div>
+    </div>
+    <div class="lb who" id="tr-w1" style="left:120px; top:790px">大厂</div>
+    <div class="lb ds" id="tr-d1" style="left:330px; top:798px">通用款，海量数据 + GPU</div>
+    <div class="lb who" id="tr-w2" style="left:120px; top:910px">专业公司</div>
+    <div class="lb ds" id="tr-d2" style="left:330px; top:918px">行业款：法律 · 金融 · 代码</div>
+    <div class="lb who" id="tr-w3" style="left:120px; top:1030px">普通公司</div>
+    <div class="lb ds" id="tr-d3" style="left:330px; top:1038px">买现成的，或开源 + 微调</div>
+  </div>
+  <script>
+    (function () {
+      var N = "tiers", tl = gsap.timeline({ paused: true });
+      var svg = document.getElementById("tr-svg");
+      var q = function (id, o) { return SK.cue(N, id, o); }, qc = function (id, ch) { return SK.cueChar(N, id, ch); };
+      SK.seed(950);
+      var C = SK.C;
+      gsap.set("#tr-hl", { scaleX: 0 });
+      SK.highlight(tl, "#tr-hl", 0.2, 0.4);
+      // y1: the four hurdles
+      [["数", 96], ["算", 323], ["底", 550], ["榜", 777]].forEach(function (g, i) {
+        SK.boxed(tl, svg, "#tr-g" + (i + 1), g[1], 614, 207, 84, qc("y1", g[0]) - 0.15);
+      });
+      // z1: 大模型底子 — an LLM gets rebuilt into an embedder
+      var gsvg = document.getElementById("tr-gl-svg");
+      SK.draw(tl, SK.ellipse(svg, 653, 656, 232, 108, { stroke: C.pink, strokeWidth: 5, roughness: 1.6 }), qc("z1", "大"), 0.4);
+      SK.draw(tl, SK.rect(gsvg, 96, 780, 320, 90, { strokeWidth: 4 }), qc("z1", "现") - 0.2, 0.4);
+      SK.write(tl, "#tr-llm", qc("z1", "现"), 0.5);
+      SK.draw(tl, SK.arrow(gsvg, 426, 825, 590, 825, { stroke: C.blue, strokeWidth: 5, head: 16 }), qc("z1", "改"), 0.3);
+      SK.write(tl, "#tr-mod", qc("z1", "改"), 0.25);
+      SK.draw(tl, SK.rect(gsvg, 600, 780, 384, 90, { strokeWidth: 4, stroke: C.pink }), qc("z1", "改") + 0.3, 0.4);
+      SK.write(tl, "#tr-emb", qc("z1", "改") + 0.5, 0.6);
+      SK.write(tl, "#tr-adv", qc("z1", "手"), 0.9);
+      // z2: 榜单成绩 — a public exam leaderboard
+      SK.draw(tl, SK.ellipse(svg, 880, 656, 232, 108, { stroke: C.pink, strokeWidth: 5, roughness: 1.6 }), qc("z2", "榜"), 0.4);
+      SK.write(tl, "#tr-lbt", qc("z2", "M"), 0.6);
+      [[520, C.pink], [430, C.grey], [350, C.grey]].forEach(function (b, i) {
+        var t = qc("z2", "M") + 0.4 + i * 0.25;
+        SK.write(tl, "#tr-r" + (i + 1), t, 0.3);
+        SK.draw(tl, SK.rect(gsvg, 300, 1006 + i * 46, b[0], 26, { stroke: b[1], fill: b[1], fillStyle: "hachure", strokeWidth: 3 }), t + 0.1, 0.4);
+      });
+      SK.write(tl, "#tr-pick", qc("z2", "客"), 0.5);
+      // the glosses make way for the tiers
+      tl.to("#tr-gl", { opacity: 0, duration: 0.3, ease: "power1.in" }, q("y2", -0.35));
+
+      // y2–y4: three tiers, threshold meter on the right (filled = harder)
+      var rows = [["y2", "大", 3], ["y3", "专", 2], ["y4", "普", 1]];
+      rows.forEach(function (r, i) {
+        var y = 770 + i * 120, t = qc(r[0], r[1]);
+        SK.draw(tl, SK.rect(svg, 96, y, 888, 100, { strokeWidth: 4 }), t - 0.2, 0.45);
+        SK.write(tl, "#tr-w" + (i + 1), t);
+        SK.write(tl, "#tr-d" + (i + 1), t + 0.5, 0.9);
+        for (var k = 0; k < 3; k++) {
+          var on = k < r[2];
+          var sq = SK.rect(svg, 852 + k * 40, y + 34, 30, 30, on
+            ? { stroke: i === 0 ? C.pink : C.ink, fill: i === 0 ? C.pink : C.ink, fillStyle: "solid", strokeWidth: 2.5 }
+            : { stroke: C.grey, strokeWidth: 2.5 });
+          SK.draw(tl, sq, t + 1.2 + k * 0.1, 0.15);
+        }
+      });
+      window.__timelines[N] = tl;
+    })();
+  </script>
+</template>

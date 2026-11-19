@@ -1,0 +1,51 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    #root { position: absolute; inset: 0; pointer-events: none; }
+    .cap { position: absolute; left: 90px; width: 900px; top: 1180px; text-align: center; opacity: 0; font-family: "Hannotate SC", sans-serif; font-weight: 700; font-size: 50px; line-height: 1.2; color: #1e1e24; white-space: nowrap; }
+  </style>
+  <div id="root" data-composition-id="captions" data-width="1080" data-height="1920"></div>
+  <script>
+    (function () {
+      // English captions from the voice timeline: each spoken line swaps in
+      // chunks of <= 30 characters, broken at punctuation first, then between
+      // words, and timed by character share.
+      var L = window.__VO.lines, root = document.getElementById("root");
+      var tl = gsap.timeline({ paused: true });
+      var MAX = 30;
+      function chunks(t) {
+        var parts = t.match(/[^,:;.?!]+[,:;.?!"”]*\s*/g) || [t], out = [], cur = "";
+        parts.forEach(function (p) {
+          if ((cur + p).trim().length <= MAX) { cur += p; return; }
+          if (cur) out.push(cur.trim());
+          cur = "";
+          p.split(/\s+/).filter(Boolean).forEach(function (w) {
+            if ((cur + w).length > MAX && cur) { out.push(cur.trim()); cur = ""; }
+            cur += w + " ";
+          });
+        });
+        if (cur.trim()) out.push(cur.trim());
+        return out;
+      }
+      function clean(t) { return t.replace(/[,;:]$/, ""); }
+      function show(el, a, b) {
+        tl.fromTo(el, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.14, ease: "power2.out" }, a);
+        tl.to(el, { opacity: 0, duration: 0.1, ease: "power2.in" }, b - 0.1);
+        tl.set(el, { opacity: 0, visibility: "hidden" }, b);
+      }
+      Object.keys(L).forEach(function (id) {
+        var l = L[id], a = Math.max(0.15, l.start - 0.08), b = l.end + 0.12;
+        var cs = chunks(l.text), total = l.text.length, acc = 0;
+        cs.forEach(function (c, i) {
+          var t0 = i === 0 ? a : l.start + (acc / total) * (l.end - l.start);
+          acc += c.length + 1;
+          var t1 = i === cs.length - 1 ? b : l.start + (acc / total) * (l.end - l.start);
+          var el = document.createElement("div");
+          el.className = "cap"; el.id = "cap-" + id + "-" + i; el.textContent = clean(c);
+          root.appendChild(el); show(el, t0, t1);
+        });
+      });
+      window.__timelines["captions"] = tl;
+    })();
+  </script>
+</template>

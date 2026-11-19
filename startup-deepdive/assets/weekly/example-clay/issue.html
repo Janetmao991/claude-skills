@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>拆解周刊 No.01 Clay</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Inter+Tight:wght@500;700;800&display=block" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#777}
+.page{width:1080px;height:1440px;position:relative;overflow:hidden;margin:0 auto 40px}
+body.single{background:transparent}
+body.single .page{display:none;margin:0}
+body.single .page.on{display:block}
+
+/* ================= COVER · Clay style ================= */
+.cv{--cream:#F4F3F0;--forest:#035D44;--lime:#EEF773;--ink:#121212;
+  background:var(--cream);color:var(--ink);font-family:"Figtree","Noto Sans SC",sans-serif;padding:56px 64px}
+.cv .top{display:flex;justify-content:space-between;align-items:center}
+.cv .brand{font:900 64px/1 "Noto Sans SC";color:var(--forest);letter-spacing:-.01em}
+.cv .meta{font:700 20px/1.5 "JetBrains Mono";text-align:right;color:var(--forest);letter-spacing:.04em}
+.cv .pill{display:inline-flex;align-items:center;gap:12px;margin-top:54px;background:var(--forest);color:var(--lime);
+  border-radius:999px;padding:12px 26px 12px 14px;font:800 26px/1 "Figtree","Noto Sans SC"}
+.cv .pill img{width:44px;height:44px}
+.cv h1{margin-top:30px;font:900 96px/1.1 "Noto Sans SC";letter-spacing:-.02em;color:var(--ink)}
+.cv h1 .serif{font:400 italic 150px/0.9 "Instrument Serif";letter-spacing:-.01em;color:var(--forest);
+  background:var(--lime);border-radius:24px;padding:0 22px 6px;display:inline-block;transform:translateY(10px)}
+.cv .art{position:absolute;left:0;right:0;top:600px;height:520px;overflow:hidden}
+.cv .art img{width:100%;height:100%;object-fit:cover;object-position:center 40%}
+.cv .art::before{content:"";position:absolute;inset:0 0 auto 0;height:90px;background:linear-gradient(var(--cream),transparent);z-index:1}
+.cv .bottom{position:absolute;left:0;right:0;bottom:0;height:320px;background:var(--forest);color:var(--cream);
+  display:grid;grid-template-columns:1.55fr 1fr;padding:38px 64px 0;gap:52px}
+.cv .intro .lb{font:400 italic 40px/1 "Instrument Serif";color:var(--lime)}
+.cv .intro p{margin-top:16px;font:500 27px/1.65 "Noto Sans SC"}
+.cv .facts{padding-top:4px}
+.cv .facts div{display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid var(--lime);padding:12px 0 13px;
+  font:500 21px/1 "Noto Sans SC";color:#d9e6df}
+.cv .facts b{font:400 italic 38px/1 "Instrument Serif";color:var(--lime)}
+.cv .credit{position:absolute;right:64px;bottom:332px;font:500 17px/1 "JetBrains Mono";color:#fff;opacity:.85;z-index:2}
+
+/* ================= INNER · Atlantic style ================= */
+.atl{--red:#D7262B;--ink:#141414;background:#fff;color:var(--ink);padding:76px 92px;font-family:"Noto Serif SC",serif}
+.atl .kick{font:700 19px/1 "Inter Tight","Noto Sans SC";letter-spacing:.28em;color:var(--red)}
+.atl h1{margin-top:24px;font:700 54px/1.35 "Noto Serif SC";letter-spacing:.01em}
+.atl .dek{margin-top:18px;font:400 27px/1.6 "Noto Serif SC";color:#555}
+.atl .by{margin-top:20px;font:500 16px/1 "Inter Tight","Noto Sans SC";letter-spacing:.22em;color:#999}
+.atl .body{margin-top:38px;font:400 28px/1.9 "Noto Serif SC";color:#222}
+.atl .body p{margin-bottom:20px}
+.atl .body p.dc::first-letter{float:left;font:700 92px/0.86 "Noto Serif SC";color:var(--red);margin:8px 14px 0 0}
+.atl .body b{font-weight:700;color:var(--ink)}
+.atl .rule{border-top:1.5px solid var(--ink);margin-top:34px}
+.atl .pq{margin-top:30px;border-top:1.5px solid var(--ink);padding-top:22px;display:grid;grid-template-columns:62px 1fr;gap:10px}
+.atl .pq .q{font:700 italic 110px/0.8 "Playfair Display";color:var(--red)}
+.atl .pq p.sm{font:600 27px/1.6 "Noto Serif SC"}
+.atl .pq p{font:600 32px/1.5 "Noto Serif SC"}
+.atl .pq small{display:block;margin-top:10px;font:500 16px/1 "Inter Tight","Noto Sans SC";letter-spacing:.2em;color:#888}
+.atl .notes{margin-top:26px;border-top:1px solid #ccc;padding-top:18px}
+.atl .notes p{font:400 21px/1.65 "Noto Serif SC";color:#555;margin-bottom:6px}
+.atl .notes sup{font:700 17px/1 "Inter Tight";color:var(--red);margin-right:8px;vertical-align:baseline}
+.atl .folio{position:absolute;bottom:44px;left:92px;right:92px;display:flex;justify-content:space-between;
+  font:500 16px/1 "Inter Tight","Noto Sans SC";letter-spacing:.2em;color:#999}
+
+/* dot plot */
+.atl .dots{margin-top:50px;position:relative;height:170px}
+.atl .dots .line{position:absolute;left:0;right:0;top:86px;height:2px;background:var(--ink)}
+.atl .dots .tick{position:absolute;top:78px;width:2px;height:18px;background:var(--ink)}
+.atl .dots .dot{position:absolute;top:73px;width:30px;height:30px;border-radius:50%;background:var(--ink);transform:translateX(-50%)}
+.atl .dots .dot.red{background:var(--red);width:40px;height:40px;top:68px}
+.atl .dots .lab{position:absolute;transform:translateX(-50%);text-align:center;white-space:nowrap}
+.atl .dots .n{font:400 italic 58px/1 "Playfair Display"}
+.atl .dots .n.red{color:var(--red)}
+.atl .dots .n i{font:500 34px/1 "Inter Tight";font-style:normal;margin-left:3px}
+.atl .dots .c{font:500 17px/1 "Inter Tight","Noto Sans SC";letter-spacing:.14em;color:#666}
+
+/* timeline */
+.atl .tl{margin-top:36px}
+.atl .tl .row{display:grid;grid-template-columns:130px 30px 1fr;align-items:baseline;padding:6px 0}
+.atl .tl .y{font:400 italic 38px/1 "Playfair Display"}
+.atl .tl .row.red .y{color:var(--red)}
+.atl .tl .d{width:11px;height:11px;border-radius:50%;background:var(--ink);transform:translateY(-4px)}
+.atl .tl .row.red .d{background:var(--red);width:15px;height:15px}
+.atl .tl .t{font:400 25px/1.5 "Noto Serif SC";color:#333}
+.atl .tl .t b{font-weight:700;color:var(--ink)}
+.atl .big30{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:22px;margin-top:28px;border-top:1.5px solid var(--ink);padding-top:22px}
+.atl .big30 .n{font:400 italic 124px/0.85 "Playfair Display";color:var(--red)}
+.atl .big30 p{font:600 27px/1.6 "Noto Serif SC"}
+
+/* chain */
+.atl .chain{margin-top:56px;position:relative;height:200px}
+.atl .chain .ln{position:absolute;left:60px;right:60px;top:42px;height:2px;background:var(--ink)}
+.atl .chain .node{position:absolute;top:0;width:260px;text-align:center;transform:translateX(-50%)}
+.atl .chain .c{width:84px;height:84px;border-radius:50%;border:2px solid var(--ink);background:#fff;margin:0 auto;
+  display:flex;align-items:center;justify-content:center;font:400 italic 40px/1 "Playfair Display"}
+.atl .chain .node.red .c{background:var(--red);border-color:var(--red);color:#fff}
+.atl .chain .lb{margin-top:14px;font:500 16px/1 "Inter Tight","Noto Sans SC";letter-spacing:.2em;color:#888}
+.atl .chain .rs{margin-top:8px;font:400 23px/1.4 "Noto Serif SC"}
+.atl .chain .node.red .rs{color:var(--red);font-weight:700}
+
+/* moat grid */
+.atl .moats{margin-top:46px;display:grid;grid-template-columns:repeat(8,1fr);column-gap:8px}
+.atl .moat{text-align:center}
+.atl .moat .c{width:58px;height:58px;border-radius:50%;border:2px solid var(--ink);margin:0 auto;position:relative;overflow:hidden}
+.atl .moat.full .c{background:var(--red);border-color:var(--red)}
+.atl .moat.half .c::after{content:"";position:absolute;left:0;top:0;bottom:0;width:50%;background:var(--ink)}
+.atl .moat .nm{margin-top:10px;font:600 19px/1.3 "Noto Serif SC"}
+.atl .legend{margin-top:20px;display:flex;gap:30px;font:500 16px/1 "Inter Tight","Noto Sans SC";letter-spacing:.14em;color:#888}
+.atl .legend i{display:inline-block;width:14px;height:14px;border-radius:50%;border:1.5px solid var(--ink);margin-right:8px;vertical-align:-2px}
+.atl .legend i.f{background:var(--red);border-color:var(--red)}
+.atl .legend i.h{background:linear-gradient(90deg,var(--ink) 50%,#fff 50%)}
+
+/* ---- full-issue components ---- */
+.atl .qlist{margin-top:30px}
+.atl .qlist .it{display:grid;grid-template-columns:62px 1fr;padding:17px 0;border-top:1px solid #ddd}
+.atl .qlist .it:last-child{border-bottom:1px solid #ddd}
+.atl .qlist .n{font:400 italic 40px/1 "Playfair Display";color:var(--red)}
+.atl .qlist .h{font:700 27px/1.45 "Noto Serif SC"}
+.atl .qlist .d{font:400 24px/1.6 "Noto Serif SC";color:#555}
+.atl .stats3{display:grid;grid-template-columns:repeat(3,1fr);margin-top:36px;border-top:1.5px solid var(--ink);border-bottom:1px solid #ddd;padding:22px 0}
+.atl .stats3 .n{font:400 italic 66px/1 "Playfair Display"}
+.atl .stats3 .n.red{color:var(--red)}
+.atl .stats3 .l{margin-top:10px;font:500 17px/1.3 "Inter Tight","Noto Sans SC";letter-spacing:.12em;color:#777}
+.atl .bigstat{display:grid;grid-template-columns:290px 1fr;align-items:center;gap:24px;margin-top:28px;border-top:1.5px solid var(--ink);padding-top:24px}
+.atl .bigstat .n{font:400 italic 88px/0.9 "Playfair Display";color:var(--red);white-space:nowrap}
+.atl .bigstat p{font:600 26px/1.6 "Noto Serif SC"}
+.atl table.mt{width:100%;border-collapse:collapse;margin-top:34px}
+.atl table.mt th{font:500 15px/1 "Inter Tight","Noto Sans SC";letter-spacing:.16em;color:#888;text-align:left;padding:0 0 12px;border-bottom:1.5px solid var(--ink)}
+.atl table.mt td{font:400 24px/1.4 "Noto Serif SC";padding:20px 0;border-bottom:1px solid #ddd}
+.atl table.mt td.ok{color:var(--red);font-weight:700}
+.atl table.mt td.wait{color:#aaa}
+.atl .crm{margin-top:14px;text-align:right;font:500 17px/1 "Inter Tight","Noto Sans SC";letter-spacing:.16em;color:var(--red)}
+.atl .lead{margin-top:34px;font:700 18px/1 "Inter Tight","Noto Sans SC";letter-spacing:.24em;color:var(--red)}
+.atl svg.grow{display:block;margin-top:30px}
+.atl .cap{margin-top:6px;font:500 15px/1 "Inter Tight","Noto Sans SC";letter-spacing:.12em;color:#999}
+.atl table.cmp td{font-size:22px;padding:15px 10px 15px 0;vertical-align:top}
+.atl table.cmp th{padding-right:10px}
+.atl table.cmp td.c{width:250px}
+.atl table.cmp td.k{font:500 17px/1.6 "Inter Tight","Noto Sans SC";letter-spacing:.1em;color:#888;width:150px}
+.atl table.cmp th.c,.atl table.cmp td.c{color:var(--red);font-weight:700}
+.atl table.cmp td.na{color:#aaa}
+.atl .gloss{display:grid;grid-template-columns:1fr 1fr;column-gap:44px;margin-top:30px}
+.atl .gloss .g{border-top:1px solid var(--ink);padding:16px 0 20px}
+.atl.tight .qlist .it{padding:10px 0}
+.atl .gloss b{display:block;font:700 26px/1.4 "Noto Serif SC"}
+.atl .gloss span{font:400 22px/1.6 "Noto Serif SC";color:#555}
+.atl .colophon{margin-top:26px;border-top:1.5px solid var(--ink);padding-top:18px;font:400 20px/1.7 "Noto Serif SC";color:#666}
+.atl .colophon b{color:var(--red);font:400 italic 30px/1 "Playfair Display";margin-right:10px}
+</style>
+</head>
+<body>
+
+<!-- 1 · COVER -->
+<section class="page cv" id="p1">
+  <div class="top"><div class="brand">拆解周刊</div><div class="meta">STARTUP TEARDOWN<br>NO.01 · 2026.11</div></div>
+  <div class="pill"><img src="assets/Clay_icon-1.avif" alt="">本期拆解 · Clay</div>
+  <h1>一条数据都不拥有，<br>凭什么值 <span class="serif">$7.1B</span></h1>
+  <div class="art"><img src="assets/Reps-Still-1.avif" alt=""></div>
+  <div class="credit">插图：clay.com</div>
+  <div class="bottom">
+    <div class="intro"><div class="lb">What is Clay?</div>
+      <p>一家给销售团队用的数据工具公司。你给它一份公司名单，它去 250 多家数据商和网页里，找出该联系的人、邮箱和购买信号。</p></div>
+    <div class="facts">
+      <div>创立<b>2017</b></div>
+      <div>客户<b>17,000+</b></div>
+      <div>年收入<b>~$200M</b></div>
+      <div>估值<b>$7.1B</b></div>
+    </div>
+  </div>
+</section>
+
+<section class="page atl tight" id="p2">
+  <div class="kick">先认识 CLAY</div>
+  <h1>Clay 帮销售团队找到该联系的人</h1>
+  <p class="dek">2017 年创立，客户是向企业卖东西的销售团队，今天有一万七千多家。</p>
+  <div class="by">拆解周刊 · NO.01 · CLAY</div>
+  <div class="body"><p class="dc">它的产品是一张会自己填信息的表格。你放进一份公司名单，它替你去 250 多家数据商和网页里查，把该联系的人、邮箱和购买信号逐行填好。</p><p>设想你把软件卖给其他公司，手上有一份可能会买的公司名单。光有名字还不够，还差三样东西：</p></div>
+  <div class="qlist" style="margin-top:10px"><div class="it"><span class="n">1</span><div><div class="h">该找谁谈</div><div class="d">这家公司里，谁负责买你卖的东西</div></div></div><div class="it"><span class="n">2</span><div><div class="h">怎么联系</div><div class="d">邮箱、电话</div></div></div><div class="it"><span class="n">3</span><div><div class="h">现在是不是好时机</div><div class="d">比如刚融了资，或者正在招人</div></div></div></div>
+  <div class="body"><p>过去，销售团队向大型数据公司买这些信息。最大的一家是 ZoomInfo，它维护着一个巨大的商务联系人数据库，按座位¹收费，每个登录的销售都要算一份钱。</p></div>
+  <div class="bigstat"><div class="n">2–4%</div><p>问题有两个：没有哪个数据库收录了所有人；人又常换工作，每个月有 2% 到 4% 的数据失效。</p></div>
+  <div class="notes"><p><sup>1</sup>座位（seat）：一个人的登录账号。大多数销售软件按座位收费。</p></div>
+  <div class="folio"><span>拆解周刊</span><span>02 / 13</span></div>
+</section>
+
+<section class="page atl " id="p3">
+  <div class="kick">产品</div>
+  <h1>一张会自己填满的表格</h1>
+  <p class="dek">Clay 自己一条数据都没有，表格里的每一项都是从别处问来的。</p>
+  <div class="by">拆解周刊 · NO.01 · CLAY</div>
+  <table class="mt">
+    <tr><th>公司（示例）</th><th>该找的人</th><th>邮箱</th><th>购买信号</th></tr>
+    <tr><td>某金融科技公司</td><td>安全主管</td><td class="ok">✓ 找到</td><td>刚完成融资</td></tr>
+    <tr><td>某软件公司</td><td>销售副总裁</td><td class="ok">✓ 找到</td><td>正在招人</td></tr>
+    <tr><td>某零售公司</td><td class="wait">查询中…</td><td class="wait">—</td><td class="wait">—</td></tr>
+  </table>
+  <div class="crm">→ 结果写回 CRM¹</div>
+  <div class="body">
+    <p class="dc">表格里每一行是一家公司。Clay 逐行去问 250 多家数据商，数据商答不上来的，再交给一个会浏览网页的 AI 去找。该联系的人、邮箱和购买信号，都是这样一项项查来的。</p>
+    <p>找到的结果最后写回 CRM。</p>
+  </div>
+  <div class="notes"><p><sup>1</sup>CRM：客户关系管理系统，销售团队记录客户和交易的地方，比如 Salesforce、HubSpot。</p></div>
+  <div class="folio"><span>拆解周刊</span><span>03 / 13</span></div>
+</section>
+
+<section class="page atl" id="p4">
+  <div class="kick">产品</div>
+  <h1>挨家问，问到有答案为止</h1>
+  <p class="dek">没有哪家数据商能覆盖超过约一半的市场。所以 Clay 按顺序一家家问下去，直到拿到答案。</p>
+  <div class="by">拆解周刊 · NO.01 · CLAY</div>
+  <div class="chain">
+    <div class="ln"></div>
+    <div class="node" style="left:14%"><div class="c">A</div><div class="lb">数据商</div><div class="rs">没有</div></div>
+    <div class="node" style="left:50%"><div class="c">B</div><div class="lb">数据商</div><div class="rs">没有</div></div>
+    <div class="node red" style="left:86%"><div class="c">C</div><div class="lb">数据商</div><div class="rs">找到邮箱 · 扣 1 credit¹</div></div>
+  </div>
+  <div class="body">
+    <p class="dc">在 Clay 的表格里，每一列都是一个动作。比如你想要某家公司安全主管的邮箱：Clay 先问一家数据商，没有，就问下一家，再下一家²。只有真的有人答上来，才扣你一个 credit。这条链叫<b>瀑布流</b>（waterfall）。</p>
+    <p>排在第一个被问的数据商拿到这笔钱，顺序由 Clay 决定。它更像一个替客户挑货的买手。</p>
+    <p>一万七千家客户在用，Clay 因此知道哪家数据商答得最好，比如德国金融业的邮箱该先问谁。它真正的数据资产是这份经验，不是联系人。</p>
+  </div>
+  <div class="notes">
+    <p><sup>1</sup>Credit：Clay 的预付点数，像游戏厅代币。</p>
+    <p><sup>2</sup>连数据商都没有答案时，AI 代理 Claygent 会自己去读公司官网。</p>
+  </div>
+  <div class="folio"><span>拆解周刊</span><span>04 / 13</span></div>
+</section>
+
+<section class="page atl tight" id="p5">
+  <div class="kick">客户</div>
+  <h1>三年多，从 120 家客户到 17,000 家</h1>
+  <p class="dek">OpenAI、Anthropic、Figma、Canva 和 Rippling 都出现在 Clay 官网的客户名单上。</p>
+  <div class="by">拆解周刊 · NO.01 · CLAY</div>
+  <svg class="grow" width="896" height="214" viewBox="0 0 896 214">
+    <line x1="0" y1="176" x2="896" y2="176" stroke="#141414" stroke-width="1.5"/>
+    <polyline points="18,175 229,166 442,135 614,87 706,51 866,25" fill="none" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/>
+    <g fill="#141414"><circle cx="18" cy="175" r="6"/><circle cx="229" cy="166" r="6"/><circle cx="442" cy="135" r="6"/><circle cx="614" cy="87" r="6"/><circle cx="706" cy="51" r="6"/></g>
+    <circle cx="866" cy="25" r="10" fill="#D7262B"/>
+    <g font-family="Playfair Display" font-style="italic" font-size="30" fill="#141414">
+      <text x="10" y="155">120</text><text x="200" y="146">1,000</text><text x="404" y="115">4,500</text><text x="556" y="72">10,000</text><text x="626" y="36">14,000</text></g>
+    <text x="728" y="20" font-family="Playfair Display" font-style="italic" font-size="34" fill="#D7262B">17,000+</text>
+    <g font-family="Inter Tight" font-size="16" fill="#888" letter-spacing="2">
+      <text x="4" y="202">2023.1</text><text x="200" y="202">2023.12</text><text x="414" y="202">2024.11</text><text x="590" y="202">2025.8</text><text x="684" y="202">2026.1</text><text x="836" y="202">2026.9</text></g>
+  </svg>
+  <div class="cap">客户数 · 来源：创始人访谈、Clay 公告；2025.8 只计付费客户</div>
+  <div class="body" style="margin-top:14px"><p>按 Clay 的统计，福布斯 AI 50 榜单上 80% 的公司在用它。每家客户也在多花钱：平均一年的花费从 2024 年底约 4,400 美元涨到约 1.18 万美元¹。客户分三类：</p></div>
+  <div class="qlist"><div class="it"><span class="n">1</span><div><div class="h">大公司</div><div class="d">第一个项目几乎都是刷新 CRM：把里面过期的旧数据重新核对一遍。这类客户留得住，还会越用越多。</div></div></div><div class="it"><span class="n">2</span><div><div class="h">小团队</div><div class="d">用自助套餐，主要拉潜在客户名单。很多人停用一两个月，又回来。</div></div></div><div class="it"><span class="n">3</span><div><div class="h">代理商</div><div class="d">别的公司花钱请他们搭 Clay 表格。</div></div></div></div>
+  <div class="body" style="margin-top:14px"><p>在支出管理平台 Ramp 上购买销售数据的公司里，约四分之一在用 Clay，排第三，前面是 LinkedIn 和 Apollo，后面是 ZoomInfo。</p></div>
+  <div class="notes"><p><sup>1</sup>年收入 ÷ 客户数。Clay 官方另称，大企业客户的净收入留存（NDR）超过 200%。</p></div>
+  <div class="folio"><span>拆解周刊</span><span>05 / 13</span></div>
+</section>
+
+<section class="page atl" id="p6">
+  <div class="kick">对手</div>
+  <h1>Clay 在长，是从老对手手里抢份额</h1>
+  <p class="dek">销售数据这块预算本身几乎不再增长。最大的 ZoomInfo 去年收入只涨了 3%；Clay 从 2023 年初到 2025 年底，年收入涨了约 100 倍。</p>
+  <div class="by">拆解周刊 · NO.01 · CLAY</div>
+  <table class="mt cmp">
+    <tr><th></th><th class="c">CLAY</th><th>APOLLO</th><th>ZOOMINFO</th></tr>
+    <tr><td class="k">年收入</td><td class="c">约 2 亿美元</td><td>约 1.5 亿美元¹</td><td>12.5 亿美元</td></tr>
+    <tr><td class="k">增长</td><td class="c">约 100 倍<br>（2023 初到 2025 底）</td><td>2024 年 +40%¹</td><td>2025 年 +3%<br>最近一季 +1.2%</td></tr>
+    <tr><td class="k">客户</td><td class="c">17,000+</td><td>约 40,000 付费</td><td>年付 10 万美元以上的大客户 1,921 家，环比下降</td></tr>
+    <tr><td class="k">老客户留存</td><td class="c">大企业 &gt;200%</td><td class="na">未公开</td><td>89%</td></tr>
+    <tr><td class="k">收费方式</td><td class="c">按用量<br>座位不限</td><td>按座位，每月 49 美元起</td><td>按座位，年度合同</td></tr>
+    <tr><td class="k">Ramp 采用率²</td><td class="c">24%</td><td>39%</td><td>17%</td></tr>
+  </table>
+  <div class="body" style="margin-top:30px"><p>ZoomInfo 的麻烦在于按座位收费：客户的销售团队缩编，它的收入就跟着缩。今年第二季度，它中小客户的平均合同金额同比降了 12%；5 月又裁员约 600 人，约占员工的 20%。Clay 按用量收费，收入不跟客户的座位数挂钩。</p></div>
+  <div class="notes"><p><sup>1</sup>Apollo 未上市，数字来自研究机构 Sacra 的估算。</p><p><sup>2</sup>在 Ramp 平台上购买销售数据的公司里，用这家的比例。排第一的是 LinkedIn，48%。</p></div>
+  <div class="folio"><span>拆解周刊</span><span>06 / 13</span></div>
+</section>
+
+<section class="page atl" id="p7">
+  <div class="kick">起源</div>
+  <h1>第一批粉丝，不是创业公司</h1>
+  <p class="dek">Clay 前四年几乎没赚钱，直到一位用户把它卖给了冷邮件代理商。</p>
+  <div class="by">拆解周刊 · NO.01 · CLAY</div>
+  <div class="tl">
+    <div class="row"><span class="y">2017</span><span class="d"></span><span class="t">Kareem Amin 和 Nicolae Rusan 创立 Clay</span></div>
+    <div class="row"><span class="y">2021</span><span class="d"></span><span class="t">用户 <b>Varun Anand</b> 带来首批付费客户，成为联合创始人</span></div>
+    <div class="row"><span class="y">2023</span><span class="d"></span><span class="t">年收入约 <b>100 万美元</b></span></div>
+    <div class="row"><span class="y">2025</span><span class="d"></span><span class="t">年收入约 <b>1 亿美元</b></span></div>
+    <div class="row red"><span class="y">今天</span><span class="d"></span><span class="t">年收入约 <b>2 亿美元</b></span></div>
+  </div>
+  <div class="body">
+    <p class="dc">最初的使命很宽泛：把编程的能力交给更多人。最早的铁粉是<b>冷邮件代理商</b>，也就是替别的公司发销售邮件的小团队。他们懂技术，又每天都在手工整理潜在客户名单，正好有这个痛点。</p>
+  </div>
+  <div class="big30"><div class="n">30</div><p>Varun 翻完这些代理商多年的 WhatsApp 群聊，挑出写得最用心的 30 个人，一个个亲自发邮件。</p></div>
+  <div class="body" style="margin-top:22px"><p>那时 Clay 几乎不收钱，产品里连付款按钮都没有。年收入到 100 万美元之前，每一张账单都是 Varun 手动发的。</p></div>
+  <div class="folio"><span>拆解周刊</span><span>07 / 13</span></div>
+</section>
+
+<section class="page atl tight" id="p8">
+  <div class="kick">用户</div>
+  <h1>一个人，干原来三个人的活</h1>
+  <p class="dek">Clay 的核心用户是一种新职位：GTM 工程师。GTM 指销售和市场。</p>
+  <div class="by">拆解周刊 · NO.01 · CLAY</div>
+  <div class="body" style="margin-top:28px"><p class="dc">以前找新客户要三个人：SDR 找潜在客户、发第一封邮件，AE 跟进并签单，售前工程师回答技术问题。GTM 工程师一个人做这三份工作，靠的是在 Clay 表格里搭一套系统，让重复的活自动完成：</p></div>
+  <div class="qlist"><div class="it"><span class="n">1</span><div><div class="h">定目标</div><div class="d">比如 50 到 500 人的金融科技公司</div></div></div><div class="it"><span class="n">2</span><div><div class="h">拉名单</div><div class="d">找出所有符合的公司，和每家的关键人</div></div></div><div class="it"><span class="n">3</span><div><div class="h">补信息</div><div class="d">用瀑布流找邮箱、电话和职位</div></div></div><div class="it"><span class="n">4</span><div><div class="h">找信号</div><div class="d">Claygent 读网页：刚融资？在招人？用什么工具？</div></div></div><div class="it"><span class="n">5</span><div><div class="h">打分、写开场白</div><div class="d">AI 排出先联系谁，并为每个人起草第一句话</div></div></div><div class="it"><span class="n">6</span><div><div class="h">推出去</div><div class="d">写进 CRM、邮件工具和 LinkedIn 广告</div></div></div></div>
+  <div class="body" style="margin-top:24px"><p>跑完以后，他们看哪些邮件有回复、哪些信号带来了成交，改规则再跑，像发布软件一样出第 1、2、3 版。Clay 因此按用量收费、座位不限：销售团队缩编了，表格照样在跑。</p></div>
+  <div class="folio"><span>拆解周刊</span><span>08 / 13</span></div>
+</section>
+
+<section class="page atl" id="p9">
+  <div class="kick">护城河</div>
+  <h1>八条护城河，只有一条已经挖好</h1>
+  <p class="dek">对 ZoomInfo，Clay 有一条真正的护城河；对更便宜、更简单的 Apollo，一条都没有。</p>
+  <div class="by">拆解周刊 · NO.01 · CLAY</div>
+  <div class="moats">
+    <div class="moat full"><div class="c"></div><div class="nm">反向<br>定位</div></div>
+    <div class="moat half"><div class="c"></div><div class="nm">规模<br>效应</div></div>
+    <div class="moat half"><div class="c"></div><div class="nm">网络<br>效应</div></div>
+    <div class="moat half"><div class="c"></div><div class="nm">转换<br>成本</div></div>
+    <div class="moat half"><div class="c"></div><div class="nm">品牌</div></div>
+    <div class="moat half"><div class="c"></div><div class="nm">流程<br>能力</div></div>
+    <div class="moat"><div class="c"></div><div class="nm">独占<br>资源</div></div>
+    <div class="moat"><div class="c"></div><div class="nm">监管<br>壁垒</div></div>
+  </div>
+  <div class="legend"><span><i class="f"></i>已成立</span><span><i class="h"></i>建设中</span><span><i></i>没有</span></div>
+  <div class="body">
+    <p class="dc">已经成立的那条叫<b>反向定位</b>：ZoomInfo 卖自己的数据库、按座位收费；Clay 按用量收费，还转卖所有对手的数据。ZoomInfo 要抄 Clay，就得先砍自己的收入。它上季度只增长 1.2%；过去两年里，大企业采用 Clay 的比例则从 7% 涨到了 20%。</p>
+    <p>对 Apollo 就没有优势了。它更便宜、更简单，每月 49 美元起，今年还被 Salesforce 和 HubSpot 两大 CRM 装进了各自的 AI 代理。</p>
+  </div>
+  <div class="pq"><div class="q">!</div><div><p class="sm">弱点在计费表本身。按用量收费，出错就要花真钱：一位用户不小心重跑了一张表，烧掉 1000 美元的点数，随后退订。</p><small>弱点</small></div></div>
+  <div class="folio"><span>拆解周刊</span><span>09 / 13</span></div>
+</section>
+
+<section class="page atl" id="p10">
+  <div class="kick">商业模式</div>
+  <h1>投资人为“中间层”付了 35 倍</h1>
+  <p class="dek">同行大多把拥有数据当作护城河。Clay 押的是，知道该向谁买数据比拥有数据更值钱。</p>
+  <div class="by">拆解周刊 · NO.01 · CLAY</div>
+  <div class="dots">
+    <div class="line"></div>
+    <div class="tick" style="left:0"></div><div class="tick" style="left:100%"></div>
+    <div class="dot" style="left:2.9%"></div><div class="dot" style="left:31.4%"></div><div class="dot red" style="left:97%"></div>
+    <div class="lab" style="left:4%;top:0"><div class="n">1<i>×</i></div></div>
+    <div class="lab" style="left:31.4%;top:0"><div class="n">11<i>×</i></div></div>
+    <div class="lab" style="left:93%;top:0"><div class="n red">35<i>×</i></div></div>
+    <div class="lab" style="left:6%;top:126px"><div class="c">ZOOMINFO</div></div>
+    <div class="lab" style="left:31.4%;top:126px"><div class="c">APOLLO</div></div>
+    <div class="lab" style="left:93%;top:126px"><div class="c">CLAY</div></div>
+  </div>
+  <div class="body">
+    <p class="dc">这个倍数是公司估值除以一年的收入。71 亿美元约等于 Clay 年收入的 35 倍；卖数据的同行里，Apollo 约 11 倍，ZoomInfo 只有 1 倍左右。投资人愿意为站在中间的这一层付出很高的溢价。</p>
+    <p>可直到 2026 年 3 月，Clay 自己的定价说明还写着：主要按数据条数收费，部分点数以接近成本的价格出售。也就是说，大部分收入来自转卖数据，利润很薄。于是它把收费拆成两半：数据降价 50–90%，新增按<b>动作</b>（Action）收费，为跑流程本身买单。</p>
+    <p>钱不是问题：Clay 总共只融了 3.17 亿美元，有一阵利息收入比烧掉的钱还多。风险在于估值能不能撑住，而不在于公司能不能活下去。</p>
+  </div>
+  <div class="pq"><div class="q">“</div><div><p>现代销售团队的数据编排层。</p><small>红杉资本合伙人 ALFRED LIN，2024 年 6 月</small></div></div>
+  <div class="folio"><span>拆解周刊</span><span>10 / 13</span></div>
+</section>
+
+<section class="page atl " id="p11">
+  <div class="kick">风险</div>
+  <h1>最大的风险是被绕过</h1>
+  <p class="dek">比起被对手打败，Clay 更可能被直接跳过。威胁来自三个方向。</p>
+  <div class="by">拆解周刊 · NO.01 · CLAY</div>
+  <div class="qlist"><div class="it"><span class="n">1</span><div><div class="h">来自上方：CRM 和 AI 助手</div><div class="d">Salesforce 的 Hunter 和 HubSpot 的 Prospecting Agent 都内置了 Apollo；ZoomInfo 直接卖进了 Claude 和 Codex。CRM 里的 AI 能自己取数据，就不必经过 Clay。</div></div></div><div class="it"><span class="n">2</span><div><div class="h">来自下方：Claude Code</div><div class="d">个人和代理商用它直接连接数据商，不再用 Clay。</div></div></div><div class="it"><span class="n">3</span><div><div class="h">来自上游：数据供给</div><div class="d">少一家数据商影响不大，瀑布流会去问下一家。但很多数据商的数据来自 LinkedIn，而 LinkedIn 一直在起诉爬虫公司，Proxycurl 就在 2025 年被起诉后关停。这类数据一旦断供，许多数据商会同时受影响。</div></div></div></div>
+  <div class="pq"><div class="q">“</div><div><p>对小团队来说，Claude Code 直接赢了。</p><small>一位取消订阅的 CLAY 用户</small></div></div>
+  <div class="body" style="margin-top:20px"><p>Clay 的回应是规模。两边各有道理，说的是不同的客户群。</p></div>
+  <div class="folio"><span>拆解周刊</span><span>11 / 13</span></div>
+</section>
+
+<section class="page atl " id="p12">
+  <div class="kick">结论</div>
+  <h1>Clay 在和模型进步赛跑</h1>
+  <p class="dek">搭流程这件事，编程 AI 每发布一版就更强一点，低端用户正在离开。</p>
+  <div class="by">拆解周刊 · NO.01 · CLAY</div>
+  <div class="body"><p class="dc">跑大规模流程，Clay 更强：250 家数据商的合同、一张账单、对 CRM 有管控的写入，这些都不会因为模型变聪明就自动出现。71 亿美元的估值，买的是 Clay 成为每个 AI 代理背后那一层的机会。</p></div>
+  <div class="stats3"><div><div class="n red">$7.1B</div><div class="l">估值</div></div><div><div class="n">35×</div><div class="l">估值 ÷ 年收入</div></div><div><div class="n">$317M</div><div class="l">累计融资</div></div></div>
+  <div class="lead">接下来值得盯的三件事</div>
+  <div class="qlist"><div class="it"><span class="n">1</span><div><div class="h">年化收入</div><div class="d">12 月时能否达到约 2.4 亿美元</div></div></div><div class="it"><span class="n">2</span><div><div class="h">Action 的收入占比</div><div class="d">这决定 Clay 最终能有多赚钱</div></div></div><div class="it"><span class="n">3</span><div><div class="h">大企业会不会留下</div><div class="d">CRM 自带的 AI 代理上线后，它们是否还在 Clay 里刷新 CRM 数据</div></div></div></div>
+  <div class="folio"><span>拆解周刊</span><span>12 / 13</span></div>
+</section>
+
+<section class="page atl " id="p13">
+  <div class="kick">附录</div>
+  <h1>本期术语</h1>
+  <p class="dek">读不懂的词，都在这里。</p>
+  <div class="by">拆解周刊 · NO.01 · CLAY</div>
+  <div class="gloss"><div class="g"><b>CRM</b><span>客户关系管理系统，销售团队记录客户和交易的地方。</span></div><div class="g"><b>座位（Seat）</b><span>一个人的登录账号。多数销售软件按座位收费。</span></div><div class="g"><b>Credit</b><span>Clay 的预付点数，用来买数据。</span></div><div class="g"><b>Action</b><span>2026 年 3 月新增的收费单位，为运行流程付费。</span></div><div class="g"><b>瀑布流</b><span>按顺序一家家问数据商，问到答案为止。</span></div><div class="g"><b>Claygent</b><span>Clay 的 AI 代理，会自己读网页找信息。</span></div><div class="g"><b>年化收入</b><span>按当前速度推算的一年收入（run-rate）。</span></div><div class="g"><b>NDR</b><span>净收入留存：老客户比上一年多花了多少。Clay 大企业客户超过 200%。</span></div><div class="g"><b>GTM</b><span>go-to-market，销售和市场。</span></div><div class="g"><b>估值倍数</b><span>公司估值除以一年的收入。</span></div><div class="g"><b>MCP</b><span>让 AI 助手调用外部工具的接口。</span></div><div class="g"><b>SDR / AE</b><span>前者找客户、发第一封邮件；后者跟进和签单。</span></div></div>
+  <div class="colophon"><b>Fin.</b>资料来源：Clay 官网与定价说明，创始人和高管的播客访谈，Clay 2026 年 9 月融资公告，公开市场数据。本刊与 Clay 无合作关系。</div>
+  <div class="folio"><span>拆解周刊</span><span>13 / 13</span></div>
+</section>
+
+<script>
+const p=new URLSearchParams(location.search).get('p');
+if(p){document.body.classList.add('single');document.getElementById('p'+p).classList.add('on');}
+</script>
+</body>
+</html>

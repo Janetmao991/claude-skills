@@ -1,0 +1,67 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    #root { position: absolute; inset: 0; font-family: "Hannotate SC", sans-serif; color: #1e1e24; }
+    #root > svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+    .t-en { position: absolute; left: 90px; top: 290px; font-size: 150px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+    .t-zh { position: absolute; left: 90px; top: 452px; font-size: 64px; font-weight: 700; line-height: 1; z-index: 1; isolation: isolate; white-space: nowrap; }
+    .t-zh .hl { position: absolute; left: -10px; right: -10px; top: 30px; height: 40px; background: rgba(255, 212, 59, 0.75); border-radius: 6px; z-index: -1; }
+    .t-sub { position: absolute; left: 92px; top: 534px; font-family: "Inter", sans-serif; font-size: 32px; color: #5a5a63; white-space: nowrap; }
+    .lb { position: absolute; font-weight: 700; white-space: nowrap; opacity: 0; }
+    .g { color: #5a5a63; }
+    .pk { color: #f2557a; }
+    .bl { color: #2e7cf6; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+    .stamp { position: absolute; }
+    .stamp .in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #f2557a; opacity: 0; white-space: nowrap; }
+    .stamp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  </style>
+  <div id="root" data-composition-id="problem" data-width="1080" data-height="1920">
+    <svg id="pb-svg" viewBox="0 0 1080 1920"></svg>
+    <div class="t-en">Keywords</div>
+    <div class="t-zh"><div class="hl" id="pb-hl"></div>按字找，会出什么麻烦？</div>
+    <div class="t-sub">match the words, miss the meaning</div>
+
+    <div class="lb g" id="pb-s" style="left:126px; top:662px; font-size:40px">搜：</div>
+    <div class="lb" id="pb-s2" style="left:210px; top:662px; font-size:40px">钱要回来</div>
+    <div class="lb g" id="pb-l1" style="left:120px; top:780px; font-size:30px">顾客说的</div>
+    <div class="lb" id="pb-a" style="left:150px; top:840px; font-size:58px">钱要回来</div>
+    <div class="lb g" id="pb-l2" style="left:670px; top:780px; font-size:30px">文档写的</div>
+    <div class="lb" id="pb-b" style="left:740px; top:840px; font-size:58px">退款</div>
+    <div class="lb pk" id="pb-no" style="left:390px; top:958px; font-size:40px">字不一样，找不到</div>
+    <div class="lb" id="pb-need" style="left:96px; top:1050px; font-size:46px">电脑要会判断：<span class="pk">意思</span>像不像？</div>
+  </div>
+  <script>
+    (function () {
+      var N = "problem", tl = gsap.timeline({ paused: true });
+      var svg = document.getElementById("pb-svg");
+      var q = function (id, o) { return SK.cue(N, id, o); }, qc = function (id, ch) { return SK.cueChar(N, id, ch); };
+      SK.seed(250);
+      var C = SK.C;
+      gsap.set("#pb-hl", { scaleX: 0 });
+      SK.highlight(tl, "#pb-hl", 0.2, 0.5);
+      // p1: a search box
+      SK.draw(tl, SK.rect(svg, 100, 640, 880, 100, { strokeWidth: 4 }), q("p1"), 0.45);
+      SK.draw(tl, SK.circle(svg, 920, 686, 38, { strokeWidth: 4 }), q("p1", 0.3), 0.25);
+      SK.draw(tl, SK.line(svg, 934, 700, 952, 718, { strokeWidth: 5 }), q("p1", 0.5), 0.12);
+      SK.write(tl, "#pb-s", qc("p1", "按"));
+      SK.write(tl, "#pb-s2", qc("p1", "字"));
+      // p2: the two phrasings
+      SK.write(tl, "#pb-l1", qc("p2", "顾"));
+      SK.draw(tl, SK.rect(svg, 100, 820, 400, 110, { strokeWidth: 4 }), qc("p2", "钱") - 0.2, 0.4);
+      SK.write(tl, "#pb-a", qc("p2", "钱"));
+      SK.write(tl, "#pb-l2", qc("p2", "文"));
+      SK.draw(tl, SK.rect(svg, 650, 820, 330, 110, { strokeWidth: 4 }), qc("p2", "退") - 0.2, 0.4);
+      SK.write(tl, "#pb-b", qc("p2", "退"));
+      var ar = SK.arrow(svg, 515, 875, 635, 875, { stroke: C.blue, strokeWidth: 5, head: 18 });
+      SK.draw(tl, ar, q("p3"), 0.3);
+      // p3: no match
+      SK.cross(tl, svg, 575, 875, 34, qc("p3", "对"));
+      SK.write(tl, "#pb-no", qc("p3", "什"));
+      // p4: the ability we need
+      SK.write(tl, "#pb-need", qc("p4", "判"), 0.9);
+      SK.draw(tl, SK.curve(svg, [[430, 1112], [500, 1106], [560, 1114]], { stroke: C.pink, strokeWidth: 6 }), qc("p4", "意"), 0.3);
+      window.__timelines[N] = tl;
+    })();
+  </script>
+</template>

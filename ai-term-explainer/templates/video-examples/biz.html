@@ -1,0 +1,85 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    #root { position: absolute; inset: 0; font-family: "Hannotate SC", sans-serif; color: #1e1e24; }
+    #root > svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+    .t-en { position: absolute; left: 90px; top: 290px; font-size: 150px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+    .t-zh { position: absolute; left: 90px; top: 452px; font-size: 64px; font-weight: 700; line-height: 1; z-index: 1; isolation: isolate; white-space: nowrap; }
+    .t-zh .hl { position: absolute; left: -10px; right: -10px; top: 30px; height: 40px; background: rgba(255, 212, 59, 0.75); border-radius: 6px; z-index: -1; }
+    .t-sub { position: absolute; left: 92px; top: 534px; font-family: "Inter", sans-serif; font-size: 32px; color: #5a5a63; white-space: nowrap; }
+    .lb { position: absolute; font-weight: 700; white-space: nowrap; opacity: 0; }
+    .g { color: #5a5a63; }
+    .pk { color: #f2557a; }
+    .bl { color: #2e7cf6; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+    .stamp { position: absolute; }
+    .stamp .in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #f2557a; opacity: 0; white-space: nowrap; }
+    .stamp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .role { width: 240px; text-align: center; line-height: 1.1; font-size: 40px; }
+    .role span { display: block; font-size: 26px; color: #5a5a63; }
+    .nm { font-size: 32px; }
+  </style>
+  <div id="root" data-composition-id="biz" data-width="1080" data-height="1920">
+    <svg id="bz-svg" viewBox="0 0 1080 1920"></svg>
+    <div class="t-en">Value chain</div>
+    <div class="t-zh"><div class="hl" id="bz-hl"></div>它在生意里的哪一环？</div>
+    <div class="t-sub">who sells, who stores, who buys</div>
+
+    <div class="lb role" id="bz-r1" style="left:96px; top:624px"><span>上游</span>卖翻译机</div>
+    <div class="lb nm" id="bz-n1a" style="left:372px; top:610px">OpenAI · Google · Cohere</div>
+    <div class="lb nm" id="bz-n1b" style="left:372px; top:652px">阿里 · 智谱 · 百度 · 字节</div>
+    <div class="lb nm g" id="bz-n1c" style="left:372px; top:694px">开源免费：BGE · 千问 Embedding</div>
+    <div class="stamp" id="bz-price" style="left:660px; top:548px; width:320px; height:62px; transform:rotate(-4deg)"><div class="in" style="font-size:28px">≈2 美分 / 百万 token</div></div>
+
+    <div class="lb role" id="bz-r2" style="left:96px; top:784px"><span>中游</span>卖仓库</div>
+    <div class="lb nm" id="bz-n2a" style="left:372px; top:770px">向量数据库：Pinecone · Milvus</div>
+    <div class="lb nm" id="bz-n2b" style="left:372px; top:812px">老牌加功能：MongoDB · Postgres</div>
+    <div class="lb nm pk" id="bz-n2c" style="left:372px; top:854px">收购：Voyage AI · Jina AI</div>
+
+    <div class="lb role" id="bz-r3" style="left:96px; top:934px"><span>下游</span>装进产品</div>
+    <div class="lb nm" id="bz-n3a" style="left:372px; top:930px">Shopify 搜索框 · Notion AI</div>
+    <div class="lb nm" id="bz-n3b" style="left:372px; top:972px">Intercom 客服 · GitHub Copilot</div>
+
+    <div class="lb role" id="bz-r4" style="left:96px; top:1064px"><span>最终</span>你</div>
+    <div class="lb nm" id="bz-n4" style="left:372px; top:1082px">大白话搜商品 · 客服听得懂你</div>
+  </div>
+  <script>
+    (function () {
+      var N = "biz", tl = gsap.timeline({ paused: true });
+      var svg = document.getElementById("bz-svg");
+      var q = function (id, o) { return SK.cue(N, id, o); }, qc = function (id, ch) { return SK.cueChar(N, id, ch); };
+      SK.seed(750);
+      var C = SK.C;
+      gsap.set("#bz-hl", { scaleX: 0 });
+      SK.highlight(tl, "#bz-hl", 0.2, 0.5);
+      var R = [[600, 130], [760, 130], [920, 100], [1050, 100]];
+      function row(i, at) {
+        SK.draw(tl, SK.rect(svg, 96, R[i][0], 240, R[i][1], { strokeWidth: 4, stroke: i === 3 ? C.pink : C.ink }), at, 0.4);
+        SK.write(tl, "#bz-r" + (i + 1), at + 0.2, 0.4);
+        if (i > 0) SK.draw(tl, SK.arrow(svg, 216, R[i - 1][0] + R[i - 1][1] + 2, 216, R[i][0] - 2, { stroke: C.blue, strokeWidth: 4.5, head: 12 }), at - 0.15, 0.2);
+      }
+      // b1: a production line — draw the four empty stations
+      row(0, qc("b1", "生") - 0.2);
+      row(1, qc("b1", "生") + 0.2);
+      row(2, qc("b1", "生") + 0.6);
+      row(3, qc("b1", "生") + 1.0);
+      // b2–b4 upstream
+      SK.write(tl, "#bz-n1a", qc("b2", "O"), 1.0);
+      SK.write(tl, "#bz-n1b", qc("b2", "国"), 1.0);
+      SK.write(tl, "#bz-n1c", qc("b3", "B"), 1.0);
+      SK.stampBox(tl, "#bz-price", qc("b4", "两"));
+      // b5–b6 midstream
+      SK.write(tl, "#bz-n2a", qc("b5", "向"), 1.0);
+      SK.write(tl, "#bz-n2b", qc("b5", "老"), 1.0);
+      SK.write(tl, "#bz-n2c", qc("b6", "M"), 1.0);
+      SK.draw(tl, SK.curveArrow(svg, [[96, 830], [66, 760], [96, 680]], { stroke: C.pink, strokeWidth: 5, head: 14 }), qc("b6", "收"), 0.4);
+      // b7–b8 downstream
+      SK.write(tl, "#bz-n3a", qc("b7", "S"), 1.0);
+      SK.write(tl, "#bz-n3b", qc("b7", "I"), 1.0);
+      SK.draw(tl, SK.ellipse(svg, 216, 970, 300, 140, { stroke: C.pink, strokeWidth: 5, roughness: 1.6 }), qc("b8", "搜"), 0.5);
+      // b9 you
+      SK.write(tl, "#bz-n4", qc("b9", "大"), 1.0);
+      window.__timelines[N] = tl;
+    })();
+  </script>
+</template>

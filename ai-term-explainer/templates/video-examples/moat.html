@@ -1,0 +1,72 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    #root { position: absolute; inset: 0; font-family: "Hannotate SC", sans-serif; color: #1e1e24; }
+    #root > svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+    .t-en { position: absolute; left: 90px; top: 290px; font-size: 150px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+    .t-zh { position: absolute; left: 90px; top: 452px; font-size: 64px; font-weight: 700; line-height: 1; z-index: 1; isolation: isolate; white-space: nowrap; }
+    .t-zh .hl { position: absolute; left: -10px; right: -10px; top: 30px; height: 40px; background: rgba(255, 212, 59, 0.75); border-radius: 6px; z-index: -1; }
+    .t-sub { position: absolute; left: 92px; top: 534px; font-family: "Inter", sans-serif; font-size: 32px; color: #5a5a63; white-space: nowrap; }
+    .lb { position: absolute; font-weight: 700; white-space: nowrap; opacity: 0; }
+    .g { color: #5a5a63; }
+    .pk { color: #f2557a; }
+    .bl { color: #2e7cf6; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+    .stamp { position: absolute; }
+    .stamp .in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #f2557a; opacity: 0; white-space: nowrap; }
+    .stamp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .card { width: 220px; text-align: center; font-size: 36px; }
+  </style>
+  <div id="root" data-composition-id="moat" data-width="1080" data-height="1920">
+    <svg id="mt-svg" viewBox="0 0 1080 1920"></svg>
+    <div class="t-en">How hard?</div>
+    <div class="t-zh"><div class="hl" id="mt-hl"></div>做翻译机，门槛有多高</div>
+    <div class="t-sub">how an embedding model learns</div>
+
+    <div class="lb" id="mt-v1" style="left:96px; top:620px; font-size:44px">原理：不难懂</div>
+    <div class="lb" id="mt-v2" style="left:520px; top:620px; font-size:44px">第一梯队：<span class="pk">很难</span></div>
+    <div class="lb card" id="mt-q" style="left:100px; top:782px">怎么退款？</div>
+    <div class="lb card" id="mt-a" style="left:420px; top:782px">退款流程</div>
+    <div class="lb card g" id="mt-w" style="left:760px; top:782px">退货地址</div>
+    <div class="lb bl" id="mt-pull" style="left:300px; top:716px; font-size:32px">拉近</div>
+    <div class="lb pk" id="mt-push" style="left:650px; top:716px; font-size:32px">推开</div>
+    <div class="stamp" id="mt-x" style="left:700px; top:880px; width:260px; height:70px; transform:rotate(-5deg)"><div class="in" style="font-size:38px">× 几亿次</div></div>
+    <div class="lb" id="mt-src" style="left:96px; top:980px; font-size:38px">对子来源：<span class="bl">机器收集 + AI 生成</span>，不靠人工标</div>
+    <div class="lb" id="mt-e5" style="left:96px; top:1052px; font-size:38px">微软 E5 ≈ <span class="pk">2.7 亿对</span></div>
+    <div class="lb" id="mt-qw" style="left:540px; top:1052px; font-size:38px">千问 ≈ <span class="pk">1.5 亿对</span></div>
+  </div>
+  <script>
+    (function () {
+      var N = "moat", tl = gsap.timeline({ paused: true });
+      var svg = document.getElementById("mt-svg");
+      var q = function (id, o) { return SK.cue(N, id, o); }, qc = function (id, ch) { return SK.cueChar(N, id, ch); };
+      SK.seed(850);
+      var C = SK.C;
+      gsap.set("#mt-hl", { scaleX: 0 });
+      SK.highlight(tl, "#mt-hl", qc("t1", "门"), 0.4);
+      // t2: the verdict
+      SK.write(tl, "#mt-v1", qc("t2", "原"), 0.5);
+      SK.write(tl, "#mt-v2", qc("t2", "第"), 0.6);
+      // t3: pairs pulled close, look-alikes pushed away
+      var tq = qc("t3", "连");
+      SK.draw(tl, SK.rect(svg, 96, 764, 228, 90, { strokeWidth: 4 }), tq - 0.2, 0.35);
+      SK.write(tl, "#mt-q", tq);
+      SK.draw(tl, SK.rect(svg, 416, 764, 228, 90, { strokeWidth: 4 }), qc("t3", "相") - 0.2, 0.35);
+      SK.write(tl, "#mt-a", qc("t3", "相"));
+      SK.draw(tl, SK.curve(svg, [[330, 790], [370, 770], [410, 790]], { stroke: C.blue, strokeWidth: 5 }), qc("t3", "拉") - 0.2, 0.25);
+      SK.draw(tl, SK.curve(svg, [[330, 828], [370, 848], [410, 828]], { stroke: C.blue, strokeWidth: 5 }), qc("t3", "拉") - 0.05, 0.25);
+      SK.write(tl, "#mt-pull", qc("t3", "拉"), 0.25);
+      SK.draw(tl, SK.rect(svg, 756, 764, 228, 90, { strokeWidth: 3.5, stroke: C.grey }), qc("t3", "看"), 0.35);
+      SK.write(tl, "#mt-w", qc("t3", "看") + 0.2);
+      SK.draw(tl, SK.arrow(svg, 650, 760, 760, 730, { stroke: C.pink, strokeWidth: 5, head: 14 }), qc("t3", "推") - 0.15, 0.25);
+      SK.write(tl, "#mt-push", qc("t3", "推"), 0.25);
+      // t4: repeat
+      SK.stampBox(tl, "#mt-x", qc("t4", "几"));
+      // t5–t6: where the pairs come from, real numbers
+      SK.write(tl, "#mt-src", qc("t5", "机"), 1.1);
+      SK.write(tl, "#mt-e5", qc("t6", "微"), 0.7);
+      SK.write(tl, "#mt-qw", qc("t6", "阿"), 0.7);
+      window.__timelines[N] = tl;
+    })();
+  </script>
+</template>

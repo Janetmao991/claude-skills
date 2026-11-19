@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>Embedding real demo</title>
+<!-- Real-data screens for the Embedding video. Pick one with #api #dims #store #search #map #answer -->
+<style>
+  :root {
+    --mono: "SF Mono", Menlo, Monaco, monospace;
+    --sans: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+    --line: #e4e4e7; --muted: #71717a; --ink: #18181b; --accent: #2563eb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 900px; overflow: hidden; background: #fff; font-family: var(--sans); color: var(--ink); }
+  .screen { display: none; width: 1200px; height: 900px; }
+  .screen.on { display: flex; flex-direction: column; }
+
+  /* window chrome shared by all screens */
+  .bar { height: 44px; flex: none; display: flex; align-items: center; gap: 8px; padding: 0 16px; border-bottom: 1px solid var(--line); background: #f4f4f5; font-size: 14px; color: var(--muted); }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: #d4d4d8; }
+  .bar .t { margin-left: 12px; }
+  .body { flex: 1; padding: 32px 40px; overflow: hidden; }
+
+  /* terminal */
+  .term { background: #0f1115; color: #d4d4d8; }
+  .term .bar { background: #1a1d23; border-color: #262a31; color: #8b8f98; }
+  .term .dot { background: #3a3f48; }
+  .term .body { font: 17px/1.6 var(--mono); }
+  .prompt { color: #7dd3fc; }
+  .k { color: #c4b5fd; } .s { color: #86efac; } .n { color: #fcd34d; } .c { color: #6b7280; }
+  .num { white-space: nowrap; }
+
+  /* dims grid */
+  .grid { display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px 10px; font: 11.5px/1.45 var(--mono); color: #3f3f46; }
+  .grid span.neg { color: #b91c1c; }
+  .badge { display: inline-block; font: 600 15px var(--mono); background: #eff6ff; color: var(--accent); padding: 4px 10px; border-radius: 6px; }
+
+  /* tables */
+  h2 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .sub { color: var(--muted); font-size: 15px; margin-bottom: 22px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th { text-align: left; font-weight: 500; color: var(--muted); font-size: 13px; padding: 10px 12px; border-bottom: 1px solid var(--line); background: #fafafa; }
+  td { padding: 13px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td.mono { font: 13px var(--mono); color: #52525b; white-space: nowrap; }
+  td.txt { color: #3f3f46; max-width: 420px; }
+
+  /* search */
+  .cols { display: grid; grid-template-columns: 1fr 1.35fr; gap: 28px; height: 100%; }
+  .panel { border: 1px solid var(--line); border-radius: 10px; padding: 22px; display: flex; flex-direction: column; }
+  .panel h3 { font-size: 16px; color: var(--muted); font-weight: 500; margin-bottom: 14px; }
+  .q { border: 1px solid #d4d4d8; border-radius: 8px; padding: 12px 14px; font-size: 17px; margin-bottom: 14px; }
+  .chips span { display: inline-block; font: 13px var(--mono); border: 1px solid var(--line); border-radius: 5px; padding: 3px 8px; margin: 0 6px 6px 0; color: #52525b; }
+  .empty { flex: 1; display: flex; align-items: center; justify-content: center; color: #a1a1aa; font-size: 18px; flex-direction: column; gap: 8px; }
+  .empty b { font: 600 44px var(--mono); color: #d4d4d8; }
+  .row { display: grid; grid-template-columns: 28px 120px 1fr 66px; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f4f4f5; font-size: 16px; }
+  .row .i { color: #a1a1aa; font: 13px var(--mono); }
+  .track { height: 10px; background: #f4f4f5; border-radius: 5px; overflow: hidden; }
+  .fill { height: 100%; background: #93c5fd; }
+  .row.top .fill { background: var(--accent); }
+  .row.top { font-weight: 600; }
+  .score { font: 14px var(--mono); text-align: right; }
+
+  /* map */
+  svg text { font-family: var(--sans); }
+  .legend { display: flex; gap: 18px; font-size: 14px; color: var(--muted); }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+
+  /* answer */
+  .chat { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; font-size: 19px; line-height: 1.6; }
+  .msg.user { align-self: flex-end; background: #2563eb; color: #fff; padding: 12px 18px; border-radius: 16px 16px 4px 16px; }
+  .msg.bot { background: #f4f4f5; padding: 18px 22px; border-radius: 16px 16px 16px 4px; }
+  .src { margin-top: 14px; font-size: 14px; color: var(--muted); border-top: 1px solid #e4e4e7; padding-top: 10px; }
+  .src span { display: inline-block; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; margin-left: 6px; color: var(--ink); }
+  .meta { font: 13px var(--mono); color: #a1a1aa; text-align: center; }
+</style>
+</head>
+<body>
+
+<section class="screen term" id="api">
+  <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="t">zsh — embeddings</span></div>
+  <div class="body" id="api-body"></div>
+</section>
+
+<section class="screen" id="dims">
+  <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="t">response.data[0].embedding</span></div>
+  <div class="body">
+    <h2>一句话 → <span class="badge" id="dims-count"></span> 个数字</h2>
+    <p class="sub" id="dims-sub"></p>
+    <div class="grid" id="dims-grid"></div>
+  </div>
+</section>
+
+<section class="screen" id="store">
+  <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="t">support_docs · vector index</span></div>
+  <div class="body">
+    <h2>support_docs</h2>
+    <p class="sub" id="store-sub"></p>
+    <table><thead><tr><th>id</th><th>title</th><th>text</th><th>embedding</th></tr></thead><tbody id="store-rows"></tbody></table>
+  </div>
+</section>
+
+<section class="screen" id="search">
+  <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="t">search · 8 docs</span></div>
+  <div class="body">
+    <div class="cols">
+      <div class="panel">
+        <h3>按字搜 · keyword match</h3>
+        <div class="q" data-q></div>
+        <div class="chips" id="kw-chips"></div>
+        <div class="empty" id="kw-result"></div>
+      </div>
+      <div class="panel">
+        <h3>按意思搜 · cosine similarity</h3>
+        <div class="q" data-q></div>
+        <div id="sem-rows"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="map">
+  <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="t">embedding projection</span></div>
+  <div class="body">
+    <h2>12 句话的真实坐标</h2>
+    <p class="sub" id="map-sub"></p>
+    <div class="legend" id="map-legend"></div>
+    <svg id="map-svg" width="1120" height="660"></svg>
+  </div>
+</section>
+
+<section class="screen" id="answer">
+  <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="t">support bot</span></div>
+  <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:26px">
+    <div class="chat" id="chat"></div>
+    <p class="meta" id="answer-meta"></p>
+  </div>
+</section>
+
+<script src="data/results.js"></script>
+<script src="data/answer.js" onerror="window.ANSWER=null"></script>
+<script>
+const D = window.DATA;
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+const fmt = x => (x >= 0 ? " " : "") + x.toFixed(4);
+const vec = D.query_response.data[0].embedding;
+const GROUPS = { refund: ["退款 / 退货", "#2563eb"], shipping: ["发货 / 物流", "#ea580c"], membership: ["会员", "#16a34a"], account: ["账号", "#9333ea"], invoice: ["发票", "#71717a"] };
+
+// #api — the real request and the start of the real response
+$("api-body").innerHTML = `
+<div><span class="prompt">$</span> curl ${D.endpoint} \\</div>
+<div>&nbsp;&nbsp;-H <span class="s">"Authorization: Bearer $VOYAGE_API_KEY"</span> \\</div>
+<div>&nbsp;&nbsp;-d <span class="s">'{"input": ["${esc(D.query)}"], "model": "${D.model}", "input_type": "query"}'</span></div>
+<br>
+<div>{</div>
+<div>&nbsp;&nbsp;<span class="k">"object"</span>: <span class="s">"list"</span>,</div>
+<div>&nbsp;&nbsp;<span class="k">"data"</span>: [{</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">"embedding"</span>: [</div>
+<div class="vec" style="padding-left:4em"><span class="n">${vec.slice(0, 60).map(x => `<span class="num">${x.toFixed(6)},</span>`).join(" ")}</span></div>
+<div style="padding-left:4em" class="c">… ${vec.length - 60} more numbers</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;]</div>
+<div>&nbsp;&nbsp;}],</div>
+<div>&nbsp;&nbsp;<span class="k">"model"</span>: <span class="s">"${D.query_response.model}"</span>,</div>
+<div>&nbsp;&nbsp;<span class="k">"usage"</span>: { <span class="k">"total_tokens"</span>: <span class="n">${D.query_response.usage.total_tokens}</span> }</div>
+<div>}</div>`;
+
+// #dims — every one of the numbers
+$("dims-count").textContent = vec.length;
+$("dims-sub").textContent = `「${D.query}」 · ${D.model}`;
+$("dims-grid").innerHTML = vec.map(x => `<span class="${x < 0 ? "neg" : ""}">${fmt(x)}</span>`).join("");
+
+// #store — each doc stored with its vector
+$("store-sub").textContent = `${D.docs.length} records · dimension ${vec.length} · metric cosine · model ${D.model}`;
+$("store-rows").innerHTML = D.docs.map(d => `<tr>
+  <td class="mono">${d.id}</td><td>${d.title}</td><td class="txt">${d.text.length > 28 ? d.text.slice(0, 28) + "…" : d.text}</td>
+  <td class="mono">[${d.embedding.slice(0, 3).map(x => x.toFixed(3)).join(", ")}, … ]</td></tr>`).join("");
+
+// #search — keyword vs meaning, side by side
+document.querySelectorAll("[data-q]").forEach(el => el.textContent = D.query);
+$("kw-chips").innerHTML = D.keywords.map(k => `<span>${k}</span>`).join("");
+$("kw-result").innerHTML = D.keyword_hits.length ? D.keyword_hits.map(h => h.title).join("、") : `<b>0</b>0 results`;
+const max = D.ranked[0].score;
+$("sem-rows").innerHTML = D.ranked.map((d, i) => `<div class="row ${i === 0 ? "top" : ""}">
+  <span class="i">${i + 1}</span><span>${d.title}</span>
+  <span class="track"><span class="fill" style="display:block;width:${(d.score / max) * 100}%"></span></span>
+  <span class="score">${d.score.toFixed(3)}</span></div>`).join("");
+
+// #map — 2D projection of the real vectors
+$("map-sub").textContent = `${D.model} · ${vec.length} 维 → 投影到 2 维（PCA）· 越近 = 意思越像`;
+$("map-legend").innerHTML = Object.values(GROUPS).map(([n, c]) => `<span><i style="background:${c}"></i>${n}</span>`).join("");
+(() => {
+  const W = 1120, H = 640, pad = 90;
+  const xs = D.map.map(p => p.xy[0]), ys = D.map.map(p => p.xy[1]);
+  const sx = x => pad + (x - Math.min(...xs)) / (Math.max(...xs) - Math.min(...xs)) * (W - 2 * pad);
+  const sy = y => pad / 2 + (y - Math.min(...ys)) / (Math.max(...ys) - Math.min(...ys)) * (H - pad);
+  let g = `<rect x="0" y="0" width="${W}" height="${H + 20}" fill="#fafafa" rx="10"/>`;
+  for (let i = 1; i < 8; i++) g += `<line x1="${i * W / 8}" y1="0" x2="${i * W / 8}" y2="${H + 20}" stroke="#f0f0f2"/>`;
+  for (let i = 1; i < 6; i++) g += `<line x1="0" y1="${i * (H + 20) / 6}" x2="${W}" y2="${i * (H + 20) / 6}" stroke="#f0f0f2"/>`;
+  // place each label right, left, above or below its dot — first spot that stays in frame and clear of earlier labels
+  const boxes = [];
+  const hit = b => b.x < 6 || b.x + b.w > W - 6 || boxes.some(o => b.x < o.x + o.w && o.x < b.x + b.w && b.y < o.y + o.h && o.y < b.y + b.h);
+  g += D.map.map(p => {
+    const x = sx(p.xy[0]), y = sy(p.xy[1]), c = GROUPS[p.group][1], w = p.text.length * 19.5, h = 24;
+    const spots = [[x + 15, y - 12], [x - 15 - w, y - 12], [x - w / 2, y - 38], [x - w / 2, y + 14]];
+    const [lx, ly] = spots.find(([sx_, sy_]) => !hit({ x: sx_, y: sy_, w, h })) || spots[0];
+    boxes.push({ x: lx, y: ly, w, h });
+    return `<circle cx="${x}" cy="${y}" r="9" fill="${c}"/><text x="${lx}" y="${ly + 18}" font-size="19" fill="#27272a">${p.text}</text>`;
+  }).join("");
+  $("map-svg").innerHTML = g;
+})();
+
+// #answer — the retrieved doc handed to the LLM (filled once data/answer.js exists)
+const A = window.ANSWER;
+$("chat").innerHTML = `<div class="msg user">${D.query}</div>` + (A
+  ? `<div class="msg bot">${esc(A.text)}<div class="src">检索到${A.sources.map(s => `<span>${s.title} · ${s.score.toFixed(3)}</span>`).join("")}</div></div>`
+  : `<div class="msg bot" style="color:#a1a1aa">（等待 Claude 回答）</div>`);
+$("answer-meta").textContent = A ? `retrieval: ${D.model} · answer: ${A.model}` : "";
+
+// show the screen named in the hash
+const show = () => document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", "#" + s.id === (location.hash || "#api")));
+addEventListener("hashchange", show); show();
+</script>
+</body>
+</html>

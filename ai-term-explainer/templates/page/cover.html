@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Hannotate SC"; src: url("../assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; }
+  html, body { margin: 0; }
+  body { width: 1080px; height: 1440px; overflow: hidden; position: relative; background: #FAF4E8;
+    background-image: radial-gradient(#e4e4e8 2px, transparent 2px); background-size: 36px 36px;
+    font-family: "Hannotate SC", sans-serif; font-weight: 700; color: #1e1e24; }
+  svg { position: absolute; inset: 0; width: 1080px; height: 1440px; overflow: visible; }
+  .a { position: absolute; white-space: nowrap; }
+  .eyebrow { left: 90px; top: 92px; font-size: 40px; color: #5a5a63; letter-spacing: .04em; }
+  .en { left: 82px; top: 160px; font-size: 200px; line-height: 1; z-index: 1; }
+  .en .hl { position: absolute; left: -12px; right: -12px; top: 118px; height: 74px; background: rgba(255, 212, 59, .8); border-radius: 8px; z-index: -1; }
+  .zh { left: 90px; top: 392px; font-size: 140px; line-height: 1; }
+  .zh .q { color: #f2557a; }
+  .hook { left: 92px; top: 578px; font-size: 54px; line-height: 1.35; }
+  .hook .pk { color: #f2557a; }
+  .lb { font-size: 46px; }
+  .g { color: #5a5a63; }
+  .pk { color: #f2557a; }
+  .bl { color: #2e7cf6; }
+  .chips { left: 90px; top: 1258px; font-size: 40px; color: #5a5a63; }
+  .stamp { left: 740px; top: 556px; width: 300px; height: 96px; display: flex; align-items: center; justify-content: center;
+    font-size: 50px; color: #f2557a; transform: rotate(-6deg); }
+</style>
+</head>
+<body>
+  <svg id="s" viewBox="0 0 1080 1440"></svg>
+  <div class="a eyebrow">AI 术语白话 · 第 1 期</div>
+  <div class="a en"><div class="hl"></div>Embedding</div>
+  <div class="a zh">向量嵌入<span class="q">?</span></div>
+  <div class="a hook">电脑怎么知道<br>「<span class="pk">钱要回来</span>」就是「<span class="pk">退款</span>」</div>
+
+  <div class="a lb" style="left:150px; top:842px">钱要回来</div>
+  <div class="a lb" style="left:196px; top:946px">退款</div>
+  <div class="a lb" style="left:140px; top:1030px">我要退货</div>
+  <div class="a lb g" style="left:690px; top:800px">发货要几天</div>
+  <div class="a pk" style="left:120px; top:1108px; font-size:40px">离得近 = 意思近</div>
+  <div class="a g" style="left:590px; top:960px; font-size:38px">离得远</div>
+
+  <div class="a stamp">5 分钟讲透</div>
+  <div class="a chips">原理 · 用法 · 生意链条 · 门槛 · 真实案例</div>
+
+  <script src="../assets/vendor/rough.js"></script>
+  <script>
+    var svg = document.getElementById("s"), rc = rough.svg(svg);
+    function add(n) { svg.appendChild(n); }
+    var ink = "#1e1e24", pink = "#f2557a", blue = "#2e7cf6", grey = "#8a8a93";
+    // the map axes
+    add(rc.line(90, 1180, 90, 790, { stroke: grey, strokeWidth: 4, roughness: 1.2, seed: 3 }));
+    add(rc.line(90, 1180, 1000, 1180, { stroke: grey, strokeWidth: 4, roughness: 1.2, seed: 4 }));
+    // the refund cluster
+    [[128, 868], [172, 972], [118, 1056]].forEach(function (p, i) {
+      add(rc.circle(p[0], p[1], 22, { fill: ink, fillStyle: "solid", stroke: ink, seed: 10 + i }));
+    });
+    add(rc.ellipse(250, 960, 420, 270, { stroke: pink, strokeWidth: 6, roughness: 1.8, seed: 7 }));
+    // the far point
+    add(rc.circle(668, 826, 22, { fill: ink, fillStyle: "solid", stroke: ink, seed: 20 }));
+    add(rc.line(470, 1010, 650, 850, { stroke: grey, strokeWidth: 4, roughness: 1, seed: 21 }));
+    add(rc.line(650, 850, 624, 856, { stroke: grey, strokeWidth: 4, roughness: 0.6, seed: 22 }));
+    add(rc.line(650, 850, 640, 875, { stroke: grey, strokeWidth: 4, roughness: 0.6, seed: 23 }));
+    // the stamp box
+    var b = rc.rectangle(746, 560, 292, 92, { stroke: pink, strokeWidth: 5, roughness: 1.6, seed: 30 });
+    b.setAttribute("transform", "rotate(-6 892 606)"); add(b);
+  </script>
+</body>
+</html>

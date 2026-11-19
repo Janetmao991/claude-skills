@@ -1,0 +1,53 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    #root { position: absolute; inset: 0; font-family: "Hannotate SC", sans-serif; color: #1e1e24; }
+    #root > svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+    .t-en { position: absolute; left: 90px; top: 290px; font-size: 150px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+    .t-zh { position: absolute; left: 90px; top: 452px; font-size: 64px; font-weight: 700; line-height: 1; z-index: 1; isolation: isolate; white-space: nowrap; }
+    .t-zh .hl { position: absolute; left: -10px; right: -10px; top: 30px; height: 40px; background: rgba(255, 212, 59, 0.75); border-radius: 6px; z-index: -1; }
+    .t-sub { position: absolute; left: 92px; top: 534px; font-family: "Inter", sans-serif; font-size: 32px; color: #5a5a63; white-space: nowrap; }
+    .lb { position: absolute; font-weight: 700; white-space: nowrap; opacity: 0; }
+    .g { color: #5a5a63; }
+    .pk { color: #f2557a; }
+    .bl { color: #2e7cf6; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+    .stamp { position: absolute; }
+    .stamp .in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #f2557a; opacity: 0; white-space: nowrap; }
+    .stamp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .st { width: 198px; text-align: center; line-height: 1.15; font-size: 34px; }
+    .st span { display: block; font-size: 30px; color: #f2557a; }
+  </style>
+  <div id="root" data-composition-id="recap" data-width="1080" data-height="1920">
+    <svg id="rc-svg" viewBox="0 0 1080 1920"></svg>
+    <div class="t-en">Embedding</div>
+    <div class="t-zh"><div class="hl" id="rc-hl"></div>按意思找东西的零件</div>
+    <div class="t-sub">one line to remember</div>
+
+    <div class="lb st" id="rc-s1" style="left:96px; top:668px">模型公司<span>卖它</span></div>
+    <div class="lb st" id="rc-s2" style="left:326px; top:668px">数据库<span>存它</span></div>
+    <div class="lb st" id="rc-s3" style="left:556px; top:668px">软件公司<span>装进产品</span></div>
+    <div class="lb st" id="rc-s4" style="left:786px; top:668px">你<span>天天在用</span></div>
+    <div class="stamp" id="rc-stamp" style="left:230px; top:860px; width:620px; height:190px; transform:rotate(-6deg)"><div class="in" style="font-size:104px; background:#FAF4E8">收藏起来！</div></div>
+  </div>
+  <script>
+    (function () {
+      var N = "recap", tl = gsap.timeline({ paused: true });
+      var svg = document.getElementById("rc-svg");
+      var q = function (id, o) { return SK.cue(N, id, o); }, qc = function (id, ch) { return SK.cueChar(N, id, ch); };
+      SK.seed(1050);
+      var C = SK.C;
+      gsap.set("#rc-hl", { scaleX: 0 });
+      SK.highlight(tl, "#rc-hl", qc("x1", "按"), 0.5);
+      var keys = [["x2", "模"], ["x2", "数"], ["x2", "软"], ["x3", "你"]];
+      keys.forEach(function (k, i) {
+        var t = qc(k[0], k[1]) - 0.15, x = 96 + i * 230;
+        SK.draw(tl, SK.rect(svg, x, 650, 198, 120, { strokeWidth: 4, stroke: i === 3 ? C.pink : C.ink }), t, 0.35);
+        SK.write(tl, "#rc-s" + (i + 1), t + 0.15, 0.35);
+        if (i < 3) SK.draw(tl, SK.arrow(svg, x + 202, 710, x + 226, 710, { stroke: C.blue, strokeWidth: 4.5, head: 10 }), t + 0.4, 0.15);
+      });
+      SK.stampBox(tl, "#rc-stamp", qc("x3", "收"), { sw: 8 });
+      window.__timelines[N] = tl;
+    })();
+  </script>
+</template>

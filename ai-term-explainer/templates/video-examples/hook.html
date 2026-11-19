@@ -1,0 +1,52 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    #root { position: absolute; inset: 0; font-family: "Hannotate SC", sans-serif; color: #1e1e24; }
+    #root > svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+    .t-en { position: absolute; left: 90px; top: 290px; font-size: 150px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+    .t-zh { position: absolute; left: 90px; top: 452px; font-size: 64px; font-weight: 700; line-height: 1; z-index: 1; isolation: isolate; white-space: nowrap; }
+    .t-zh .hl { position: absolute; left: -10px; right: -10px; top: 30px; height: 40px; background: rgba(255, 212, 59, 0.75); border-radius: 6px; z-index: -1; }
+    .t-sub { position: absolute; left: 92px; top: 534px; font-family: "Inter", sans-serif; font-size: 32px; color: #5a5a63; white-space: nowrap; }
+    .lb { position: absolute; font-weight: 700; white-space: nowrap; opacity: 0; }
+    .g { color: #5a5a63; }
+    .pk { color: #f2557a; }
+    .bl { color: #2e7cf6; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+    .stamp { position: absolute; }
+    .stamp .in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #f2557a; opacity: 0; white-space: nowrap; }
+    .stamp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    #hook-q { position: absolute; left: 820px; top: 300px; font-size: 200px; font-weight: 700; color: #f2557a; opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="hook" data-width="1080" data-height="1920">
+    <svg id="hook-svg" viewBox="0 0 1080 1920"></svg>
+    <div class="t-en">Embedding</div>
+    <div class="t-zh"><div class="hl" id="hook-hl"></div>向量嵌入</div>
+    <div class="t-sub">到底是什么？ · what is it, really?</div>
+    <div id="hook-q">?</div>
+    <div class="lb" id="hook-bot" style="left:470px; top:800px; font-size:52px">客服机器人</div>
+    <div class="lb g" id="hook-bot2" style="left:472px; top:876px; font-size:34px">从一个场景讲起</div>
+  </div>
+  <script>
+    (function () {
+      var N = "hook", tl = gsap.timeline({ paused: true });
+      var svg = document.getElementById("hook-svg");
+      var q = function (id, o) { return SK.cue(N, id, o); }, qc = function (id, ch) { return SK.cueChar(N, id, ch); };
+      SK.seed(100);
+      var C = SK.C;
+      gsap.set("#hook-hl", { scaleX: 0 });
+      SK.highlight(tl, "#hook-hl", 0.3, 0.4);
+      SK.stamp(tl, "#hook-q", qc("h1", "到"));
+      // h2: a little support bot
+      var at = q("h2");
+      SK.draw(tl, SK.rect(svg, 150, 760, 240, 190, { strokeWidth: 5 }), at, 0.45);
+      SK.dot(tl, svg, 225, 840, 30, C.ink, at + 0.35);
+      SK.dot(tl, svg, 315, 840, 30, C.ink, at + 0.42);
+      SK.draw(tl, SK.curve(svg, [[220, 895], [270, 915], [320, 895]], { strokeWidth: 4 }), at + 0.5, 0.25);
+      SK.draw(tl, SK.line(svg, 270, 760, 270, 712, { strokeWidth: 4 }), at + 0.3, 0.2);
+      SK.dot(tl, svg, 270, 702, 26, C.pink, at + 0.5);
+      SK.write(tl, "#hook-bot", at + 0.4);
+      SK.write(tl, "#hook-bot2", at + 0.8);
+      window.__timelines[N] = tl;
+    })();
+  </script>
+</template>

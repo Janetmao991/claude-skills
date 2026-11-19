@@ -1,0 +1,41 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; pointer-events: none; }
+    #chain-svg { position: absolute; left: 0; top: 0; width: 1080px; height: 400px; overflow: visible; }
+  </style>
+  <div id="root" data-composition-id="chain" data-width="1080" data-height="1920">
+    <svg id="chain-svg" viewBox="0 0 1080 400"></svg>
+  </div>
+  <script>
+    (function () {
+      // Progress chain: 10 nodes, one per section. Node i is "current" (pink) from
+      // CUR[i] and "done" (ink) from DONE[i] — seconds on the film's clock.
+      var V = window.__VO.scenes, ORDER = ["scene", "problem", "map", "steps", "api", "goal", "biz", "moat", "tiers", "voyage", "recap"];
+      var CUR = [], DONE = [];
+      for (var k = 0; k < 10; k++) { CUR.push(V[ORDER[k]].start); DONE.push(V[ORDER[k + 1]].start); }
+      var tl = gsap.timeline({ paused: true });
+      var svg = document.getElementById("chain-svg");
+      SK.seed(900);
+      var C = SK.C, Y = 232, X0 = 120, DX = 93, D = 36;
+      for (var i = 0; i < 10; i++) {
+        var x = X0 + i * DX;
+        if (i < 9) {
+          var l = SK.line(svg, x + D / 2 + 6, Y, x + DX - D / 2 - 6, Y, { stroke: C.ink, strokeWidth: 3, roughness: 0.8 });
+          SK.draw(tl, l, 0.15 + i * 0.12, 0.2);
+        }
+        var o = SK.circle(svg, x, Y, D, { stroke: C.ink, strokeWidth: 3.5 });
+        SK.draw(tl, o, 0.1 + i * 0.12, 0.3);
+        var cur = SK.circle(svg, x, Y, D - 4, { stroke: C.pink, strokeWidth: 4, fill: C.pink, fillStyle: "solid" });
+        var done = SK.circle(svg, x, Y, D - 4, { stroke: C.ink, strokeWidth: 3.5, fill: C.ink, fillStyle: "solid" });
+        if (CUR[i] < 999 && CUR[i] < DONE[i]) {
+          tl.set(cur, { attr: { opacity: 1 } }, CUR[i]);
+          tl.fromTo(cur, { scale: 1.6, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.18, ease: "power4.out" }, CUR[i]);
+          tl.set(cur, { attr: { opacity: 0 } }, DONE[i]);
+        }
+        if (DONE[i] < 999) tl.set(done, { attr: { opacity: 1 } }, DONE[i]);
+      }
+      tl.set({}, {}, 300); // timeline spans the film
+      window.__timelines["chain"] = tl;
+    })();
+  </script>
+</template>

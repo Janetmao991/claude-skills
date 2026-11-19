@@ -1,0 +1,22 @@
+<!doctype html><meta charset="utf-8">
+<!-- 小红书竖版封面 1080×1440：改颜色、文字，把人物照片放到 cover/photo.jpg -->
+<style>
+@font-face{font-family:Figtree;src:url("../remotion/public/fonts/figtree-800.woff2");font-weight:800}
+:root{--bg:#035D44;--bg2:#0A8A66;--accent:#EEF773;--deep:#023B2B}
+*{box-sizing:border-box;margin:0}body{width:1080px;height:1440px;background:var(--bg);position:relative;overflow:hidden;font-family:Figtree,"PingFang SC"}
+.glow{position:absolute;inset:0;background:radial-gradient(1000px 640px at 50% 0%,var(--bg2),transparent 72%)}
+.top{position:absolute;left:60px;right:60px;top:72px;text-align:center}
+.kick{display:inline-block;padding:14px 34px;border-radius:999px;background:var(--accent);color:var(--deep);font-weight:800;font-size:46px;white-space:nowrap}
+h1{margin-top:34px;font-weight:800;font-size:146px;line-height:1.1;color:#fff;white-space:nowrap}
+h1 span{color:var(--accent)}
+.sub{margin-top:30px;font-weight:700;font-size:64px;color:#fff;white-space:nowrap}
+.sub b{color:var(--accent);font-weight:800}
+.photo{position:absolute;left:0;right:0;top:700px;bottom:0;background:url("photo.jpg") center top/cover}
+.fade{position:absolute;left:0;right:0;bottom:0;height:220px;background:linear-gradient(transparent,rgba(2,30,22,.92))}
+.name{position:absolute;left:0;right:0;text-align:center;bottom:52px;color:#fff;font-weight:700;font-size:44px;white-space:nowrap}
+</style><div class="glow"></div>
+<div class="top"><div class="kick">一句身份说明</div>
+<h1><span>公司</span> 第一行<br>第二行？</h1>
+<div class="sub">一句话说明 <b>能学到什么</b></div></div>
+<div class="photo"></div><div class="fade"></div>
+<div class="name">人物 · 职位</div>

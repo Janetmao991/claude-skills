@@ -1,0 +1,61 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    #root { position: absolute; inset: 0; pointer-events: none; }
+    .cap-zh, .cap-en { position: absolute; left: 100px; width: 860px; text-align: center; opacity: 0; overflow: visible; }
+    .cap-zh { top: 1172px; font-family: "Hannotate SC", sans-serif; font-weight: 700; font-size: 52px; line-height: 1.2; color: #1e1e24; white-space: nowrap; }
+    .cap-en { top: 1248px; font-family: "Inter", sans-serif; font-weight: 400; font-size: 32px; line-height: 1.25; color: #5a5a63; }
+  </style>
+  <div id="root" data-composition-id="captions" data-width="1080" data-height="1920"></div>
+  <script>
+    (function () {
+      // Bilingual captions from the voice timeline: the English line holds for
+      // the whole spoken line; the Chinese swaps in chunks of ≤ 15 characters,
+      // split at punctuation and timed by character share.
+      var L = window.__VO.lines, root = document.getElementById("root");
+      var tl = gsap.timeline({ paused: true });
+      function chunks(t) {
+        var parts = t.match(/[^，：。？！；…]+[，：。？！；…]*/g) || [t], out = [], cur = "";
+        parts.forEach(function (p) {
+          if ((cur + p).replace(/[，。？！；…]+$/, "").length <= 13) cur += p;
+          else { if (cur) out.push(cur); cur = p; }
+        });
+        if (cur) out.push(cur);
+        // hard limit: a chunk with no punctuation over 15 chars splits in half
+        var fin = [];
+        out.forEach(function (c) {
+          if (c.length <= 16) { fin.push(c); return; }
+          var m = Math.ceil(c.length / 2);
+          // never split inside a Latin word or number
+          while (m < c.length - 1 && /[A-Za-z0-9.]/.test(c[m - 1]) && /[A-Za-z0-9.]/.test(c[m])) m++;
+          fin.push(c.slice(0, m)); fin.push(c.slice(m));
+        });
+        return fin;
+      }
+      function clean(t) { return t.replace(/[，。；]$/, ""); }
+      function show(el, a, b) {
+        tl.fromTo(el, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.14, ease: "power2.out" }, a);
+        tl.to(el, { opacity: 0, duration: 0.1, ease: "power2.in" }, b - 0.1);
+        tl.set(el, { opacity: 0, visibility: "hidden" }, b);
+      }
+      var n = 0;
+      Object.keys(L).forEach(function (id) {
+        var l = L[id], a = Math.max(0.15, l.start - 0.08), b = l.end + 0.12;
+        var en = document.createElement("div");
+        en.className = "cap-en"; en.id = "cap-en-" + id; en.textContent = l.en;
+        root.appendChild(en); show(en, a, b);
+        var cs = chunks(l.zh), total = l.zh.length, acc = 0;
+        cs.forEach(function (c, i) {
+          var t0 = i === 0 ? a : l.start + (acc / total) * (l.end - l.start);
+          acc += c.length;
+          var t1 = i === cs.length - 1 ? b : l.start + (acc / total) * (l.end - l.start);
+          var zh = document.createElement("div");
+          zh.className = "cap-zh"; zh.id = "cap-zh-" + id + "-" + i; zh.textContent = clean(c);
+          root.appendChild(zh); show(zh, t0, t1);
+          n++;
+        });
+      });
+      window.__timelines["captions"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,63 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    #root { position: absolute; inset: 0; font-family: "Hannotate SC", sans-serif; color: #1e1e24; }
+    #root > svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+    .t-en { position: absolute; left: 90px; top: 290px; font-size: 150px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+    .t-zh { position: absolute; left: 90px; top: 452px; font-size: 64px; font-weight: 700; line-height: 1; z-index: 1; isolation: isolate; white-space: nowrap; }
+    .t-zh .hl { position: absolute; left: -10px; right: -10px; top: 30px; height: 40px; background: rgba(255, 212, 59, 0.75); border-radius: 6px; z-index: -1; }
+    .t-sub { position: absolute; left: 92px; top: 534px; font-family: "Inter", sans-serif; font-size: 32px; color: #5a5a63; white-space: nowrap; }
+    .lb { position: absolute; font-weight: 700; white-space: nowrap; opacity: 0; }
+    .g { color: #5a5a63; }
+    .pk { color: #f2557a; }
+    .bl { color: #2e7cf6; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+    .stamp { position: absolute; }
+    .stamp .in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #f2557a; opacity: 0; white-space: nowrap; }
+    .stamp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .box2 { text-align: center; line-height: 1.15; }
+  </style>
+  <div id="root" data-composition-id="api" data-width="1080" data-height="1920">
+    <svg id="ap-svg" viewBox="0 0 1080 1920"></svg>
+    <div class="t-en">API</div>
+    <div class="t-zh"><div class="hl" id="ap-hl"></div>现成的「翻译机」</div>
+    <div class="t-sub">an embedding model, sold as a service</div>
+
+    <div class="lb box2" id="ap-app" style="left:110px; top:680px; width:210px; font-size:40px">你的程序</div>
+    <div class="lb box2" id="ap-api" style="left:396px; top:660px; width:200px; font-size:40px">API<br /><span class="g" style="font-size:28px">下单窗口</span></div>
+    <div class="lb box2" id="ap-mdl" style="left:676px; top:648px; width:300px; font-size:36px">Embedding 模型<br /><span class="pk" style="font-size:44px">翻译机</span></div>
+    <div class="lb" id="ap-txt" style="left:356px; top:606px; font-size:30px">文字 →</div>
+    <div class="lb mono bl" id="ap-num" style="left:300px; top:822px; font-size:32px">← [0.12, -0.83, 0.41 …]</div>
+    <div class="lb" id="ap-who" style="left:96px; top:940px; font-size:50px">OpenAI · Google · …</div>
+    <div class="lb g" id="ap-fee" style="left:96px; top:1020px; font-size:38px">按字数收费，很便宜</div>
+  </div>
+  <script>
+    (function () {
+      var N = "api", tl = gsap.timeline({ paused: true });
+      var svg = document.getElementById("ap-svg");
+      var q = function (id, o) { return SK.cue(N, id, o); }, qc = function (id, ch) { return SK.cueChar(N, id, ch); };
+      SK.seed(550);
+      var C = SK.C;
+      gsap.set("#ap-hl", { scaleX: 0 });
+      SK.highlight(tl, "#ap-hl", 0.2, 0.5);
+      // a1: your app
+      SK.draw(tl, SK.rect(svg, 96, 650, 240, 110, { strokeWidth: 4 }), q("a1"), 0.4);
+      SK.write(tl, "#ap-app", q("a1", 0.25));
+      // a2: the model = translator (focal pink)
+      SK.draw(tl, SK.rect(svg, 660, 630, 324, 150, { strokeWidth: 5, stroke: C.pink }), qc("a2", "E"), 0.5);
+      SK.write(tl, "#ap-mdl", qc("a2", "E") + 0.3, 0.6);
+      // a3: through the API window, numbers come back
+      SK.draw(tl, SK.rect(svg, 400, 650, 196, 110, { strokeWidth: 4 }), qc("a3", "A") - 0.2, 0.4);
+      SK.write(tl, "#ap-api", qc("a3", "A"));
+      SK.draw(tl, SK.arrow(svg, 340, 680, 396, 680, { stroke: C.blue, strokeWidth: 5, head: 14 }), qc("a3", "文"), 0.2);
+      SK.draw(tl, SK.arrow(svg, 600, 680, 656, 680, { stroke: C.blue, strokeWidth: 5, head: 14 }), qc("a3", "发") , 0.2);
+      SK.write(tl, "#ap-txt", qc("a3", "文"), 0.3);
+      SK.draw(tl, SK.curveArrow(svg, [[820, 790], [700, 850], [500, 870], [220, 800], [216, 770]], { stroke: C.blue, strokeWidth: 5, head: 16 }), qc("a3", "它"), 0.6);
+      SK.write(tl, "#ap-num", qc("a3", "数"), 0.7);
+      // a4: who sells it, how it's priced
+      SK.write(tl, "#ap-who", q("a4"), 0.7);
+      SK.write(tl, "#ap-fee", qc("a4", "按"), 0.6);
+      window.__timelines[N] = tl;
+    })();
+  </script>
+</template>

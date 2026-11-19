@@ -1,0 +1,79 @@
+<template>
+  <style>
+    @font-face { font-family: "Hannotate SC"; src: url("assets/fonts/hannotate-sc-bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+    #root { position: absolute; inset: 0; font-family: "Hannotate SC", sans-serif; color: #1e1e24; }
+    #root > svg { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+    .t-en { position: absolute; left: 90px; top: 290px; font-size: 150px; font-weight: 700; line-height: 1; letter-spacing: -0.01em; white-space: nowrap; }
+    .t-zh { position: absolute; left: 90px; top: 452px; font-size: 64px; font-weight: 700; line-height: 1; z-index: 1; isolation: isolate; white-space: nowrap; }
+    .t-zh .hl { position: absolute; left: -10px; right: -10px; top: 30px; height: 40px; background: rgba(255, 212, 59, 0.75); border-radius: 6px; z-index: -1; }
+    .t-sub { position: absolute; left: 92px; top: 534px; font-family: "Inter", sans-serif; font-size: 32px; color: #5a5a63; white-space: nowrap; }
+    .lb { position: absolute; font-weight: 700; white-space: nowrap; opacity: 0; }
+    .g { color: #5a5a63; }
+    .pk { color: #f2557a; }
+    .bl { color: #2e7cf6; }
+    .mono { font-family: "JetBrains Mono", monospace; font-weight: 700; }
+    .stamp { position: absolute; }
+    .stamp .in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #f2557a; opacity: 0; white-space: nowrap; }
+    .stamp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  </style>
+  <div id="root" data-composition-id="map" data-width="1080" data-height="1920">
+    <svg id="mp-svg" viewBox="0 0 1080 1920"></svg>
+    <div class="t-en">Meaning map</div>
+    <div class="t-zh"><div class="hl" id="mp-hl"></div>意义地图</div>
+    <div class="t-sub">sentences become coordinates</div>
+
+    <div class="lb" id="mp-card" style="left:120px; top:652px; font-size:44px">钱要回来</div>
+    <div class="lb mono bl" id="mp-vec" style="left:440px; top:660px; font-size:36px">[0.12, -0.83, 0.41 …]</div>
+    <div class="lb" id="mp-c1" style="left:356px; top:868px; font-size:40px">退款</div>
+    <div class="lb" id="mp-c2" style="left:396px; top:924px; font-size:40px">钱要回来</div>
+    <div class="lb" id="mp-c3" style="left:346px; top:980px; font-size:40px">我要退货</div>
+    <div class="lb" id="mp-far" style="left:700px; top:766px; font-size:40px">发货要几天</div>
+    <div class="lb pk" id="mp-near" style="left:150px; top:830px; font-size:36px">很近</div>
+    <div class="lb g" id="mp-farl" style="left:600px; top:840px; font-size:36px">很远</div>
+    <div class="lb pk" id="mp-vname" style="left:470px; top:726px; font-size:34px">↑ 这串数字 = 向量</div>
+    <div class="lb pk" id="mp-ename" style="left:130px; top:776px; font-size:34px">放进地图 = 嵌入</div>
+    <div class="lb g" id="mp-note" style="left:560px; top:1070px; font-size:30px">其实有上千个数字，这里画成平面</div>
+  </div>
+  <script>
+    (function () {
+      var N = "map", tl = gsap.timeline({ paused: true });
+      var svg = document.getElementById("mp-svg");
+      var q = function (id, o) { return SK.cue(N, id, o); }, qc = function (id, ch) { return SK.cueChar(N, id, ch); };
+      SK.seed(350);
+      var C = SK.C;
+      gsap.set("#mp-hl", { scaleX: 0 });
+      SK.highlight(tl, "#mp-hl", 0.2, 0.4);
+      // m1/m2: sentence → numbers
+      SK.draw(tl, SK.rect(svg, 96, 634, 270, 96, { strokeWidth: 4 }), q("m1", 0.3), 0.4);
+      SK.write(tl, "#mp-card", q("m1", 0.5));
+      SK.draw(tl, SK.arrow(svg, 374, 682, 428, 682, { stroke: C.blue, strokeWidth: 5, head: 16 }), qc("m2", "变"), 0.25);
+      SK.write(tl, "#mp-vec", qc("m2", "变") + 0.2, 0.8);
+      // the map's axes
+      SK.draw(tl, SK.line(svg, 110, 1130, 110, 770, { strokeWidth: 3.5, stroke: C.grey }), qc("m2", "地"), 0.35);
+      SK.draw(tl, SK.line(svg, 110, 1130, 980, 1130, { strokeWidth: 3.5, stroke: C.grey }), qc("m2", "地") + 0.2, 0.45);
+      // n1: why it's called 向量嵌入
+      SK.write(tl, "#mp-vname", qc("n1", "向") - 0.1, 0.5);
+      SK.draw(tl, SK.curve(svg, [[436, 704], [640, 712], [840, 702]], { stroke: C.pink, strokeWidth: 5 }), qc("n1", "向"), 0.35);
+      SK.write(tl, "#mp-ename", qc("n1", "嵌") - 0.3, 0.5);
+      // m3: the refund cluster
+      [["#mp-c1", 330, 898, "退"], ["#mp-c2", 370, 954, "钱"], ["#mp-c3", 320, 1010, "我"]].forEach(function (p) {
+        var t = qc("m3", p[3]);
+        SK.dot(tl, svg, p[1], p[2], 22, C.ink, t);
+        SK.write(tl, p[0], t + 0.08, 0.3);
+      });
+      SK.draw(tl, SK.ellipse(svg, 450, 954, 420, 210, { stroke: C.pink, strokeWidth: 5, roughness: 1.6 }), qc("m3", "我") + 0.4, 0.6);
+      // m4: shipping lands far away
+      var tf = qc("m4", "发");
+      SK.dot(tl, svg, 820, 830, 22, C.ink, tf);
+      SK.write(tl, "#mp-far", tf + 0.08, 0.4);
+      // m5: measure the distance
+      SK.draw(tl, SK.line(svg, 330, 898, 370, 954, { stroke: C.pink, strokeWidth: 5, roughness: 0.6 }), qc("m5", "量"), 0.25);
+      SK.write(tl, "#mp-near", qc("m5", "量") + 0.2, 0.25);
+      SK.draw(tl, SK.arrow(svg, 590, 920, 796, 844, { stroke: C.grey, strokeWidth: 3.5, head: 16 }), qc("m5", "离"), 0.4);
+      SK.write(tl, "#mp-farl", qc("m5", "离") + 0.3, 0.25);
+      // m6: the honest footnote
+      SK.write(tl, "#mp-note", q("m6"), 0.9);
+      window.__timelines[N] = tl;
+    })();
+  </script>
+</template>

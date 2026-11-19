@@ -1,0 +1,483 @@
+<title>Granola 技术拆解</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a single signal path — the meeting audio flows top to bottom through six numbered layers, each a station on a vertical wire. */
+:root{
+  --bg:#F3F5F1;          /* field-recorder paper, slight green bias */
+  --surface:#FFFFFF;
+  --ink:#16201B;
+  --muted:#5B6760;
+  --line:#D6DDD6;
+  --me:#2F7A3C;          /* Granola's green "Me" bubble */
+  --me-soft:#E1F0DF;
+  --them:#6E7872;        /* grey "Them" bubble */
+  --them-soft:#E9ECE9;
+  --signal:#C2410C;      /* the wire / risk accent */
+  --signal-soft:#FBE7DC;
+  --ok:#2F7A3C; --warn:#A16207; --bad:#B42318;
+  --f-display:"Bricolage Grotesque","Noto Sans SC",system-ui,sans-serif;
+  --f-body:"Noto Sans SC","PingFang SC","Hiragino Sans GB",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101613;--surface:#18201C;--ink:#E7EDE8;--muted:#9AA79F;--line:#2C3832;
+  --me:#6CC17A;--me-soft:#1E3324;--them:#A3ADA7;--them-soft:#252D29;
+  --signal:#F08A5D;--signal-soft:#3A2219;--ok:#6CC17A;--warn:#E3B341;--bad:#F27B6F;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101613;--surface:#18201C;--ink:#E7EDE8;--muted:#9AA79F;--line:#2C3832;
+  --me:#6CC17A;--me-soft:#1E3324;--them:#A3ADA7;--them-soft:#252D29;
+  --signal:#F08A5D;--signal-soft:#3A2219;--ok:#6CC17A;--warn:#E3B341;--bad:#F27B6F;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+.wrap{max-width:860px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.25;margin:0}
+h1{font-size:clamp(34px,6vw,56px);font-weight:800;letter-spacing:-.02em}
+h2{font-size:clamp(24px,3.6vw,32px);font-weight:700}
+h3{font-size:18px;font-weight:700}
+p{margin:0}
+a{color:var(--me)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+code,.mono{font-family:var(--f-mono);font-size:.86em}
+code{background:var(--them-soft);padding:1px 6px;border-radius:4px;word-break:break-all}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+
+/* hero */
+header.hero{padding-block:56px 32px;display:grid;gap:20px}
+.hero .lede{font-size:19px;max-width:40em;color:var(--muted)}
+.verdict{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:13px;padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);white-space:nowrap}
+.chip.ok{color:var(--ok)} .chip.warn{color:var(--warn)} .chip.bad{color:var(--bad)}
+
+/* the note demo in hero */
+.note{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px;display:grid;gap:10px}
+.note-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.note ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.note li.mine{color:var(--ink);font-weight:500}
+.note li .ai{color:var(--muted);font-weight:400}
+.note.only-mine .ai{display:none}
+.toggle{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.toggle button{font:inherit;font-size:13px;border:0;background:transparent;color:var(--muted);padding:5px 12px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+/* pipeline svg */
+.pipe{margin-block:8px 0;overflow-x:auto}
+.pipe svg{display:block;width:100%;min-width:620px;height:auto}
+.pipe a{cursor:pointer}
+.pipe a:hover rect.node{stroke:var(--signal)}
+
+/* layers */
+section{padding-block:40px 8px;scroll-margin-top:16px}
+.layer{position:relative;padding-left:44px}
+.layer::before{content:"";position:absolute;left:14px;top:46px;bottom:-40px;width:2px;background:var(--signal);opacity:.35}
+.layer:last-of-type::before{display:none}
+.num{position:absolute;left:0;top:2px;width:30px;height:30px;border-radius:50%;background:var(--signal);color:#fff;font-family:var(--f-display);font-weight:800;display:grid;place-items:center;font-size:15px}
+.layer-head{display:grid;gap:6px;margin-bottom:18px}
+.qa{display:grid;gap:14px}
+.qa > div{display:grid;grid-template-columns:7.5em 1fr;gap:14px;align-items:start}
+.qa .k{font-size:13px;font-weight:700;color:var(--muted);padding-top:3px}
+.qa .v{min-width:0}
+.plain{background:var(--me-soft);border-radius:8px;padding:14px 16px}
+.cost{background:var(--signal-soft);border-radius:8px;padding:14px 16px}
+.ev{font-family:var(--f-mono);font-size:11px;padding:1px 6px;border-radius:4px;margin-left:4px;vertical-align:2px;white-space:nowrap}
+.ev.c{background:var(--me-soft);color:var(--me)}
+.ev.i{background:var(--them-soft);color:var(--them)}
+.quote{border-left:3px solid var(--me);padding:4px 0 4px 14px;color:var(--muted);font-size:15px}
+@media (max-width:560px){.qa > div{grid-template-columns:1fr;gap:4px}.layer{padding-left:38px}}
+
+/* tables */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.55}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.04em;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* two-channel audio visual */
+.channels{display:grid;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.ch{display:grid;grid-template-columns:5.5em 1fr;gap:12px;align-items:center}
+.ch canvas{width:100%;height:38px;display:block}
+.ch .lab{font-size:13px;font-weight:700}
+.ch.me .lab{color:var(--me)} .ch.them .lab{color:var(--them)}
+.bubbles{display:grid;gap:6px;margin-top:6px}
+.bub{max-width:80%;padding:6px 12px;border-radius:12px;font-size:14px;line-height:1.5}
+.bub.me{justify-self:end;background:var(--me-soft);color:var(--ink)}
+.bub.them{justify-self:start;background:var(--them-soft);color:var(--ink)}
+
+/* generations */
+.gens{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.gen{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:6px;align-content:start}
+.gen .yr{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.gen.now{border-color:var(--me)}
+@media (max-width:640px){.gens{grid-template-columns:1fr}}
+
+/* incidents */
+.cases{display:grid;gap:12px}
+.case{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:8px;padding:14px 16px;display:grid;gap:6px}
+.case.law{border-left-color:var(--warn)}
+
+/* calculator */
+.calc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:grid;gap:18px}
+.sliders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px}
+.sl{display:grid;gap:4px}
+.sl label{font-size:14px;display:flex;justify-content:space-between;gap:8px}
+.sl output{font-family:var(--f-mono);font-weight:600}
+input[type=range]{width:100%;accent-color:var(--signal)}
+.check{display:flex;gap:8px;align-items:center;font-size:14px}
+.result{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;align-items:center}
+.big{font-family:var(--f-display);font-size:clamp(30px,5vw,42px);font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.bar{height:14px;background:var(--them-soft);border-radius:7px;position:relative;overflow:visible}
+.bar .rng{position:absolute;top:0;height:100%;background:var(--signal);opacity:.75;border-radius:7px}
+.bar .seat{position:absolute;top:-6px;width:2px;height:26px;background:var(--ink)}
+.bar .seat span{position:absolute;top:28px;left:-20px;font-size:11px;font-family:var(--f-mono);white-space:nowrap}
+.breakdown{font-size:13.5px}
+@media (max-width:560px){.sliders{grid-template-columns:1fr}}
+
+/* patterns */
+.patterns{display:grid;gap:10px;counter-reset:p;padding:0;margin:0;list-style:none}
+.patterns li{display:grid;grid-template-columns:2em 1fr;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.patterns li::before{counter-increment:p;content:counter(p);font-family:var(--f-display);font-weight:800;color:var(--signal);font-size:18px}
+.patterns li > div{min-width:0}
+
+/* glossary */
+.gsearch{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.gloss{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.gloss div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px;line-height:1.55}
+.gloss b{font-family:var(--f-mono);font-size:13px;display:block;margin-bottom:2px}
+@media (max-width:560px){.gloss{grid-template-columns:1fr}}
+
+.sources{font-size:13.5px;line-height:1.7;color:var(--muted)}
+.sources a{color:var(--muted)}
+footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Tech Deep Dive · 研究日期 2026-10-16</div>
+  <h1>Granola 是怎么<br>做出来的</h1>
+  <p class="lede">一场 Zoom 会议从你的扬声器流出，到变成一份"像你写的、但更完整"的笔记，中间经过 6 层技术。几乎每一层都是买来的通用零件，Granola 的功夫花在拼装和打磨上。</p>
+  <div class="verdict">
+    <span class="chip ok">产品工程 · 精细</span>
+    <span class="chip bad">技术护城河 · 薄</span>
+    <span class="chip warn">真正在积累的 · 数据位置</span>
+    <span class="chip warn">最大技术风险 · 通知默认关闭</span>
+  </div>
+
+  <div class="note only-mine" id="note">
+    <div class="note-head">
+      <span class="eyebrow">产品的核心动作：你写骨架，AI 补血肉</span>
+      <div class="toggle" role="group" aria-label="笔记视图">
+        <button type="button" id="btnMine" aria-pressed="true">会议中我打的</button>
+        <button type="button" id="btnAll" aria-pressed="false">会后 AI 补全</button>
+      </div>
+    </div>
+    <ul>
+      <li class="mine">定价太高？<span class="ai"> 客户认为 $35/席位超出预算，倾向先给 20 人团队试用 Business 版，季度末再评估扩到全公司。</span></li>
+      <li class="mine">Q3 上线<span class="ai"> 对方 IT 要求先完成 SSO 对接和安全问卷；法务确认后 Q3 第一周开始部署。</span></li>
+      <li class="mine">跟进 Sarah<span class="ai"> Sarah（采购）周五前需要 SOC 2 报告和 DPA 合同模板，我方负责发送。</span></li>
+    </ul>
+    <p class="muted" style="font-size:13px">黑字是你在会上随手打的，灰字是 AI 从转写里补的。真实产品里每行旁边有放大镜，点开能看到它来自转写的哪一段。（示例内容）</p>
+  </div>
+</header>
+
+<div class="pipe" aria-label="六层架构图">
+<svg viewBox="0 0 860 200" role="img" aria-labelledby="pipeT">
+  <title id="pipeT">Granola 六层架构：客户端、抓音频、转写、写笔记、跨会议问答、平台</title>
+  <line x1="40" y1="70" x2="820" y2="70" stroke="var(--signal)" stroke-width="2" stroke-dasharray="4 5" opacity=".6"/>
+  <g font-family="Noto Sans SC, sans-serif">
+    <a href="#l1"><rect class="node" x="10" y="38" width="122" height="64" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/><text x="71" y="64" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="JetBrains Mono, monospace">01</text><text x="71" y="86" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">桌面 App</text></a>
+    <a href="#l2"><rect class="node" x="152" y="38" width="122" height="64" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/><text x="213" y="64" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="JetBrains Mono, monospace">02</text><text x="213" y="86" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">抓两路音频</text></a>
+    <a href="#l3"><rect class="node" x="294" y="38" width="122" height="64" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/><text x="355" y="64" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="JetBrains Mono, monospace">03</text><text x="355" y="86" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">语音转文字</text></a>
+    <a href="#l4"><rect class="node" x="436" y="38" width="122" height="64" rx="8" fill="var(--me-soft)" stroke="var(--me)" stroke-width="1.5"/><text x="497" y="64" text-anchor="middle" font-size="12" fill="var(--me)" font-family="JetBrains Mono, monospace">04 ★</text><text x="497" y="86" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">AI 写笔记</text></a>
+    <a href="#l5"><rect class="node" x="578" y="38" width="122" height="64" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/><text x="639" y="64" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="JetBrains Mono, monospace">05</text><text x="639" y="86" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">跨会议问答</text></a>
+    <a href="#l6"><rect class="node" x="720" y="38" width="130" height="64" rx="8" fill="var(--surface)" stroke="var(--line)" stroke-width="1.5"/><text x="785" y="64" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="JetBrains Mono, monospace">06</text><text x="785" y="86" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">后端 + MCP</text></a>
+    <g font-size="11.5" fill="var(--muted)" text-anchor="middle" font-family="JetBrains Mono, monospace">
+      <text x="71" y="128">Electron</text><text x="71" y="144">+ 原生插件</text>
+      <text x="213" y="128">Core Audio Tap</text><text x="213" y="144">WebRTC AEC3</text>
+      <text x="355" y="128">Deepgram Nova-3</text><text x="355" y="144">AssemblyAI</text>
+      <text x="497" y="128">OpenAI</text><text x="497" y="144">Anthropic</text>
+      <text x="639" y="128">Agent 循环</text><text x="639" y="144">Turbopuffer</text>
+      <text x="785" y="128">AWS · Postgres</text><text x="785" y="144">API · MCP</text>
+    </g>
+    <text x="10" y="186" font-size="12" fill="var(--muted)">买来的零件 ←————————————————→ ★ Granola 自己调得最多的一层</text>
+  </g>
+</svg>
+</div>
+
+<!-- ============ 1 ============ -->
+<section class="layer" id="l1">
+  <span class="num">1</span>
+  <div class="layer-head"><span class="eyebrow">Client</span><h2>桌面 App：Electron 外壳 + 原生"手脚"</h2></div>
+  <div class="qa">
+    <div><span class="k">要解决的问题</span><p class="v">一套代码同时跑 Mac 和 Windows，界面好看、迭代快，同时还能碰到系统底层（音频、日历、权限）。</p></div>
+    <div><span class="k">怎么做的</span><div class="v">主体是 <b>Electron 44</b>，界面用 React + TypeScript<span class="ev c">已确认 · 安装包</span>。和系统打交道的是十几个原生插件：抓音频、读 Zoom 窗口判断谁在说话、列出谁在用麦克风、读 Apple 日历、本地区分说话人（Swift 写的）、一个能在你视频上叠水印的虚拟摄像头，以及加密的本地数据库。</div></div>
+    <div><span class="k">白话</span><div class="v plain"><b>Electron</b> 就是把一个网页（Chrome 内核）打包成桌面软件，Slack、Notion、VS Code、Cursor 都是这么做的。网页本身碰不到麦克风底层，所以要用系统语言写几个小插件，网页通过接口调用它们。<b>Electron 是脸和大脑，原生插件是手脚。</b></div></div>
+    <div><span class="k">为什么这么选</span><p class="v">工程师只有 25–30 人，速度第一。评估过更轻的 Tauri，没看到明显性能提升就没换。代价是吃 CPU，以及一类 Electron 特有的安全漏洞（见下文"安全"）。</p></div>
+  </div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section class="layer" id="l2">
+  <span class="num">2</span>
+  <div class="layer-head"><span class="eyebrow">Capture</span><h2>不进会议，怎么听到声音？</h2></div>
+  <div class="qa">
+    <div><span class="k">要解决的问题</span><p class="v">Otter、Fireflies 派一个"机器人"以参会者身份进会议。Granola 什么都不加入，要直接在你电脑上拿到"我说的"和"别人说的"。</p></div>
+    <div><span class="k">怎么做的</span><div class="v">
+      <b>你的声音</b>直接录麦克风。<b>别人的声音</b>最终会从你的扬声器播出来，Granola 就在系统声音输出那里"接一根管子"：macOS 14.2+ 用苹果的 <code>Core Audio Process Tap</code>，老系统用 <code>ScreenCaptureKit</code><span class="ev c">已确认 · 安装包</span>。没有装虚拟声卡驱动。Windows 大概率用 <code>WASAPI loopback</code><span class="ev i">推断</span>。
+    </div></div>
+    <div><span class="k">看一眼</span><div class="v">
+      <div class="channels">
+        <div class="ch me"><span class="lab">麦克风<br>= Me</span><canvas id="wMe" aria-hidden="true"></canvas></div>
+        <div class="ch them"><span class="lab">系统声音<br>= Them</span><canvas id="wThem" aria-hidden="true"></canvas></div>
+        <div class="bubbles">
+          <div class="bub them">我们这季度预算主要卡在安全审核上。</div>
+          <div class="bub me">明白，SOC 2 报告我周五前发你。</div>
+        </div>
+      </div>
+    </div></div>
+    <div><span class="k">白话</span><div class="v plain"><b>"Me / Them" 不是 AI 听出来的，是物理上就分开了</b>：麦克风那路是你，系统声音那路是别人。一刀最重要的切分，不用任何 AI 就完成了。<br><br><b>回声消除（AEC）</b>：不戴耳机时，别人的声音从扬声器出来又被你的麦克风收进去，同一句话会被转写两遍。Granola 在本地用开源的 WebRTC AEC3（谷歌给视频通话做的那套）把它减掉。创始人举的例子是：开到一半摘耳机，系统要马上适应。</div></div>
+    <div><span class="k">怎么知道开会了</span><p class="v">三个信号叠加：日历上有会、某个会议 App 开始用麦克风、辅助功能读到 Zoom/Teams 窗口。会议 App 不再用麦克风，或 15 分钟没有新声音，就算结束。</p></div>
+    <div><span class="k">代价</span><div class="v"><p>为了"无机器人"，早期只有 macOS 13.4 以上能用，创始人说大概只覆盖 15% 的 Mac 用户，"非常痛苦"。另外，电脑放音乐也会被转进去；线下会议一屋子人都算"Me"；而"别人不知道它在录"正是被起诉的那一点。</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section class="layer" id="l3">
+  <span class="num">3</span>
+  <div class="layer-head"><span class="eyebrow">Transcription</span><h2>语音转文字：买最好的，同时接两家</h2></div>
+  <div class="qa">
+    <div><span class="k">怎么做的</span><div class="v">默认 <b>Deepgram Nova-3</b>，备选 <b>AssemblyAI</b><span class="ev c">已确认</span>。从你的电脑直接开一条 WebSocket 连到 Deepgram，每路音频一条，16kHz 单声道。App 先向 Granola 后端要一个<b>临时 token</b> 再去连，长期密钥不放在用户电脑上。还设了"不许 Deepgram 拿我们的音频训练模型"。<b>音频不保存</b>，边听边转，转完就扔。</div></div>
+    <div><span class="k">白话</span><div class="v plain"><b>流式 vs 批量</b>：流式是边说边出字（像直播字幕），批量是录完整段再转（更准但要等）。桌面端用流式，手机端因系统限制只能录完再转。<br><br><b>WebSocket</b>：普通网页请求是"问一次答一次"，WebSocket 是"电话一直不挂"，适合源源不断地送音频。<br><br><b>说话人分离（Diarization）</b>：判断每句话是谁说的。创始人说实时版还不够好，而且"错误的说话人标签比没有标签更让模型困惑"。所以 Granola 直接<b>读 Zoom 界面上谁的头像在亮</b>来标名字。</div></div>
+    <div><span class="k">新发现</span><p class="v">你的电脑上已经下载了一个 233MB 的 <b>NVIDIA Parakeet</b> 语音模型，对应一个未公开宣传的 Labs 功能"本地转写：离线可用，仅英文"<span class="ev c">已确认 · 本机</span>。这笔业务里最大的成本，正在被往用户电脑上推（见下文成本计算器）。</p></div>
+  </div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="layer" id="l4">
+  <span class="num">4</span>
+  <div class="layer-head"><span class="eyebrow">Notes · 产品的灵魂</span><h2>AI 写笔记：把"判断重要性"交还给用户</h2></div>
+  <div class="qa">
+    <div><span class="k">拼进 prompt 的</span><div class="v">
+      <div class="tbl"><table>
+        <tr><th>材料</th><th>作用</th></tr>
+        <tr><td><b>你会上打的几行 bullet</b></td><td>重要性信号，最关键</td></tr>
+        <tr><td>带 Me/Them 标签的转写</td><td>细节来源</td></tr>
+        <tr><td>日历：标题、参会人</td><td>场景</td></tr>
+        <tr><td>你是谁、什么职位、对方是谁</td><td>决定写什么、怎么写</td></tr>
+        <tr><td>模板（Auto / 客户访谈 / 1:1 / 自定义）</td><td>结构</td></tr>
+      </table></div>
+    </div></div>
+    <div><span class="k">白话</span><div class="v plain">大模型最难的不是"总结"，是<b>判断什么重要</b>。一小时会议大半是寒暄和重复。你随手打的"定价太高？"就是在告诉 AI"这个我在意"。于是一个难问题（判断重要性）变成了一个简单问题（围绕这几点扩写）。往上翻到页首，切换那个按钮就是这个效果。</div></div>
+    <div><span class="k">模型</span><p class="v">"主要是 OpenAI 和 Anthropic 的混合"<span class="ev c">已确认</span>，供应商名单里还有 Google、xAI、Fireworks。<b>用户不能选写笔记用哪个模型</b>：每换一个模型 prompt 都要重调，才能保持"Granola 的味道"。聊天功能付费用户可以选。</p></div>
+    <div><span class="k">Prompt 哲学</span><div class="v" style="display:grid;gap:10px">
+      <p>别写一堆 if-then 规则，规则多了必然互相打架。像给新员工布置任务那样给背景：你的目标、这份工作的目标、这场会的目标。结果 prompt 变得更短、更针对个人。他们还按"职位 × 会议类型"做了大量预设：同一场融资路演，VC 和创始人拿到的笔记完全不同，因为你通常更在意<b>对方</b>说了什么。</p>
+    </div></div>
+    <div><span class="k">换模型的流程</span><div class="v plain"><b>Evals（评测）</b> 是 AI 产品的自动化考试：准备一批真实会议和理想笔记，每次换模型、改 prompt 都考一遍。Granola 用 Braintrust 做评测，新模型出来"跑一遍评测，好就热切换"。<br><br><b>为什么不自己训练模型？</b>创始人的说法：基础模型进步太快，用好现成最强的模型还有大量红利，撞墙了再自己训。早期上下文窗口只装得下 30 分钟会议，他们选择<b>等</b>模型变大，没去写复杂的切片逻辑。</div></div>
+  </div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section class="layer" id="l5">
+  <span class="num">5</span>
+  <div class="layer-head"><span class="eyebrow">Memory</span><h2>跨会议问答：从笔记本到"会议记忆"</h2></div>
+  <p style="margin-bottom:16px">用户问："过去三个月所有客户提到的 bug 有哪些？" 答案散在几十场会里。Granola 的做法换了三代：</p>
+  <div class="gens">
+    <div class="gen"><span class="yr">2023 – 2025 初</span><h3>长上下文硬塞</h3><p style="font-size:14.5px">把相关会议全部贴进模型的"工作记忆"。贵，会议一多就装不下。</p></div>
+    <div class="gen"><span class="yr">为什么不先用 RAG</span><h3>"最有意思的问题"搜不到</h3><p style="font-size:14.5px">普通搜索能"查找"，但答不了"哪里我没讲清楚？"这种要看全貌的问题。他们愿意先承担成本。</p></div>
+    <div class="gen now"><span class="yr">2026-04 起</span><h3>Agent：搜 → 筛 → 读 → 再搜</h3><p style="font-size:14.5px">像研究员：先扫 100 份笔记，挑出可能相关的，再细读那几场的原始转写。复杂问题要想约 38 秒。</p></div>
+  </div>
+  <div class="qa" style="margin-top:18px">
+    <div><span class="k">关键算账</span><p class="v">转写的字数约是笔记的 <b>10 倍</b>，所以 agent 先读 100 份<b>笔记</b>，而不是 10 份<b>转写</b>：花同样的钱，覆盖面大十倍<span class="ev c">已确认 · 官方博客</span>。回答时附上"我看了哪些会、哪里可能不完整"，防止 AI 自信地答错。</p></div>
+    <div><span class="k">白话</span><div class="v plain"><b>RAG</b>：先搜，再把搜到的几段给模型看。好比开卷考试先翻目录找页码。<br><b>Embedding / 向量</b>：把一段话变成一串数字，意思相近的数字也相近，所以搜"价格太贵"也能找到"预算不够"。<br><b>向量数据库</b>：专门存这些数字、能快速找"最相近"的数据库，Granola 用的是 Turbopuffer。<br><b>Agent</b>：不是一次性回答，而是自己决定下一步搜什么、读哪篇、够不够，循环到满意为止。</div></div>
+    <div><span class="k">会前简报</span><p class="v">大量会议都会提前生成简报，但只有约 10% 被打开。创始人管这叫"扶手"：平时看不见，你迟到两分钟急需时它必须已经在那。这是在用钱换速度。</p></div>
+  </div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section class="layer" id="l6">
+  <span class="num">6</span>
+  <div class="layer-head"><span class="eyebrow">Platform</span><h2>后端与 MCP：把会议记录变成其他 AI 的燃料</h2></div>
+  <div class="qa">
+    <div><span class="k">后端</span><p class="v">AWS（仅美国区）· Postgres · TypeScript/Node · Terraform · ClickHouse · Stripe · Twilio<span class="ev c">已确认</span>。一套非常标准的 SaaS 技术栈，这本身就说明：工程精力全花在用户能感知的地方。</p></div>
+    <div><span class="k">平台层</span><p class="v"><b>REST API</b>（2026-02 发布 v1.0，10 月已到 v1.6）、<b>Webhooks</b>（有新笔记时主动通知你的系统）、<b>MCP Server</b> <code>mcp.granola.ai/mcp</code>。</p></div>
+    <div><span class="k">白话：MCP</span><div class="v plain"><b>MCP（Model Context Protocol）</b> 可以理解为 AI 助手的 USB 接口。Granola 提供一个 MCP 服务器，挂着一份工具菜单（列出我的会议、读这场会的转写、用自然语言问我的会议）。Claude、ChatGPT、Cursor 插上就能用。<b>你现在用的 Claude 就连着 Granola 的 MCP。</b></div></div>
+    <div><span class="k">战略意义</span><p class="v">2026-03 Granola 把本地缓存加密，社区里读本地文件的小工具全部失效，a16z 的人公开批评它"变封闭"。CEO 回应"这是我们的错"，随后推出官方 API 和 MCP，而 API 只给 Business 及以上。数据出口从后门改成了收费的正门，也就是 deepdive 里"从笔记本到企业会议记忆层"在技术上的落地。</p></div>
+  </div>
+</section>
+
+<!-- ============ security ============ -->
+<section id="security">
+  <div class="layer-head"><span class="eyebrow">Security & Legal</span><h2>两次漏洞和一场官司，都能从架构里找到原因</h2></div>
+  <div class="cases">
+    <div class="case"><span class="eyebrow">2025-03 · Tenable 发现</span><h3>密钥藏在"功能开关"里</h3><p>研究员把 Electron 安装包解压（里面基本是能直接读的 JavaScript），找到一个不用登录就能访问的接口 <code>/v1/get-feature-flags</code>，返回内容里有一把 AssemblyAI 的 API 密钥，能下载约 300 位 iOS 内测用户的转写。<b>教训：长期密钥永远不要发到用户设备上。</b></p></div>
+    <div class="case"><span class="eyebrow">2026-06 · Strix 发现</span><h3>点一下就被接管账号</h3><p>攻击者把显示名设成一个链接 → 它出现在受害者的动态里 → 受害者一点，Electron 主窗口跳到攻击者网页 → 给自家页面开的"系统接口"还挂在窗口上，攻击者网页就能拿到登录 token 和本地数据库密钥。<b>Electron 的经典坑：网页内容和系统权限住在同一个窗口里。</b>6 天内修复，没有被利用的证据。</p></div>
+    <div class="case law"><span class="eyebrow">2026-07-30 · Chamberlain v. Granola</span><h3>官司的三个技术要点</h3><p>① 实时转写 = 音频在通话进行中就流到转写商，原告认为符合窃听法"同时截获"的要件。② Granola 其实做了告知功能（聊天里自动发消息、视频水印），但默认都是关的。③ 免费版和 Business 版默认用数据训练模型，训进去的删不掉。2026-08 Otter 案判决认定"为自己目的拿录音训练的供应商 = 第三方窃听者"，这让"训练默认开"成了最要命的那个开关。</p></div>
+  </div>
+</section>
+
+<!-- ============ cost ============ -->
+<section id="cost">
+  <div class="layer-head"><span class="eyebrow">Unit economics · 公开定价估算</span><h2>一个用户每月花 Granola 多少钱？</h2></div>
+  <p style="margin-bottom:14px">创始人原话："The most expensive thing about our business is actually transcription."（MAD Podcast）最贵的是<b>转写</b>，不是大模型。拖动看看：</p>
+  <div class="calc">
+    <div class="sliders">
+      <div class="sl"><label for="sM">每月会议数 <output id="oM">12</output></label><input type="range" id="sM" min="1" max="100" value="12"></div>
+      <div class="sl"><label for="sH">平均时长（小时） <output id="oH">1.0</output></label><input type="range" id="sH" min="0.25" max="2" step="0.25" value="1"></div>
+      <div class="sl"><label for="sC">每月深度跨会议提问 <output id="oC">4</output></label><input type="range" id="sC" min="0" max="40" value="4"></div>
+      <div class="sl"><label for="sQ">每月单场会议小问题 <output id="oQ">10</output></label><input type="range" id="sQ" min="0" max="60" value="10"></div>
+    </div>
+    <label class="check" for="sLocal"><input type="checkbox" id="sLocal"> 改用本机转写（Parakeet，转写成本 ≈ 0）</label>
+    <div class="result">
+      <span class="big" id="rng">$6–20</span>
+      <div class="bar" aria-hidden="true"><div class="rng" id="bar"></div><div class="seat" id="seat"><span>$14 席位</span></div></div>
+    </div>
+    <div class="breakdown tbl"><table id="bd"></table></div>
+    <p class="muted" style="font-size:12.5px">单价假设（按 2026-10 公开价）：转写每会议小时 $0.30–0.92（两路音频）· 生成笔记每场 $0.02–0.14 · 会前简报每场 $0.05–0.30 · 深度提问每次 $0.45–0.85（中档模型）· 小问题每次 $0.01–0.05。Granola 谈下来的实际价格应该更低。</p>
+  </div>
+</section>
+
+<!-- ============ moat ============ -->
+<section id="moat">
+  <div class="layer-head"><span class="eyebrow">回到投资视角</span><h2>每一层能被复制吗？</h2></div>
+  <div class="tbl"><table>
+    <tr><th>层</th><th>自研程度</th><th>被复制的难度</th></tr>
+    <tr><td>1 桌面 App</td><td>低，标准框架</td><td>容易</td></tr>
+    <tr><td>2 抓音频 + 回声消除</td><td><b>中</b>，系统接口 + 开源，但工程细节多</td><td>要踩几个月坑，大厂能做</td></tr>
+    <tr><td>3 转写</td><td>低，买的</td><td>容易</td></tr>
+    <tr><td>4 写笔记</td><td><b>中高</b>，prompt × 职位 × 会议类型的调优 + 评测体系</td><td>形式好抄、味道难抄，但模型越强这份积累越不值钱</td></tr>
+    <tr><td>5 跨会议问答</td><td>中，agent + 向量库</td><td>标准做法，模型公司自己也在做</td></tr>
+    <tr><td>6 平台</td><td>技术低，<b>数据位置高</b></td><td>技术好抄，企业的会议历史搬不走</td></tr>
+  </table></div>
+  <p style="margin-top:14px">和 deepdive 的判断一致：技术本身不是护城河，真正在积累的是第 6 层的"数据引力"。接下来最值得盯的两个技术信号：<b>本地转写</b>会不会改写成本结构，<b>通知默认值</b>会不会被官司逼着打开。</p>
+</section>
+
+<!-- ============ patterns ============ -->
+<section id="patterns">
+  <div class="layer-head"><span class="eyebrow">带走的东西</span><h2>AI 应用公司的 9 个通用架构模式</h2><p class="muted">分析别的公司、或者自己做产品时都会反复遇到。</p></div>
+  <ol class="patterns">
+    <li><div><b>买零件，拼体验。</b>模型、转写、向量库、云全买现成的，自己只做用户能感知的那 10%。分析一家 AI 公司，先问"哪一层是你自己造的"。</div></li>
+    <li><div><b>能用物理结构解决的，别交给 AI。</b>Me/Them 靠两路音频天然分开，不让模型去猜。</div></li>
+    <li><div><b>让用户顺手给出"重要性信号"。</b>几行 bullet 把难问题变成简单问题。</div></li>
+    <li><div><b>模型可替换，评测先行。</b>不绑定任何一家，靠 evals 随时切换。这是应用层公司防止被模型商吃掉的基本功。</div></li>
+    <li><div><b>等平台，别硬造。</b>上下文不够就等它变大，押注"一年后更便宜、更强"。</div></li>
+    <li><div><b>长上下文 → RAG → Agent。</b>几乎所有"在大量资料里问问题"的产品都在走这条路。</div></li>
+    <li><div><b>用户设备上只放临时 token。</b>长期密钥永远留在后端。</div></li>
+    <li><div><b>Electron 的安全边界。</b>网页内容和系统权限不能住在同一个窗口。</div></li>
+    <li><div><b>平台化 = API + MCP。</b>把自己的数据开放给其他 AI，从"一个工具"变成"一层基础设施"。</div></li>
+  </ol>
+</section>
+
+<!-- ============ glossary ============ -->
+<section id="glossary">
+  <div class="layer-head"><span class="eyebrow">术语表</span><h2>这页出现的 24 个词</h2></div>
+  <input class="gsearch" id="gq" type="search" placeholder="搜索术语，比如 RAG、向量、token" aria-label="搜索术语">
+  <div class="gloss" id="gl"></div>
+</section>
+
+<section id="unknown">
+  <div class="layer-head"><span class="eyebrow">还不知道的</span><h2>公开资料查不到的 6 件事</h2></div>
+  <ul style="margin:0;padding-left:20px">
+    <li>哪个模型具体负责哪件事（写笔记、Auto 聊天、简报、embedding）</li>
+    <li>"用数据训练"训练的到底是什么模型，"去标识化"怎么定义（官司焦点）</li>
+    <li>Fireworks.ai 和 xAI 具体用在哪</li>
+    <li>Windows 抓音频的实现细节（只从代码里的开关名推断）</li>
+    <li>设备之间怎么同步</li>
+    <li>谈判后的实际转写价格</li>
+  </ul>
+</section>
+
+<footer>
+  <p><b>证据说明</b>："已确认 · 安装包 / 本机"指直接检查了 Mac 上安装的 Granola.app v7.637 的程序文件（文件名、配置、代码字符串），没有读取任何会议内容。</p>
+  <p class="sources" style="margin-top:10px"><b>主要来源</b>：
+  <a href="https://www.granola.ai/security">Granola Security</a> ·
+  <a href="https://trust.granola.ai/subprocessors">Subprocessors</a> ·
+  <a href="https://docs.granola.ai/help-center/taking-notes/transcription">Transcription docs</a> ·
+  <a href="https://docs.granola.ai/help-center/taking-notes/ai-enhanced-notes">AI-enhanced notes</a> ·
+  <a href="https://docs.granola.ai/help-center/sharing/integrations/mcp">MCP docs</a> ·
+  <a href="https://granola.ai/blog/how-granola-thinks-about-designing-agents">Designing agents (blog)</a> ·
+  <a href="https://www.youtube.com/watch?v=IcbuTTVUY7M">MAD Podcast</a> ·
+  <a href="https://joincolossus.com/episode/pedregal-building-granola/">Invest Like the Best #412</a> ·
+  <a href="https://www.tenable.com/security/research/tra-2025-07">Tenable TRA-2025-07</a> ·
+  <a href="https://www.strix.ai/blog/granola">Strix write-up</a> ·
+  <a href="https://storage.courtlistener.com/recap/gov.uscourts.cand.475308/gov.uscourts.cand.475308.1.0.pdf">Chamberlain complaint</a> ·
+  <a href="https://deepgram.com/pricing">Deepgram pricing</a> ·
+  <a href="https://www.assemblyai.com/pricing">AssemblyAI pricing</a></p>
+  <p style="margin-top:10px">完整报告与研究底稿：Obsidian · Startup Deepdive/Granola/90-tech.md</p>
+</footer>
+</div>
+
+<script>
+(function(){
+  // note toggle
+  var note=document.getElementById('note'),bm=document.getElementById('btnMine'),ba=document.getElementById('btnAll');
+  function setNote(all){note.classList.toggle('only-mine',!all);bm.setAttribute('aria-pressed',String(!all));ba.setAttribute('aria-pressed',String(all));}
+  bm.addEventListener('click',function(){setNote(false)});ba.addEventListener('click',function(){setNote(true)});
+
+  // waveforms (static, deterministic)
+  function wave(id,seed,on){
+    var c=document.getElementById(id); if(!c) return;
+    var dpr=window.devicePixelRatio||1,w=c.clientWidth||300,h=c.clientHeight||38;
+    c.width=w*dpr;c.height=h*dpr;var x=c.getContext('2d');x.scale(dpr,dpr);
+    var col=getComputedStyle(c.closest('.ch')).getPropertyValue(id==='wMe'?'--me':'--them').trim()||'#888';
+    x.fillStyle=col;var n=Math.floor(w/4),s=seed;
+    for(var i=0;i<n;i++){s=(s*9301+49297)%233280;var r=s/233280;var t=i/n;var talk=on(t);
+      var a=talk?(0.25+0.75*r)*(0.6+0.4*Math.sin(i*0.7)):0.06;var bh=Math.max(2,a*h);x.fillRect(i*4,(h-bh)/2,2.4,bh);}
+  }
+  function draw(){wave('wThem',7,function(t){return t<0.55});wave('wMe',3,function(t){return t>0.6})}
+  draw();window.addEventListener('resize',draw);
+  // theme change redraw
+  try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw)}catch(e){}
+
+  // calculator
+  var ids=['sM','sH','sC','sQ'],el={};ids.forEach(function(k){el[k]=document.getElementById(k)});
+  var loc=document.getElementById('sLocal');
+  function f(v){return '$'+(v<10?v.toFixed(1):Math.round(v))}
+  function calc(){
+    var M=+el.sM.value,H=+el.sH.value,C=+el.sC.value,Q=+el.sQ.value,L=loc.checked;
+    document.getElementById('oM').textContent=M;document.getElementById('oH').textContent=H.toFixed(2).replace(/0$/,'');
+    document.getElementById('oC').textContent=C;document.getElementById('oQ').textContent=Q;
+    var rows=[
+      ['转写',L?0:M*H*0.30,L?0:M*H*0.92],
+      ['生成笔记',M*0.02,M*0.14],
+      ['会前简报',M*0.05,M*0.30],
+      ['深度提问',C*0.45,C*0.85],
+      ['小问题',Q*0.01,Q*0.05]];
+    var lo=0,hi=0;rows.forEach(function(r){lo+=r[1];hi+=r[2]});
+    document.getElementById('rng').textContent=f(lo)+'–'+f(hi);
+    var max=Math.max(40,hi*1.15);var bar=document.getElementById('bar');
+    bar.style.left=(lo/max*100)+'%';bar.style.width=Math.max(1,(hi-lo)/max*100)+'%';
+    document.getElementById('seat').style.left=(14/max*100)+'%';
+    var html='<tr><th>环节</th><th>每月（低）</th><th>每月（高）</th><th>占比（高）</th></tr>';
+    rows.forEach(function(r){html+='<tr><td>'+r[0]+'</td><td class="n">'+f(r[1])+'</td><td class="n">'+f(r[2])+'</td><td class="n">'+(hi?Math.round(r[2]/hi*100):0)+'%</td></tr>'});
+    document.getElementById('bd').innerHTML=html;
+  }
+  ids.forEach(function(k){el[k].addEventListener('input',calc)});loc.addEventListener('change',calc);calc();
+
+  // glossary
+  var G=[
+    ['Electron','把网页打包成桌面软件的框架'],['Native module','用系统语言写的小插件，帮网页碰系统底层'],
+    ['Core Audio Tap','苹果的"监听系统声音"接口（macOS 14.2+）'],['WASAPI loopback','Windows 的"录下正在播放的声音"接口'],
+    ['AEC 回声消除','把扬声器漏进麦克风的声音减掉'],['ASR','语音转文字'],
+    ['Streaming / Batch','边说边转 / 录完再转'],['WebSocket','一直开着的双向网络通道，像电话不挂'],
+    ['Diarization','判断每句话是谁说的'],['Token（计费）','大模型处理文字的最小单位，约 0.75 个英文词'],
+    ['临时 token（认证）','有时效的通行证，过期作废，比长期密钥安全'],['Prompt','给大模型的指令 + 材料'],
+    ['Context window','大模型一次能看多少字'],['Evals','AI 产品的自动化考试'],
+    ['Hot swap','不停服务，直接把后台模型换掉'],['Fine-tune','用自己的数据再训练一个现成模型'],
+    ['RAG','先搜索，再让模型基于搜到的内容回答'],['Embedding / 向量','把文字变成数字，意思近的数字也近'],
+    ['Vector database','专门存向量、找"最相近"的数据库'],['Agent','自己决定下一步、循环到完成任务的 AI'],
+    ['REST API','程序之间"问一次答一次"的标准接口'],['Webhook','有事时主动通知你的系统'],
+    ['MCP','AI 助手的 USB 接口标准，Anthropic 2024 年推出'],['IPC bridge','Electron 里网页调用系统功能的通道']
+  ];
+  var gl=document.getElementById('gl'),gq=document.getElementById('gq');
+  function renderG(q){q=(q||'').toLowerCase();gl.innerHTML=G.filter(function(g){return !q||(g[0]+g[1]).toLowerCase().indexOf(q)>-1})
+    .map(function(g){return '<div><b>'+g[0]+'</b>'+g[1]+'</div>'}).join('')||'<p class="muted">没有匹配的术语。</p>'}
+  gq.addEventListener('input',function(){renderG(gq.value)});renderG('');
+})();
+</script>
